@@ -1,0 +1,916 @@
+﻿<Window x:Class="SDWP.MainWindow"
+        x:Name="authWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SDWP"
+        mc:Ignorable="d"
+        Title="SDWP.Authorization" 
+        Height="500" 
+        Width="800"
+        MinHeight="500"
+        MinWidth="800"
+        MaxHeight="500"
+        MaxWidth="800">
+    <Window.Resources>
+        <Style x:Key="authorizationPasswordBoxDarkStyle" TargetType="PasswordBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Background="#323232"
+                                          Width="200"
+                                          Height="30"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="authorizationPasswordBoxLightStyle" TargetType="PasswordBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="authorizationTextBoxLightStyle" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="dayMonthTextBoxLightStyle" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="40"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="yearTextBoxLightStyle" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="80"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="authorizationTextBoxDarkStyle" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Background="#323232"
+                                          Width="200"
+                                          Height="30"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="authorizationTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style x:Key="headerTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Garamond"/>
+            <Setter Property="FontSize" Value="55"/>
+            <Setter Property="Language" Value="English"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontWeight" Value="500"/>
+        </Style>
+        <Style x:Key="headerDescripitonTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Garamond"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Language" Value="English"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style x:Key="welcomeWindowBtnStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5"
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="MouseEnter" Handler="WelcomeBtnMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="WelcomeBtnMouseLeave"/>
+        </Style>
+        <Style x:Key="appDescriptionTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="#AAAAAA"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Height" Value="200"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style x:Key="hintTextBlockHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="20"/>
+        </Style>
+        <ThicknessAnimationUsingKeyFrames x:Key="leftLoaderThirdRectAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0"
+                                     Value="30, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.5"
+                                     Value="190, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="190, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.2"
+                                     Value="190, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.7"
+                                     Value="30, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="30, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="leftLoaderSecondRectAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="15, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.1"
+                                     Value="15, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.6"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.1"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.6"
+                                     Value="15, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="15, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="leftLoaderFirstRectAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.2"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.7"
+                                     Value="160, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="160, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.5"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="0, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+    </Window.Resources>
+    <Grid x:Name="backgroundGrid"
+          Background="White">
+        <!--grid where all authorization functuionality is placed-->
+        <Grid x:Name="authorizationGrid"
+              Background="#323232"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Top"
+              Width="400"
+              Height="500">
+            <TextBlock x:Name="headerTextBlock"
+                       Text="SDWP"
+                       Margin="0, 20, 0, 0"
+                       Style="{StaticResource headerTextBlockStyle}"/>
+            <TextBlock x:Name="headerDescriptionTextBlock"
+                       Text="software developer work place"
+                       Margin="0, 70, 0, 0"
+                       Style="{StaticResource headerDescripitonTextBlockStyle}"/>
+            <!--Left loader-->
+            <Grid x:Name="leftLoaderGrid"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Width="200"
+                  Visibility="Collapsed"
+                  Margin="0, 100, 0, 0"
+                  Height="10">
+                <Rectangle x:Name="loaderRect1"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="0, 0, 0, 0"/>
+                <Rectangle x:Name="loaderRect2"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="15, 0, 0, 0"/>
+                <Rectangle x:Name="loaderRect3"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="30, 0, 0, 0"/>
+            </Grid>
+            <Grid x:Name="backgroundLoginGrid"
+                  Width="300"
+                  Height="300"
+                  Margin="0, 100, 0, 0"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center">
+                <TextBlock x:Name="loginTextBlock"
+                           Text="Введите логин: "
+                           Foreground="White"
+                           HorizontalAlignment="Left"
+                           Style="{StaticResource authorizationTextBlockStyle}"
+                           Margin="20, 30, 0, 0"/>
+                <TextBox x:Name="loginTextBox"
+                         Margin="20, 50, 0, 0"
+                         HorizontalAlignment="Left"
+                         Style="{StaticResource authorizationTextBoxDarkStyle}"/>
+                <TextBlock x:Name="passwordTextBlock"
+                           Margin="20, 90, 0, 0"
+                           HorizontalAlignment="Left"
+                           Foreground="White"
+                           Text="Введите пароль: "
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+                <PasswordBox x:Name="passwordTextBox"
+                             Margin="20, 110, 0, 0"
+                             HorizontalAlignment="Left"
+                             Style="{StaticResource authorizationPasswordBoxDarkStyle}"/>
+                <TextBlock x:Name="forgotPassTextBlock"
+                           Text="Забыли пароль?"
+                           Margin="20, 160, 0, 0"
+                           MouseEnter="ForgotPassTextBlockMouseEnter"
+                           MouseLeave="ForgotPassTextBlockMouseLeave"
+                           HorizontalAlignment="Left"
+                           Foreground="White"
+                           MouseDown="ForgotPassTextBlockClick"
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+                <!--Login button-->
+                <Button x:Name="loginBtn"
+                        Content="Войти"
+                        Margin="20, 180, 0, 0"
+                        Width="100"
+                        Height="40"
+                        IsDefault="True"
+                        MouseEnter="WelcomeBtnMouseEnter"
+                        MouseLeave="WelcomeBtnMouseLeave"
+                        Click="LoginBtnMouseClick"
+                        Style="{StaticResource welcomeWindowBtnStyle}"/>
+                <TextBlock x:Name="noAccTextBlock"
+                           Text="У вас не аккаунта?"
+                           HorizontalAlignment="Left"
+                           Margin="20, 230, 0, 0"
+                           Foreground="White"
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+                <!--Create account button-->
+                <Button x:Name="registrationBtn"
+                        Content="Создать аккаунт"
+                        Margin="20, 250, 0, 0"
+                        MouseLeave="WelcomeBtnMouseLeave"
+                        MouseEnter="WelcomeBtnMouseEnter"
+                        Click="OpenRegistrationGrid"
+                        Style="{StaticResource welcomeWindowBtnStyle}"/>
+            </Grid>
+        </Grid>
+        <Rectangle VerticalAlignment="Top"
+                   HorizontalAlignment="Right"
+                   Fill="White"
+                   Width="400"
+                   Height="500"/>
+        <Grid x:Name="applicationDescriptionGrid"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Right"
+              Width="400"
+              Height="500"
+              Visibility="Visible"
+              Background="White">
+            <TextBlock x:Name="appDescriptionHeaderTextBlock"
+                       Text="Об этом"
+                       Margin="0, 20, 0, 0"
+                       Style="{StaticResource headerTextBlockStyle}"/>
+            <TextBlock x:Name="appDescriptionSubbHeaderTextBlock"
+                       Text="приложении"
+                       Margin="0, 70, 0, 0"
+                       Style="{StaticResource headerDescripitonTextBlockStyle}"/>
+            <TextBlock x:Name="applicationDescriptionTextBlock"
+                       Text="The SDWP application is made in order to simplify the process of writing documentaion. 
+                       I hope that you'll find it more convinient to write documentation here, rather than in Word or other programms. "
+                       Margin="0, 130, 0, 0"
+                       Style="{StaticResource appDescriptionTextBlockStyle}"/>
+        </Grid>
+        <!--Remind pass grid-->
+        <Grid x:Name="remindPassGrid"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Right"
+              Width="400"
+              Height="500"
+              Visibility="Hidden"
+              Background="White">
+            <TextBlock x:Name="remindPassHeader"
+                       Text="Remind pass"
+                       Margin="0, 20, 0, 0"
+                       Style="{StaticResource headerTextBlockStyle}"/>
+            <TextBlock x:Name="viaEmailTextBox"
+                       Text="via email"
+                       Margin="0, 70, 0, 0"
+                       Style="{StaticResource headerDescripitonTextBlockStyle}"/>
+            <Grid x:Name="remindPassFormGrid"
+                  Background="White"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Width="300"
+                  Height="300"
+                  Margin="0, 100, 0, 0">
+                <Grid x:Name="rightRemindPassLoaderGrid"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Width="200"
+                  Visibility="Collapsed"
+                  Margin="0, 0, 0, 0"
+                  Height="10">
+                    <Rectangle x:Name="rightRemindPassLoaderRect1"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="0, 0, 0, 0"/>
+                    <Rectangle x:Name="rightRemindPassLoaderRect2"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="15, 0, 0, 0"/>
+                    <Rectangle x:Name="rightRemindPassLoaderRect3"
+                           Fill="{StaticResource mainThemeColor}"
+                           Width="10"
+                           Height="10"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="30, 0, 0, 0"/>
+                </Grid>
+                <TextBlock x:Name="remindPassEnterLoginTextBlock"
+                           Text="Введите логин: "
+                           Margin="0, 40, 0, 0"
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+                <TextBox x:Name="remindPassEnterLoginTextBox"
+                         Margin="0, 60, 0, 0"
+                         Width="200"
+                         Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                <TextBlock x:Name="remindPassEnterEmailTextBlock"
+                           Text="Введите email: "
+                           Margin="0, 100, 0, 0"
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+                <TextBox x:Name="remindPassEnterEmailTextBox"
+                         Margin="0, 120, 0, 0"
+                         Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                <Button x:Name="remindPassBtn"
+                        Content="Отправить email"
+                        HorizontalAlignment="Center"
+                        MouseEnter="WelcomeBtnMouseEnter"
+                        MouseLeave="WelcomeBtnMouseLeave"
+                        Width="100"
+                        Height="40"
+                        Margin="0, 180, 0, 0"
+                        Click="SendNewPassToUser"
+                        Style="{StaticResource welcomeWindowBtnStyle}"/>
+                <TextBlock x:Name="closeRemindPassGridTextBlock"
+                           Text="Закрыть"
+                           MouseEnter="ForgotPassTextBlockMouseEnter"
+                           MouseLeave="ForgotPassTextBlockMouseLeave"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Center"
+                           Margin="0, 0, 0, 20"
+                           MouseDown="CloseTheRemindPassGrid"
+                           Style="{StaticResource authorizationTextBlockStyle}"/>
+            </Grid>
+        </Grid>
+        <!--Registration grid-->
+        <Grid x:Name="createAnAccountGrid"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Right"
+              Width="400"
+              Height="500"
+              Visibility="Collapsed"
+              Background="White">
+            <TextBlock x:Name="createAccHeader"
+                       Text="Создать"
+                       Margin="0, 20, 0, 0"
+                       Style="{StaticResource headerTextBlockStyle}"/>
+            <Grid x:Name="createAnAccountForm"
+                  Background="White"
+                  VerticalAlignment="Top"
+                  HorizontalAlignment="Center"
+                  Height="300"
+                  Width="300"
+                  Margin="0, 100, 0, 0">
+                <!--Right loader-->
+                <Grid x:Name="rightCreateAccLoaderGrid"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Center"
+                      Width="200"
+                      Visibility="Collapsed"
+                      Margin="0, 0, 0, 0"
+                      Height="10">
+                    <Rectangle x:Name="rightCreateAccLoaderRect1"
+                               Fill="{StaticResource mainThemeColor}"
+                               Width="10"
+                               Height="10"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Margin="0, 0, 0, 0"/>
+                    <Rectangle x:Name="rightCreateAccLoaderRect2"
+                               Fill="{StaticResource mainThemeColor}"
+                               Width="10"
+                               Height="10"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Margin="15, 0, 0, 0"/>
+                    <Rectangle x:Name="rightCreateAccLoaderRect3"
+                               Fill="{StaticResource mainThemeColor}"
+                               Width="10"
+                               Height="10"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Margin="30, 0, 0, 0"/>
+                </Grid>
+                <ScrollViewer x:Name="createAccScroll"
+                              Width="300"
+                              Height="270"
+                              Margin="0, 30, 0, 0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Visible"
+                              Background="#DDDDDD">
+                    <Grid x:Name="registrationElementsGrid"
+                          VerticalAlignment="Top" 
+                          HorizontalAlignment="Left"
+                          Width="300"
+                          Background="White">
+                        <!--Login-->
+                        <TextBlock x:Name="regLoginTextBlock"
+                                   Text="Введите логин: "
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 0, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <TextBox x:Name="regLoginTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 20, 0, 0"
+                                 Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                        <Image x:Name="loginQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 0, 0, 0"/>
+                        <Image x:Name="loginQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Height="15"
+                               Width="15"
+                               Visibility="Collapsed"
+                               Margin="200, 0, 0, 0"/>
+                        <!--Password-->
+                        <TextBlock x:Name="regPassTextBlock"
+                                   Text="Введите пароль:"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 60, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <PasswordBox x:Name="regPassTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 80, 0, 0"
+                                 Style="{StaticResource authorizationPasswordBoxLightStyle}"/>
+                        <Image x:Name="passwordQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 60, 0, 0"/>
+                        <Image x:Name="passwordQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 60, 0, 0"/>
+                        <!--Name-->
+                        <TextBlock x:Name="regNameTextBlock"
+                                   Text="Введите имя:"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 120, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <TextBox x:Name="regNameTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 140, 0, 0"
+                                 Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                        <Image x:Name="nameQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 120, 0, 0"/>
+                        <Image x:Name="nameQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 120, 0, 0"/>
+                        <!--Surname-->
+                        <TextBlock x:Name="regSurnameTextBlock"
+                                   Text="Введите фамилию: "
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 180, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <TextBox x:Name="regSurnameTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 200, 0, 0"
+                                 Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                        <Image x:Name="surNQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 180, 0, 0"/>
+                        <Image x:Name="surNQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 180, 0, 0"/>
+                        <!--Birth date-->
+                        <TextBlock x:Name="regBirthDateTextBlock"
+                                   Text="Введите дату рождения:"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 240, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <TextBox x:Name="regDayOfBirthTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 260, 0, 0"
+                                 MaxLength="2"
+                                 Width="40"
+                                 Style="{StaticResource dayMonthTextBoxLightStyle}"/>
+                        <TextBox x:Name="regMonthOfBirthTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="80, 260, 0, 0"
+                                 MaxLength="2"
+                                 Width="40"
+                                 Style="{StaticResource dayMonthTextBoxLightStyle}"/>
+                        <TextBox x:Name="regYearOfBirthTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="140, 260, 0, 0"
+                                 Width="80"
+                                 MaxLength="4"
+                                 Style="{StaticResource yearTextBoxLightStyle}"/>
+                        <Image x:Name="bDayQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 240, 0, 0"/>
+                        <Image x:Name="bDayQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Visibility="Collapsed"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 240, 0, 0"/>
+                        <!--Email-->
+                        <TextBlock x:Name="regEmailTextBlock"
+                                   Text="Введите email:"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 300, 0, 0"
+                                   Style="{StaticResource authorizationTextBlockStyle}"/>
+                        <TextBox x:Name="regEmailTextBox"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Margin="20, 320, 0, 0"
+                                 Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                        <Image x:Name="emailQMarkPng"
+                               Source="Resources/questionMarkStatic.png"
+                               MouseDown="ShowHintGrid"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseEnter="QuestionMarkMouseEnter"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 300, 0, 0"/>
+                        <Image x:Name="emailQMarkActivePng"
+                               Source="Resources/questionMarkActive.png"
+                               MouseDown="ShowHintGrid"
+                               Visibility="Collapsed"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               MouseLeave="QuestionMarkMouseLeave"
+                               Height="15"
+                               Width="15"
+                               Margin="200, 300, 0, 0"/>
+                        <Button x:Name="closeRegistrationGridTextBlock"
+                                Content="Отмена"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                MouseEnter="WelcomeBtnMouseEnter"
+                                MouseLeave="WelcomeBtnMouseLeave"
+                                Width="80"
+                                Margin="180, 380, 0, 0"
+                                Click="CloseTheRegistrationGrid"
+                                Style="{StaticResource welcomeWindowBtnStyle}"/>
+                        <Button x:Name="createAccBtn"
+                                VerticalAlignment="Top"
+                                Content="Далее"
+                                HorizontalAlignment="Left"
+                                MouseEnter="WelcomeBtnMouseEnter"
+                                MouseLeave="WelcomeBtnMouseLeave"
+                                Margin="20, 380, 0, 20"
+                                Click="GoToEnterTheCodeGrid"
+                                Style="{StaticResource welcomeWindowBtnStyle}"/>
+                    </Grid>
+                </ScrollViewer>
+                <Grid x:Name="enterTheEmailCodeGrid"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
+                      Width="300"
+                      Height="270"
+                      Margin="0, 30, 0, 0"
+                      Visibility="Collapsed"
+                      Background="White">
+                    <TextBlock x:Name="enterTheCodeTextBlock"
+                               Text="Введите код: "
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Center"
+                               Margin="0, 0, 0, 0"
+                               FontSize="16"
+                               Style="{StaticResource authorizationTextBlockStyle}"/>
+                    <TextBlock x:Name="explanationOfTheEmailTextBlock"
+                               Text="Мы отправили Вам письмо, в котором содержиться код, который нужно ввести ниже"
+                               TextWrapping="Wrap"
+                               Width="200"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Center"
+                               Margin="0, 40, 0, 0"
+                               Style="{StaticResource authorizationTextBlockStyle}"/>
+                    <TextBox x:Name="codeTextBox"
+                             VerticalAlignment="Top"
+                             HorizontalAlignment="Center"
+                             Margin="0, 100, 0, 0"
+                             Style="{StaticResource authorizationTextBoxLightStyle}"/>
+                    <Button x:Name="createNewAcc"
+                            Content="Создать аккаунт"
+                            VerticalAlignment="Top"
+                            Width="140"
+                            HorizontalAlignment="Left"
+                            Margin="20, 160, 0, 0"
+                            Click="CreateNewAccount"
+                            Style="{StaticResource welcomeWindowBtnStyle}"/>
+                    <Button x:Name="cancelCreationOperation"
+                            Content="Отмена"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Width="90"
+                            Margin="0, 160, 20, 0"
+                            Click="CloseTheRegistrationGrid"
+                            Style="{StaticResource welcomeWindowBtnStyle}"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="registrationHintGrid"
+                  VerticalAlignment="Bottom"
+                  HorizontalAlignment="Left"
+                  Height="125"
+                  Width="400"
+                  Visibility="Hidden"
+                  Background="Wheat">
+                <TextBlock x:Name="inputDataNameTextBlock"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="30, 10, 0, 0"
+                           Style="{StaticResource hintTextBlockHeaderStyle}"/>
+                <TextBlock x:Name="inputDataDescriptionTextBlock"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Width="300" 
+                           Height="45"
+                           Foreground="Black"
+                           FontSize="13"
+                           Style="{StaticResource hintTextBlockHeaderStyle}"
+                           Margin="30, 35, 0, 0"/>
+                <Image x:Name="closeHintIcon"
+                       Source="Resources/closeHintIcon.png"
+                       MouseDown="CloseTheHintGrid"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Right"
+                       MouseEnter="CloseHintMouseEnter"
+                       Width="20"
+                       Height="20"
+                       Margin="0, 10, 10, 0"/>
+                <Image x:Name="closeHintActiveIcon"
+                       Source="Resources/closeHintIconActive.png"
+                       MouseLeave="CloseHintMouseLeave"
+                       MouseDown="CloseTheHintGrid"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Right"
+                       Visibility="Collapsed"
+                       Width="20"
+                       Height="20"
+                       Margin="0, 10, 10, 0"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,480 @@
+﻿<Page x:Class="SDWP.UserProfilePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SDWP"
+      mc:Ignorable="d" 
+      Background="#E1E1E1"
+      d:DesignHeight="450" d:DesignWidth="800"
+      SizeChanged="RepositionElements"
+      Title="UserProfilePage">
+    <Page.Resources>
+        <Style x:Key="userProfilePropertiesName" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        
+        <Style x:Key="userProfileTextBoxEnabled" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="IsEnabled" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="userProfileTextBoxDisabled" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="#ffbba2"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="userProfilePasswordBoxEnabled" TargetType="PasswordBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="userProfilePasswordBoxDisabled" TargetType="PasswordBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="IsEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="#ffbba2"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="profileDataHeader" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Foreground" Value="OrangeRed"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="userProfileButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5"
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="MouseEnter" Handler="UserProfileBtnMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="UserProfileBtnMouseLeave"/>
+        </Style>
+        <Style x:Key="userProfileTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderThirdEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0"
+                                     Value="50, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.5"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.2"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.7"
+                                     Value="50, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="50, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderSecondEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.1"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.6"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.1"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.6"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="25, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderFirstEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.2"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.7"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.5"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="0, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+    </Page.Resources>
+    <Page.Content>
+        <Grid x:Name="userProfileGrid"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Left"
+              Visibility="Visible"
+              Background="#E1E1E1"> 
+            <ScrollViewer x:Name="pageScrollViewer" 
+                          VerticalScrollBarVisibility="Hidden">
+                <Grid x:Name="contentOutterGrid"
+                      Height="1000">
+                    <TextBlock x:Name="userGridMainGridHeader"
+                               FontFamily="Arial, Verdana"
+                               FontSize="40"
+                               Margin="20, 30, 0, 0"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Foreground="OrangeRed"
+                               Text="Профиль"/>
+                    <Grid x:Name="topLoaderGrid"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left"
+                          Width="250"
+                          Height="50"
+                          Visibility="Visible"
+                          Margin="210, 30, 0, 0">
+                        <Ellipse x:Name="loaderEllipse1"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 Margin="0, 0, 0, 0"
+                                 Height="20"
+                                 Width="20"
+                                 Fill="OrangeRed"/>
+                        <Ellipse x:Name="loaderEllipse2"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 Margin="25, 0, 0, 0"
+                                 Height="20"
+                                 Width="20"
+                                 Fill="OrangeRed"/>
+                        <Ellipse x:Name="loaderEllipse3"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Left"
+                                 Margin="50, 0, 0, 0"
+                                 Height="20"
+                                 Width="20"
+                                 Fill="OrangeRed"/>
+                    </Grid>
+                    <Image x:Name="refreshIconActive"
+                           Source="Resources/refreshIconActive.png"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right"
+                           MouseLeave="RefreshIconMouseLeave"
+                           MouseDown="RefreshUserData"
+                           Height="35"
+                           Width="35"
+                           Margin="0, 37.5, 20, 0"/>
+                    <Image x:Name="refreshIconStatic"
+                           Source="Resources/refreshIconStatic.png"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right"
+                           MouseEnter="RefreshIconMouseEnter"
+                           Height="35"
+                           Width="35"
+                           Margin="0, 37.5, 20, 0"/>
+                    <Rectangle x:Name="headerRect"
+                           Width="400"
+                           Height="1"
+                           Fill="Gray"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           Margin="20, 85, 20, 0"/>
+                    <!-- Photo and name grid -->
+                    <Border x:Name="userPhotoBorder"
+                            Margin="30, 140, 0, 0"
+                            Width="210"
+                            Height="210"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            CornerRadius="210"
+                            BorderBrush="#ffbba2"
+                            BorderThickness="3">
+                        <Ellipse x:Name="userPhotoEllipse"
+                                 Width="200"
+                                 Height="200"
+                                 MouseEnter="UserPhotoMouseEnter"
+                                 MouseLeave="UserPhotoMouseLeave"
+                                 MouseDown="UserPhotoMouseDown"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="Resources/emptyUserPhotoImage.png"
+                                            Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Border>
+                    <Button x:Name="editProfileDataBtn"
+                            Content="Редактировать профиль"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Margin="60, 370, 0, 0"
+                            Click="EditProfileData"
+                            Style="{StaticResource userProfileButton}"/>
+                    <Button x:Name="updateProfileDataBtn"
+                            Content="Обновить профиль"
+                            IsEnabled="False"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Click="StartUpdatingProcessAsync"
+                            Margin="60, 410, 0, 0"
+                            Style="{StaticResource userProfileButton}"
+                            Background="#ffbba2"/>
+                    <Button x:Name="deleteProfileBtn"
+                            Content="Удалить профиль"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Margin="60, 470, 0, 0"
+                            Style="{StaticResource userProfileButton}"/>
+                    <Grid x:Name="userProfileDataGrid"
+                          VerticalAlignment="Top"
+                          Margin="270, 140, 0, 0"
+                          Visibility="Visible"
+                          HorizontalAlignment="Left">
+                        <TextBlock Text="ФИО"
+                                   Style="{StaticResource profileDataHeader}"
+                                   Margin="22, 0, 0, 0"/>
+                        <TextBlock Text="Имя"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 25, 0, 0"/>
+                        <TextBox x:Name="nameTextBox"
+                                 Text="Name"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 35, 0, 0"/>
+                        <TextBlock Text="Фамилия"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 85, 0, 0"/>
+                        <TextBox x:Name="surnameTextBox"
+                                 Text="Surname"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 95, 0, 0"/>
+                        <TextBlock Text="Детали авторизации"
+                                   Style="{StaticResource profileDataHeader}"
+                                   Margin="22, 150, 0, 0"/>
+                        <TextBlock Text="Логин"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 175, 0, 0"/>
+                        <TextBox x:Name="loginTextBox"
+                                 Text="Login"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 185, 0, 0"/>
+                        <TextBlock Text="Пароль"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 235, 0, 0"/>
+                        <TextBox x:Name="passwordTextBox"
+                                 Text="Password"
+                                 Visibility="Collapsed"
+                                 TextChanged="PasswordTextBoxTextChanged"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 245, 0, 0"/>
+                        <PasswordBox x:Name="passwordPasswordBox"
+                                     Password="Password"
+                                     Visibility="Visible"
+                                     PasswordChanged="PasswordPasswordBoxTextChanged"
+                                     Style="{StaticResource userProfilePasswordBoxDisabled}"
+                                     Margin="20, 245, 0, 0"/>
+                        <Image x:Name="seePasswordActiveIcon"
+                               Source="Resources/seePasswordIconActive.png"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Width="24"
+                               Margin="200, 230, 0, 0"
+                               Height="24"
+                               Visibility="Collapsed"
+                               MouseDown="SeePasswordIconMouseDown"
+                               MouseLeave="SeePasswordIconMouseLeave"/>
+                        <Image x:Name="seePasswordStaticIcon"
+                               Source="Resources/seePasswordIconStatic.png"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Width="24"
+                               Margin="200, 230, 0, 0"
+                               Height="24"
+                               MouseEnter="SeePasswordIconMouseEnter"/>
+                        <TextBlock Text="Другая информация"
+                                   Style="{StaticResource profileDataHeader}"
+                                   Margin="22, 300, 0, 0"/>
+                        <TextBlock Text="Почта"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 325, 0, 0"/>
+                        <TextBox x:Name="emailTextBox"
+                                 Text="Email"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 335, 0, 0"/>
+                        <TextBlock Text="Дата рождения"
+                                   Style="{StaticResource userProfilePropertiesName}"
+                                   Margin="22, 385, 0, 0"/>
+                        <TextBox x:Name="birthDateTextBox"
+                                 Text="30.05.2000"
+                                 Style="{StaticResource userProfileTextBoxDisabled}"
+                                 Margin="20, 395, 0, 0"/>
+                    </Grid>
+                    <Grid x:Name="enterCodeGrid"
+                          Height="500"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left"
+                          Background="#E1E1E1"
+                          Visibility="Collapsed"
+                          Margin="0, 140, 0, 0">
+                        <TextBlock Text="Введите код подтверждения"
+                                   Style="{StaticResource profileDataHeader}"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="22, 0, 0, 0"/>
+                        <TextBlock x:Name="timeTillCodeExpireTextBlock"
+                                   Style="{StaticResource userProfileTextBlockStyle}"
+                                   Margin="22, 20, 0, 0"/>
+                        <TextBox x:Name="emailCodeTextBox"
+                                 Style="{StaticResource userProfileTextBoxEnabled}"
+                                 TextAlignment="Center"
+                                 MaxLength="6"
+                                 Margin="20, 50, 0, 0"/>
+                        <Button Style="{StaticResource userProfileButton}"
+                                Content="Обновить данные"
+                                Margin="20, 100, 0, 0"
+                                VerticalAlignment="Top"
+                                Click="UpdateRecordAfterEmailConfirmationAsync"
+                                HorizontalAlignment="Center"/>
+                        <TextBlock Text="Отмена"
+                                   Style="{StaticResource userProfileTextBlockStyle}"
+                                   Margin="20, 140, 0, 0"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Center"
+                                   MouseEnter="CancelTextBlockMouseEnter"
+                                   MouseLeave="CancelTextBlockMouseLeave"
+                                   MouseDown="CloseEnterCodeGrid"/>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Page.Content>
+</Page>

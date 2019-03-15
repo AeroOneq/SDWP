@@ -1,0 +1,326 @@
+﻿<Page x:Class="SDWP.UserDocsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SDWP"
+      mc:Ignorable="d" 
+      SizeChanged="UserDocsPageSizeChanged"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="UserDocsPage">
+    <Page.Resources>
+        <Style x:Key="userDocsPropertiesName" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="userDocsTextBox" TargetType="TextBox">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0, 7, 0, 0"/>
+            <Setter Property="CaretBrush" Value="Gray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 1.5" 
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="200"
+                                          Height="30"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="userDocsDataHeader" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Foreground" Value="OrangeRed"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="userDocsButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5"
+                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <EventSetter Event="MouseEnter" Handler="UserDocsBtnMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="UserDocsBtnMouseLeave"/>
+        </Style>
+        <Style x:Key="userProfileTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+        </Style>
+        <Style x:Key="documentationListBoxHeaderTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="40, -2, 0, 0"/>
+        </Style>
+
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderThirdEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0"
+                                     Value="50, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.5"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.2"
+                                     Value="225, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.7"
+                                     Value="50, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="50, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderSecondEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.1"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.6"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.1"
+                                     Value="200, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.6"
+                                     Value="25, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="25, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+        <ThicknessAnimationUsingKeyFrames x:Key="topLoaderFirstEllipseAnimation"
+                                          AccelerationRatio="0"
+                                          RepeatBehavior="Forever"
+                                          SpeedRatio="1.1">
+            <EasingThicknessKeyFrame KeyTime="0:0:0.0"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.2"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:0.7"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1"
+                                     Value="175, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:1.5"
+                                     Value="0, 0, 0, 0"/>
+            <EasingThicknessKeyFrame KeyTime="0:0:2.2"
+                                     Value="0, 0, 0, 0"/>
+        </ThicknessAnimationUsingKeyFrames>
+
+        <LinearGradientBrush x:Key="documentationOptionBorderBrush"
+                             StartPoint="0, 0"
+                             EndPoint="0, 1">
+            <GradientStop Color="OrangeRed" Offset="0.37"/>
+            <GradientStop Color="White" Offset="0.37"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="listboxSelectedItemGradient">
+            <GradientStop Color="Orange" Offset="0.3"/>
+            <GradientStop Color="Orange" Offset="0.7"/>
+        </LinearGradientBrush>
+    </Page.Resources>
+    <Page.Content>
+        <Grid x:Name="userDocsOutterGrid">
+            <ScrollViewer VerticalAlignment="Top"
+                          VerticalScrollBarVisibility="Hidden">
+                <Grid VerticalAlignment="Top"
+                      HorizontalAlignment="Left">
+                    <Grid x:Name="topHeaderGrid"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left"
+                          Margin="0, 0, 0, 0"
+                          Height="130"
+                          Background="#E1E1E1">
+                        <TextBlock x:Name="userGridMainGridHeader"
+                                   FontFamily="Arial, Verdana"
+                                   FontSize="40"
+                                   Margin="20, 30, 0, 0"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Foreground="OrangeRed"
+                                   Text="Моя документация"/>
+                        <Grid x:Name="topLoaderGrid"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Width="250"
+                              Height="50"
+                              Visibility="Visible"
+                              Margin="20, 80, 0, 0">
+                            <Ellipse x:Name="loaderEllipse1"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Left"
+                                     Margin="0, 0, 0, 0"
+                                     Height="20"
+                                     Width="20"
+                                     Fill="OrangeRed"/>
+                            <Ellipse x:Name="loaderEllipse2"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Left"
+                                     Margin="25, 0, 0, 0"
+                                     Height="20"
+                                     Width="20"
+                                     Fill="OrangeRed"/>
+                            <Ellipse x:Name="loaderEllipse3"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Left"
+                                     Margin="50, 0, 0, 0"
+                                     Height="20"
+                                     Width="20"
+                                     Fill="OrangeRed"/>
+                        </Grid>
+                        <Image x:Name="refreshIconActive"
+                               Source="Resources/refreshIconActive.png"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right"
+                               MouseLeave="RefreshIconMouseLeave"
+                               MouseDown="RefreshUserDocs"
+                               Height="35"
+                               Width="35"
+                               Margin="0, 37.5, 20, 0"/>
+                        <Image x:Name="refreshIconStatic"
+                               Source="Resources/refreshIconStatic.png"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right"
+                               MouseEnter="RefreshIconMouseEnter"
+                               Height="35"
+                               Width="35"
+                               Margin="0, 37.5, 20, 0"/>
+                        <Rectangle x:Name="headerRect"
+                                   Width="400"
+                                   Height="1"
+                                   Fill="Gray"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="20, 85, 20, 0"/>
+                    </Grid>
+                    <Grid x:Name="userDocumentationGrid"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Left"
+                          Width="350"
+                          Background="#E1E1E1"
+                          Margin="20, 150, 0, 0">
+                        <TextBlock Style="{StaticResource userDocsDataHeader}"
+                                   Text="Ваша документация"/>
+                        <ListBox x:Name="documentationsListBox"
+                                 Width="300"
+                                 Height="400"
+                                 VerticalAlignment="Top"
+                                 HorizontalAlignment="Left"
+                                 Background="#E1E1E1"
+                                 SelectionMode="Multiple"
+                                 BorderThickness="0, 0, 1, 0"
+                                 BorderBrush="Gray"
+                                 Margin="0, 30, 0, 0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border Name="Border" Padding="2" SnapsToDevicePixels="true">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected"
+                                                             Value="True">
+                                                        <Setter TargetName="Border"
+                                                                Property="Background"
+                                                                Value="{StaticResource listboxSelectedItemGradient}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          Margin="0, 0, 0, 0"
+                                          Width="280">
+                                        <Border VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Width="280"
+                                                Height="110"
+                                                CornerRadius="7"
+                                                BorderThickness="1"
+                                                Background="{StaticResource documentationOptionBorderBrush}"
+                                                Padding="5,5,5,5"
+                                                BorderBrush="Gray"
+                                                Margin="0, 0, 0, 0">
+                                            <Grid VerticalAlignment="Top"
+                                                  HorizontalAlignment="Left"
+                                                  Width="280"
+                                                  Background="White"
+                                                  Height="100">
+                                                <Grid VerticalAlignment="Top"
+                                                      HorizontalAlignment="Left"
+                                                      Height="35"
+                                                      Background="OrangeRed"
+                                                      Width="280">
+                                                    <Image Source="Resources/documentationIcon.png"
+                                                           VerticalAlignment="Top"
+                                                           HorizontalAlignment="Left"
+                                                           Height="25"
+                                                           Width="25"
+                                                           Margin="5, 3, 0, 0"/>
+                                                    <TextBlock Text="{Binding Path = DocumentationTitle}"
+                                                               Style="{StaticResource 
+                                                                    documentationListBoxHeaderTextBlockStyle}"/>
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Page.Content>
+</Page>
