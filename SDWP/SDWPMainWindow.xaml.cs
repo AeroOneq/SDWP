@@ -19,6 +19,7 @@ using System.Windows.Media.Animation;
 using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
+using ApplicationLib.Models;
 
 namespace SDWP
 {

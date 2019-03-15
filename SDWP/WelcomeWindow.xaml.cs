@@ -19,6 +19,7 @@ using System.Data.SqlTypes;
 using System.Net.Mail;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
+using ApplicationLib.Services;
 
 namespace SDWP
 {
@@ -28,6 +29,7 @@ namespace SDWP
     public partial class MainWindow : Window
     {
         private UserInfo NewUser { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -41,35 +43,100 @@ namespace SDWP
                 createAnAccountGrid
             };
         }
+
         #region Registration process
         /// <summary>
-        /// Checks the code 
+        /// Checks the input data in the registration form, and if everything is alright
+        /// redirects user to the enter code grid
         /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        private async Task<bool> CheckCodeAndCreateAccAsync(string code)
+        private async void GoToEnterTheCodeGrid(object sender, RoutedEventArgs e)
         {
-            return await Task.Run(() =>
+            try
             {
-                try
-                {
-                    if (code == Account.Code)
-                        return Account.CreateNewAccount(NewUser);
-                    return false;
-                }
-                catch (NotAppropriateUserParam ex)
-                {
-                    return HandleAccCreationException(ex);
-                }
-                catch (SqlException ex)
-                {
-                    return HandleAccCreationException(ex);
-                }
-                catch (Exception ex)
-                {
-                    return HandleAccCreationException(ex);
-                }
-            });
+                SwitchOnTheLoader(rightCreateAccLoaderGrid);
+                UserInfo newUser = CreateNewUser();
+                bool checkingResult = await CheckUserInputDataAsync(newUser);
+                if (checkingResult)
+                    SendEmailAndGoToCodeGridAsync(newUser);
+            }
+            catch (NotAppropriateParamException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (InvalidCastException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (Exception ex)
+            {
+                HandleAccCreationException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Checks all properties of user object and 
+        /// availability of login and email
+        /// </summary>
+        private async Task<bool> CheckUserInputDataAsync(UserInfo newUser)
+        {
+            try
+            {
+                UserInfo.CheckUserProperties(newUser);
+
+                await UserService.GetService.CheckLogin(newUser.Login);
+                await UserService.GetService.CheckEmail(newUser.Email);
+
+                return true;
+            }
+            catch (NotAppropriateUserParam ex)
+            {
+                HandleAccCreationException(ex);
+                return false;
+            }
+            catch (SqlException ex)
+            {
+                HandleAccCreationException(ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                HandleAccCreationException(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Sends an email with a code to confirm this email and then redirects
+        /// user to the 'enter code grid'
+        /// </summary>
+        private async void SendEmailAndGoToCodeGridAsync(UserInfo newUser)
+        {
+            try
+            {
+                NewUser = newUser;
+                await EmailService.GetService.SendCodeEmail(NewUser);
+            }
+            catch (InvalidOperationException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (ArgumentNullException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (SmtpException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (Exception ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            finally
+            {
+                SwitchOffTheLoader(rightCreateAccLoaderGrid);
+                enterTheEmailCodeGrid.Visibility = Visibility.Visible;
+            }
         }
 
         /// <summary>
@@ -84,20 +151,40 @@ namespace SDWP
             {
                 SwitchOnTheLoader(rightCreateAccLoaderGrid);
                 string code = codeTextBox.Text;
-                bool creationResult = await CheckCodeAndCreateAccAsync(code);
-                if (creationResult)
-                {
-                    SwitchOffTheLoader(rightCreateAccLoaderGrid);
-                    MessageBox.Show("Статус создание аккаунта", "Аккаунт был успешно создан",
-                        MessageBoxButton.OK);
-                    WelcomePageRightGridAnimations.HideTheGrid(registrationElementsGrid);
-                }
+
+                await CheckCodeAndCreateAccAsync(code);
+
+                SwitchOffTheLoader(rightCreateAccLoaderGrid);
+                MessageBox.Show("Статус создание аккаунта", "Аккаунт был успешно создан",
+                    MessageBoxButton.OK);
+                WelcomePageRightGridAnimations.HideTheGrid(registrationElementsGrid);
             }
             catch (NotAppropriateUserParam ex)
             {
                 HandleAccCreationException(ex);
             }
             catch (InvalidCastException ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (Exception ex)
+            {
+                HandleAccCreationException(ex);
+            }
+        }
+
+        private async Task CheckCodeAndCreateAccAsync(string code)
+        {
+            try
+            {
+                if (code == EmailService.GetService.Code)
+                    await UserService.GetService.CreateNewAccountAsync(NewUser);
+            }
+            catch (NotAppropriateUserParam ex)
+            {
+                HandleAccCreationException(ex);
+            }
+            catch (SqlException ex)
             {
                 HandleAccCreationException(ex);
             }
@@ -153,100 +240,6 @@ namespace SDWP
             ExceptionHandler.HandleWithMessageBox(ex);
             return false;
         }
-
-        /// <summary>
-        /// Checks all properties of user object and 
-        /// availability of login and email
-        /// </summary>
-        private async Task<bool> CheckUserInputDataAsync(UserInfo newUser)
-        {
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    UserInfo.CheckUserProperties(newUser);
-                    Account.CheckUserObject(newUser);
-                    return true;
-                }
-                catch (NotAppropriateUserParam ex)
-                {
-                    HandleAccCreationException(ex);
-                    return false;
-                }
-                catch (SqlException ex)
-                {
-                    HandleAccCreationException(ex);
-                    return false;
-                }
-                catch (Exception ex)
-                {
-                    HandleAccCreationException(ex);
-                    return false;
-                }
-            });
-        }
-
-        /// <summary>
-        /// Sends an email with a code to confirm this email and then redirects
-        /// user to the 'enter code grid'
-        /// </summary>
-        private async void SendEmailAndGoToCodeGridAsync(UserInfo newUser)
-        {
-            NewUser = newUser;
-            await Task.Run(() =>
-            {
-                try
-                {
-                    Account.SendCodeEmail(NewUser);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    HandleAccCreationException(ex);
-                }
-                catch (ArgumentNullException ex)
-                {
-                    HandleAccCreationException(ex);
-                }
-                catch (SmtpException ex)
-                {
-                    HandleAccCreationException(ex);
-                }
-                catch (Exception ex)
-                {
-                    HandleAccCreationException(ex);
-                }
-            });
-            SwitchOffTheLoader(rightCreateAccLoaderGrid);
-            enterTheEmailCodeGrid.Visibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// Checks the input data in the registration form, and if everything is alright
-        /// redirects user to the enter code grid
-        /// </summary>
-        private async void GoToEnterTheCodeGrid(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                SwitchOnTheLoader(rightCreateAccLoaderGrid);
-                UserInfo newUser = CreateNewUser();
-                bool checkingResult = await CheckUserInputDataAsync(newUser);
-                if (checkingResult)
-                    SendEmailAndGoToCodeGridAsync(newUser);
-            }
-            catch (NotAppropriateParamException ex)
-            {
-                HandleAccCreationException(ex);
-            }
-            catch (InvalidCastException ex)
-            {
-                HandleAccCreationException(ex);
-            }
-            catch (Exception ex)
-            {
-                HandleAccCreationException(ex);
-            }
-        }
         #endregion
 
         #region Autharization process
@@ -263,6 +256,7 @@ namespace SDWP
             };
             TryToLoginAsync(loginData);
         }
+
         /// <summary>
         /// Handles every exception which can arise in the login process
         /// </summary>
@@ -273,8 +267,9 @@ namespace SDWP
         {
             Dispatcher.Invoke(() => SwitchOffTheLoader(leftLoaderGrid));
             ExceptionHandler.HandleWithMessageBox(ex);
-            return new EmptyUser();
+            return null;
         }
+
         /// <summary>
         /// Tries to login with the given login data 
         /// </summary>
@@ -284,26 +279,24 @@ namespace SDWP
         /// </returns>
         private async Task<UserInfo> LoginAndReturnUserObj(LoginData loginData)
         {
-            return await Task.Run(() =>
+            try
             {
-                try
-                {
-                    return Login.TryToLogin(loginData);
-                }
-                catch (UserNotFoundException ex)
-                {
-                    return HandleExceptionAndReturnEmptyUser(ex);
-                }
-                catch (SqlException ex)
-                {
-                    return HandleExceptionAndReturnEmptyUser(ex);
-                }
-                catch (Exception ex)
-                {
-                    return HandleExceptionAndReturnEmptyUser(ex);
-                }
-            });
+                return await UserService.GetService.AuthorizeUserAsync(loginData);
+            }
+            catch (UserNotFoundException ex)
+            {
+                return HandleExceptionAndReturnEmptyUser(ex);
+            }
+            catch (SqlException ex)
+            {
+                return HandleExceptionAndReturnEmptyUser(ex);
+            }
+            catch (Exception ex)
+            {
+                return HandleExceptionAndReturnEmptyUser(ex);
+            }
         }
+
         /// <summary>
         /// Tries to login into the system with the given input login data
         /// </summary>
@@ -311,7 +304,7 @@ namespace SDWP
         {
             SwitchOnTheLoader(leftLoaderGrid);
             UserInfo user = await LoginAndReturnUserObj(loginData);
-            if (!(user is EmptyUser))
+            if (user != null)
             {
                 SwitchOffTheLoader(leftLoaderGrid);
                 Hide();
@@ -321,6 +314,7 @@ namespace SDWP
             }
         }
         #endregion
+
         #region Hint grid processes
         /// <summary>
         /// Shows the hint grid when the question mark is tapped
@@ -370,6 +364,7 @@ namespace SDWP
             return string.Empty;
         }
         #endregion
+
         #region Welcome button mouse enter/leave events
         /// <summary>
         /// Makes the background white and the text the color of main theme
@@ -390,6 +385,7 @@ namespace SDWP
             button.Foreground = new SolidColorBrush(Colors.White);
         }
         #endregion
+
         #region Loader opertaions
         private void SwitchOnTheLoader(Grid loaderGrid)
         {
@@ -415,6 +411,7 @@ namespace SDWP
             rect1.BeginAnimation(MarginProperty, null);
         }
         #endregion
+
         #region Active text boxes mouse enter/leave events
         /// <summary>
         /// Underlines the text of a textblock
@@ -433,6 +430,7 @@ namespace SDWP
             textBlock.TextDecorations.Clear();
         }
         #endregion
+
         #region Remind pass process
         /// <summary>
         /// Handles all exceptions which can arise during remind pass process
@@ -442,6 +440,7 @@ namespace SDWP
             Dispatcher.Invoke(() => SwitchOffTheLoader(rightRemindPassLoaderGrid));
             ExceptionHandler.HandleWithMessageBox(ex);
         }
+
         private async void SendNewPassToUser(object sender, RoutedEventArgs e)
         {
             try
@@ -474,29 +473,26 @@ namespace SDWP
         /// </returns>
         private async Task<bool> RemindPassAsync(string login, string email)
         {
-            return await Task.Run(() =>
+            try
             {
-                try
-                {
-                    Password.RemindPass(login, email);
-                    return true;
-                }
-                catch (UserNotFoundException ex)
-                {
-                    HandleRemindPassExceptions(ex);
-                    return false;
-                }
-                catch (SqlException ex)
-                {
-                    HandleRemindPassExceptions(ex);
-                    return false;
-                }
-                catch (Exception ex)
-                {
-                    HandleRemindPassExceptions(ex);
-                    return false;
-                }
-            });
+                await UserService.GetService.RemindPassAsync(login, email);
+                return true;
+            }
+            catch (UserNotFoundException ex)
+            {
+                HandleRemindPassExceptions(ex);
+                return false;
+            }
+            catch (SqlException ex)
+            {
+                HandleRemindPassExceptions(ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                HandleRemindPassExceptions(ex);
+                return false;
+            }
         }
         #endregion
 

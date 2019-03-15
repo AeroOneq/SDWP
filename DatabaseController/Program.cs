@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataStructures;
+using ApplicationLib.Database;
 using AeroORMFramework;
-using DataBase;
+using ApplicationLib.Models;
 
 namespace DatabaseController
 {
@@ -13,7 +13,7 @@ namespace DatabaseController
     {
         static void Main(string[] args)
         {
-            Connector connector = new Connector(Properties.ConnectionString);
+            Connector connector = new Connector(DatabaseProperties.ConnectionString);
             connector.DeleteTable<UserInfo>();
             connector.AddTable<UserInfo>();
             UserInfo userInfo = new UserInfo
@@ -24,17 +24,11 @@ namespace DatabaseController
                 Name = "Евгений",
                 Surname = "Степанов",
                 BirthDate = DateTime.Now,
-                Email = "stepanov-ev@yandex.ru",
-                UserDocs = new List<int>()
-                {
-                    1,2,3,4
-                },
-                SharedDocs = new List<int>()
-                {
-                    4,3,2,1
-                }
+                Email = "stepanov-ev@yandex.ru"
             };
             connector.Insert(userInfo);
+            Console.WriteLine("Success");
+
             Console.ReadKey();
         }
     }

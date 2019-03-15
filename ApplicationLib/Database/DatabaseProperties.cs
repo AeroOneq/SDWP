@@ -4,18 +4,18 @@ namespace ApplicationLib.Database
     public static class DatabaseProperties
     {
         #region Connection Parameters
-        private static string ServerName { get; } = "odmainserver.database.windows.net";
-        private static string InitialCatalog { get; } = "ODdb";
-        private static string IntegratedSecurity { get; } = "True";
-        private static string UserID { get; } = "Aero";
-        private static string Password { get; } = "OdWyitBuodKidV6";
+        private static string ServerName { get; } = "31.31.196.199";
+        private static string InitialCatalog { get; } = "u0661866_sdwpdb";
+        private static string IntegratedSecurity { get; } = "False";
+        private static string UserID { get; } = "u0661866_AeroOne";
+        private static string Password { get; } = "Aero123";
         private static string TrustedConnection { get; } = "False";
-        private static string Encrypt { get; } = "True";
+        private static string Encrypt { get; } = "False";
         #endregion
+
         public static string ConnectionString { get; } = 
             $"Data Source={ServerName}; Initial Catalog={InitialCatalog}; " +
             $"Integrated Security={IntegratedSecurity}; User ID={UserID}; " +
-            $"Password={Password}; Trusted_Connection={TrustedConnection}; Encrypt={Encrypt};";
-        public static char Devider { get; } = ':';
+            $"Password={Password}; TrustServerCertificate={TrustedConnection}; Encrypt={Encrypt};";
     }
 }

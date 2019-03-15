@@ -1,6 +1,7 @@
 ﻿using AeroORMFramework;
 using ApplicationLib.Exceptions;
 using ApplicationLib.Models;
+using ApplicationLib.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,56 +10,80 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Database
 {
-    internal class UsersDB
+    public class UsersDB
     {
         #region Properties
         private Random Random { get; } = new Random();
-
+        private string ConnectionString { get; } = DatabaseProperties.ConnectionString;
         #endregion
 
-
-        public async Task<UserInfo> TryToLogin(LoginData loginData)
+        #region Authorization methods
+        public async Task<UserInfo> TryToLoginAsync(LoginData loginData)
         {
             return await Task.Run(() =>
             {
-                Connector connector = new Connector(DatabaseProperties.ConnectionString);
+                Connector connector = new Connector(ConnectionString);
                 UserInfo user = connector.GetRecord<UserInfo>("Login", loginData.Login);
+
                 if (user.Login == null)
                     throw new UserNotFoundException("Incorrect login or passwrod");
                 if (user.Password == loginData.Password)
                     return user;
-                else
-                    throw new UserNotFoundException("Incorrect password");
+
+                throw new UserNotFoundException("Incorrect password");
             });
         }
-        public async Task CreateNewAccount(UserInfo newUser)
+        #endregion
+
+        #region Create new account methods
+        public async Task CreateNewAccountAsync(UserInfo newUser)
         {
             await Task.Run(() =>
             {
-                Connector connector = new Connector(DatabaseProperties.ConnectionString);
+                Connector connector = new Connector(ConnectionString);
                 connector.Insert(newUser);
             });
         }
-        public void CheckUserObject(UserInfo user)
+        #endregion
+
+        #region Check user object methods
+        public async Task CheckLogin(string login)
         {
-            Connector connector = new Connector(DatabaseProperties.ConnectionString);
-            CheckInputData(user, connector);
+            await Task.Run(() =>
+            {
+                Connector connector = new Connector(ConnectionString);
+
+                UserInfo tempUser = connector.GetRecord<UserInfo>("Login", login);
+
+                if (tempUser.Login != null)
+                    throw new NotAppropriateUserParam("This login is already taken");
+            });
         }
-        private void CheckInputData(UserInfo user, Connector connector)
+
+        public async Task CheckEmail(string email)
         {
-            UserInfo tempUser = connector.GetRecord<UserInfo>("Login", user.Login);
-            if (tempUser.Login != null)
-                throw new NotAppropriateUserParam("This login is already taken");
-            tempUser = connector.GetRecord<UserInfo>("Email", user.Email);
-            if (tempUser.Email != null)
-                throw new NotAppropriateUserParam("This emil is already registered");
+            await Task.Run(() =>
+            {
+                Connector connector = new Connector(ConnectionString);
+
+                UserInfo tempUser = connector.GetRecord<UserInfo>("Email", email);
+
+                if (tempUser.Login != null)
+                    throw new NotAppropriateUserParam("This email is already taken");
+            });
         }
-        public void RemindPass(string login, string email)
+        #endregion
+
+        #region Remind pass methods
+        public async Task RemindPassAsync(string login, string email)
         {
-            UserInfo user = FindSuitableUserRecord(login, email);
-            string newPassword = CreateNewPassword();
-            ChangePassInTheDataBase(user, newPassword);
-            Email.SendNewPasswordToUser(user, newPassword);
+            await Task.Run(async () =>
+            {
+                UserInfo user = FindSuitableUserRecord(login, email);
+                string newPassword = CreateNewPassword();
+                ChangePassInTheDataBase(user, newPassword);
+                await EmailService.GetService.SendNewPasswordToUser(user, newPassword);
+            });
         }
 
         /// <summary>
@@ -76,13 +101,15 @@ namespace ApplicationLib.Database
                 return user;
             throw new UserNotFoundException("User with such parameters doen't exists");
         }
-        private static void ChangePassInTheDataBase(UserInfo user, string newPassword)
+
+        private void ChangePassInTheDataBase(UserInfo user, string newPassword)
         {
             Connector connector = new Connector(DatabaseProperties.ConnectionString);
             connector.DeleteRecord(user);
             user.Password = newPassword;
             connector.Insert(user);
         }
+
         private string CreateNewPassword()
         {
             string newPass = string.Empty;
@@ -94,6 +121,27 @@ namespace ApplicationLib.Database
                     newPass += (char)Random.Next('A', 'Z' + 1);
             }
             return newPass;
+        }
+        #endregion
+
+        #region Update methods
+        public async Task UpdateUserRecord(UserInfo user)
+        {
+            await Task.Run(() =>
+            {
+                Connector connector = new Connector(DatabaseProperties.ConnectionString);
+                connector.UpdateRecord<UserInfo>(user);
+            });
+        }
+        #endregion
+
+        public async Task<UserInfo> GetUser(string columnName, object value)
+        {
+            return await Task.Run(() =>
+            {
+                Connector connector = new Connector(DatabaseProperties.ConnectionString);
+                return connector.GetRecord<UserInfo>(columnName, value);
+            });
         }
     }
 }

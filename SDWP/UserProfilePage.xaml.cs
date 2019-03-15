@@ -10,14 +10,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ApplicationLib.Database;
 using System.Windows.Media.Animation;
-using System.Net.Mail;
 using AeroORMFramework;
-using System.Data.SqlClient;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows.Threading;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
+using ApplicationLib.Services;
 
 namespace SDWP
 {
@@ -50,7 +49,7 @@ namespace SDWP
             birthDateTextBox.Text = CommonObjects.User.BirthDate.
                 ToShortDateString();
             emailTextBox.Text = CommonObjects.User.Email;
-            if (CommonObjects.User.UserPhoto.Length > 1)
+            if (CommonObjects.User.UserPhoto != null && CommonObjects.User.UserPhoto.Length > 1)
                 SetUserPhotoImageImageBrush(CommonObjects.User.UserPhoto);
         }
         private void SetUserPhotoImageImageBrush(byte[] imageByteArray)
@@ -199,37 +198,67 @@ namespace SDWP
                 try
                 {
                     UserInfo newUserInfo = CreateNewUserObject();
+
                     UserInfo.CheckUserProperties(newUserInfo);
+
                     if (newUserInfo.Email != CommonObjects.User.Email)
                     {
-                        if (await Task.Run(() => SendVerificationCode(newUserInfo)))
-                        {
-                            ShowEnterCodeGrid();
-                            StartCodeTimer();
-                        }
+                        await UserService.GetService.CheckEmail(newUserInfo.Email);
+                        await EmailService.GetService.SendCodeEmail(newUserInfo);
+
+                        ShowEnterCodeGrid();
+                        StartCodeTimer();
                     }
                     else
                     {
-                        await Task.Run(() => UpdateUserRecord(newUserInfo));
-                        Account.ResetCode();
+                        if (CommonObjects.User.Login != newUserInfo.Login)
+                            await UserService.GetService.CheckLogin(newUserInfo.Login);
+
+                        await UserService.GetService.UpdateRecord(newUserInfo);
+                        await EmailService.GetService.ResetCode();
+
+                        OnSuccesfullUpdate();
                     }
                 }
                 catch (NotAppropriateUserParam ex)
                 {
-                    Account.ResetCode();
+                    await EmailService.GetService.ResetCode();
+                    SwitchOffTheLoader();
+                    ExceptionHandler.HandleWithMessageBox(ex);
+                }
+                catch (Exception ex)
+                {
+                    await EmailService.GetService.ResetCode();
                     SwitchOffTheLoader();
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
             }
             SwitchOffTheLoader();
         }
+        private void OnSuccesfullUpdate()
+        {
+            UpdateCommonUserAndRefreshUI();
+            Dispatcher.Invoke(() => SwitchOffTheLoader());
+            Dispatcher.Invoke(() => SDWPMessageBox.ShowSDWPMessageBox(
+                "Статус обновления профиля", "Профиль умпешно обновлен",
+                MessageBoxButton.OK));
+            Dispatcher.Invoke(() => HideEnterCodeGrid());
+        }
+
+        private async void UpdateCommonUserAndRefreshUI()
+        {
+            CommonObjects.User = await UserService.GetService.GetUser("ID",
+                CommonObjects.User.ID);
+            Dispatcher.Invoke(() => UploadUserDataToUI());
+        }
+
         private async void UpdateRecordAfterEmailConfirmationAsync(object sender,
             EventArgs e)
         {
             SwitchOnTopLoader();
             UserInfo newUserInfo = CreateNewUserObject();
-            if (!(Account.Code == null) && emailCodeTextBox.Text == Account.Code)
-                await Task.Run(() => UpdateUserRecord(newUserInfo));
+            if (!(EmailService.GetService.Code == null) && emailCodeTextBox.Text == EmailService.GetService.Code)
+                await UserService.GetService.UpdateRecord(newUserInfo);
             else
             {
                 SwitchOffTheLoader();
@@ -238,57 +267,13 @@ namespace SDWP
             }
         }
 
-        private void UpdateUserRecord(UserInfo newUserInfo)
-        {
-            try
-            {
-                Connector.UpdateRecord(newUserInfo);
-                UpdateCommonUserAndRefreshUI();
-                Dispatcher.Invoke(() => SwitchOffTheLoader());
-                Dispatcher.Invoke(() => SDWPMessageBox.ShowSDWPMessageBox(
-                    "Статус обновления профиля", "Профиль умпешно обновлен",
-                    MessageBoxButton.OK));
-                Dispatcher.Invoke(() => HideEnterCodeGrid());
-            }
-            catch (SqlException ex)
-            {
-                Dispatcher.Invoke(() => SwitchOffTheLoader());
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(() => SwitchOffTheLoader());
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-        }
-
-        private bool SendVerificationCode(UserInfo newUserInfo)
-        {
-            try
-            {
-                Account.SendCodeEmail(newUserInfo);
-                return true;
-            }
-            catch (SmtpException ex)
-            {
-                Dispatcher.Invoke(() => SwitchOffTheLoader());
-                ExceptionHandler.HandleWithMessageBox(ex);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Dispatcher.Invoke(() => SwitchOffTheLoader());
-                ExceptionHandler.HandleWithMessageBox(ex);
-                return false;
-            }
-        }
         private void StartCodeTimer()
         {
             DispatcherTimer timer = new DispatcherTimer();
             TimeSpan currentTimerTime = new TimeSpan(0);
 
             timer.Interval = new TimeSpan(0, 0, 1);
-            timer.Tick += (sender, e) =>
+            timer.Tick += async (sender, e) =>
             {
                 timeTillCodeExpireTextBlock.Text = "Время до исчезновения кода " +
                     $"{new TimeSpan(0, 2, 0) - currentTimerTime}";
@@ -296,7 +281,7 @@ namespace SDWP
                 currentTimerTime += new TimeSpan(0, 0, 1);
                 if (currentTimerTime.Seconds == 0 && currentTimerTime.Minutes == 2)
                 {
-                    Account.ResetCode();
+                    await EmailService.GetService.ResetCode();
                     timeTillCodeExpireTextBlock.Text = "Код недействителен";
                     timer.Stop();
                 }
@@ -304,10 +289,10 @@ namespace SDWP
 
             timer.Start();
         }
-        private void CloseEnterCodeGrid(object sender, MouseButtonEventArgs e)
+        private async void CloseEnterCodeGrid(object sender, MouseButtonEventArgs e)
         {
             emailCodeTextBox.Text = string.Empty;
-            Account.ResetCode();
+            await EmailService.GetService.ResetCode();
             HideEnterCodeGrid();
         }
 
@@ -346,13 +331,6 @@ namespace SDWP
                 throw new NotAppropriateUserParam("Дата рождения введена неверно");
 
             return new DateTime(year, month, day);
-        }
-
-        private void UpdateCommonUserAndRefreshUI()
-        {
-            CommonObjects.User = Connector.GetRecord<UserInfo>("ID",
-                CommonObjects.User.ID);
-            Dispatcher.Invoke(() => UploadUserDataToUI());
         }
         #endregion
 

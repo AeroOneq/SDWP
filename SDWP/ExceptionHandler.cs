@@ -17,7 +17,7 @@ namespace SDWP
     public static class ExceptionHandler
     {
         #region Propperties/Variables
-        public static Disp Dispatcher { get; set; }
+        public static Dispatcher Dispatcher { get; set; }
         private static string MessageCaption { get; } = "SDWP Soft's message";
         #endregion
         #region Methods

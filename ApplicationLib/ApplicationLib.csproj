@@ -57,10 +57,13 @@
     <Compile Include="Database\UsersDB.cs" />
     <Compile Include="Exceptions\NotAppropriateUserParam.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />
+    <Compile Include="Interfaces\IEmailService.cs" />
+    <Compile Include="Interfaces\IUserService.cs" />
     <Compile Include="Models\LoginData.cs" />
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Database\DatabaseProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup />

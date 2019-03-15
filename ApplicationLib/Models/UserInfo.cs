@@ -17,6 +17,7 @@ namespace ApplicationLib.Models
         #region Public database properties
         [CanBeNull(false)]
         [PrimaryKey]
+        [AutoincrementID]
         public int ID { get; set; }
         [CanBeNull(false)]
         public string Login { get; set; }
