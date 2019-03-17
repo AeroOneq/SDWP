@@ -37,8 +37,11 @@ namespace SDWP
         public SDWPMainWindow(UserInfo user)
         {
             InitializeComponent();
+
             InitializePositionObjects();
             CommonObjects.Position = new Position(this);
+
+            mainPageFrame.Content = new MainPage();
         }
         private void InitializePositionObjects()
         {
@@ -80,6 +83,7 @@ namespace SDWP
                 CommonObjects.Position.InitializeMainGrids(MainGrids);
         }
         #endregion
+
         #region Top Grids operations
         /// <summary>
         /// Changes the colors and font weight of the elements in one of 
@@ -136,9 +140,13 @@ namespace SDWP
         private void HideOptionsGridClick(object sender, MouseButtonEventArgs e)
         {
             if (upperArrowImage.Visibility == Visibility.Visible)
+            {
                 HideTopGrids();
+            }
             else
+            {
                 ShowTopGrids();
+            }
         }
         private void HideTopGrids()
         {
@@ -146,6 +154,10 @@ namespace SDWP
                 CreateUpTopGridAnimation());
             hideOptionsGrid.BeginAnimation(MarginProperty,
                 CreateUpHideTopGridAnimation());
+            mainPageFrame.BeginAnimation(MarginProperty,
+                CreateDocumentFrameUpAnimation());
+
+
             upperArrowImage.Visibility = Visibility.Hidden;
             lowerArrowImage.Visibility = Visibility.Visible;
         }
@@ -155,9 +167,13 @@ namespace SDWP
                 CreateDownTopGridAnimation());
             hideOptionsGrid.BeginAnimation(MarginProperty,
                 CreateDownHideTopGridAnimation());
+            mainPageFrame.BeginAnimation(MarginProperty,
+                CreateDocumentFrameDownAnimation());
+
             upperArrowImage.Visibility = Visibility.Visible;
             lowerArrowImage.Visibility = Visibility.Hidden;
         }
+
         private DoubleAnimation CreateUpTopGridAnimation()
         {
             DoubleAnimation optionsGridHeightAnimation = new DoubleAnimation
@@ -192,6 +208,7 @@ namespace SDWP
             };
             return optionsGridHeightAnimation;
         }
+
         private ThicknessAnimation CreateUpHideTopGridAnimation()
         {
             ThicknessAnimation hideOptionsGridAnimation = new ThicknessAnimation
@@ -226,7 +243,41 @@ namespace SDWP
             };
             return hideOptionsGridAnimation;
         }
+
+        private ThicknessAnimation CreateDocumentFrameDownAnimation()
+        {
+            ThicknessAnimation lowerTheDocumentFrameAnimation = new ThicknessAnimation
+            {
+                To = new Thickness(0, 100, 0, 0),
+                Duration = TimeSpan.FromMilliseconds(300),
+                DecelerationRatio = 1,
+                SpeedRatio = 0.5,
+                FillBehavior = FillBehavior.Stop
+            };
+            lowerTheDocumentFrameAnimation.Completed += (send, events) =>
+            {
+                mainPageFrame.Margin = new Thickness(0, 100, 0, 0);
+            };
+            return lowerTheDocumentFrameAnimation;
+        }
+        private ThicknessAnimation CreateDocumentFrameUpAnimation()
+        {
+            ThicknessAnimation upperTheDocumentFrameAnimation = new ThicknessAnimation
+            {
+                To = new Thickness(0, 0, 0, 0),
+                Duration = TimeSpan.FromMilliseconds(300),
+                DecelerationRatio = 1,
+                SpeedRatio = 0.5,
+                FillBehavior = FillBehavior.Stop
+            };
+            upperTheDocumentFrameAnimation.Completed += (send, events) =>
+            {
+                mainPageFrame.Margin = new Thickness(0, 0, 0, 0);
+            };
+            return upperTheDocumentFrameAnimation;
+        }
         #endregion
+
         #region User main grid operations
         private void ShowTheUserMainGrid(object sender, MouseButtonEventArgs e)
         {

@@ -1,0 +1,174 @@
+﻿<Page x:Class="SDWP.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SDWP"
+      VerticalAlignment="Stretch"
+      HorizontalAlignment="Stretch">
+
+    <Page.Resources>
+        <Style x:Key="propertyNameStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{StaticResource propertyNameForeground}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="FontWeight" Value="UltraLight"/>
+            <Setter Property="Padding" Value="0, 0, 0, 0"/>
+        </Style>
+        <Style x:Key="documentationNameGridStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="0, 0, 0, 0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border BorderThickness="0, 0, 0, 0" 
+                                BorderBrush="{StaticResource devisionRectangleFill}"
+                                CornerRadius="0"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer Name="PART_ContentHost" 
+                                          Width="220"
+                                          Height="20"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="propertyValueStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="{StaticResource defaultTextColorBrush}"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0, 0, 0, 0"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+        <Style x:Key="horizontalDevisionRectangleStyle" TargetType="Rectangle">
+            <Setter Property="Fill" Value="{StaticResource devisionRectangleFill}"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="1"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid VerticalAlignment="Stretch"
+          HorizontalAlignment="Stretch"
+          Background="Wheat">
+        <ScrollViewer>
+            <Grid>
+                <Grid x:Name="leftDocumentsGrid"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Left"
+                      Width="250"
+                      Background="{StaticResource documentsLeftGridBackgroundBrush}">
+                    
+                    <Grid x:Name="showImagesGrid"
+                          Visibility="Collapsed">
+                        <Image x:Name="showLeftGridImageStatic"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Visibility="Visible"
+                               Width="30"
+                               Height="30"
+                               Margin="15, 15, 0, 0"
+                               Source="Resources/forwardArrowIconStatic.png"
+                               MouseEnter="IconMouseEnter"/>
+                        <Image x:Name="showLeftGridImageActive"
+                               VerticalAlignment="Top"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"
+                               Width="30"
+                               Height="30"
+                               Margin="15, 15, 0, 0"
+                               Source="Resources/forwardArrowIconActive.png"
+                               MouseLeave="IconMouseLeave"
+                               MouseDown="ShowLeftDocumentsGrid"/>
+                    </Grid>
+
+                    <Grid x:Name="hideImagesGrid"
+                          Visibility="Visible">
+                        <Image x:Name="hideLeftGridImageStatic"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"
+                               Visibility="Visible"
+                               Width="30"
+                               Height="30"
+                               Margin="15, 15, 0, 0"
+                               Source="Resources/closeAccGridStatic.png"
+                               MouseEnter="IconMouseEnter"/>
+                        <Image x:Name="hideLeftGridImageActive"
+                               VerticalAlignment="Top"
+                               Visibility="Collapsed"
+                               HorizontalAlignment="Left"
+                               Width="30"
+                               Height="30"
+                               Margin="15, 15, 0, 0"
+                               Source="Resources/closeAccGridActive.png"
+                               MouseLeave="IconMouseLeave"
+                               MouseDown="HideLeftDocumentsGrid"/>
+                    </Grid>
+
+
+                    <Grid x:Name="leftDocumentsGridContent"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch"
+                          Margin="0, 40, 0, 0">
+                        <Grid x:Name="documentationPropertiesGrid"
+                              Margin="0, 0, 0, 0">
+
+                            <TextBlock Style="{StaticResource propertyNameStyle}"
+                                       Margin="15, 15, 0, 0"
+                                       Text="Назавние:"/>
+                            <TextBox x:Name="documentationNameTextBlock"
+                                     Margin="10, 30, 15, 0"
+                                     Style="{StaticResource documentationNameGridStyle}"
+                                     Text="SDWP Документация"/>
+
+                            <TextBlock Style="{StaticResource propertyNameStyle}"
+                                   Text="Дата создания: "
+                                   Margin="15, 55, 0, 0"/>
+                            <TextBlock Style="{StaticResource propertyValueStyle}"
+                                   Text="30.05.2000"
+                                   Margin="15, 70, 15, 0"/>
+
+                            <Grid x:Name="documentsListGrid"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Stretch"
+                                  Margin="0, 130, 0, 0">
+                                <TextBlock Style="{StaticResource propertyNameStyle}"
+                                           Margin="15, 0, 0, 0"
+                                           FontSize="15"
+                                           Text="Документы:"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid x:Name="paragraphsGrid"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Left"
+                      Width="250"
+                      Margin="250, 0, 0, 0"
+                      Background="Red"/>
+                <Grid x:Name="contentGrid"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
+                      Margin="500, 0, 0, 0"
+                      Background="Yellow"/>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+
+
+</Page>

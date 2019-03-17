@@ -5,5 +5,10 @@
              StartupUri="WelcomeWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="mainThemeColor" Color="OrangeRed"/>
+        <SolidColorBrush x:Key="subparagraphBorderBrush" Color="LightGray"/>
+        <SolidColorBrush x:Key="defaultTextColorBrush" Color="Black"/>
+        <SolidColorBrush x:Key="documentsLeftGridBackgroundBrush" Color="#F1F1F2"/>
+        <SolidColorBrush x:Key="propertyNameForeground" Color="Gray"/>
+        <SolidColorBrush x:Key="devisionRectangleFill" Color="Gray"/>
     </Application.Resources>
 </Application>

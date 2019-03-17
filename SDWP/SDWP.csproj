@@ -66,7 +66,11 @@
     </ApplicationDefinition>
     <Compile Include="CommonObjects.cs" />
     <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\ListBoxModels\DocumentationListBoxItem.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="SDWPMainWindow.xaml.cs">
@@ -83,7 +87,11 @@
     <Compile Include="UserProfilePage.xaml.cs">
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Welcome page classes\WelcomePageBottomGridAnimation.cs" />
+    <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SDWPMainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -108,7 +116,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Welcome page classes\WelcomePageGridAnimations.cs" />
+    <Compile Include="Welcome page animations\WelcomePageGridAnimations.cs" />
     <Compile Include="WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -147,7 +155,8 @@
     <Resource Include="Resources\closeHintIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Main window classes\" />
+    <Resource Include="Resources\forwardArrowIconActive.png" />
+    <Resource Include="Resources\forwardArrowIconStatic.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\userAccountStatic.png" />

@@ -40,6 +40,18 @@
         </Style>
     </Window.Resources>
     <Grid>
+        <!--Main grid-->
+        <Grid x:Name="documentationGrid"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Left"
+              Background="Red"
+              Margin="0, 0, 0, 0">
+            <Frame x:Name="mainPageFrame"
+                   Margin="0, 100, 0, 0"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch"
+                   Background="Green"/>
+        </Grid>
         <!--Top options grid -->
         <Grid x:Name="topOptionsGrid"
               VerticalAlignment="Top"
@@ -262,12 +274,6 @@
                    Width="10"
                    Height="10"
                    Source="Resources/lowerArrowIcon.png"/>
-        </Grid>
-        <!--Main grid-->
-        <Grid x:Name="documentationGrid"
-              VerticalAlignment="Top"
-              HorizontalAlignment="Left"
-              Margin="0, 80, 0, 0">
         </Grid>
         <!--User account-->
         <Grid x:Name="userAccMainGrid"

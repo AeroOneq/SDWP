@@ -47,7 +47,7 @@ namespace SDWP
         {
             mainGrids.TopOptionsGrid.Width = MainWindow.Width;
             mainGrids.MainGrid.Width = MainWindow.Width;
-            mainGrids.MainGrid.Height = MainWindow.Height - mainGrids.TopOptionsGrid.Height;
+            mainGrids.MainGrid.Height = MainWindow.Height;
             mainGrids.HideTopOptionsGrid.Margin = new Thickness(0, 
                 mainGrids.TopOptionsGrid.Height, 0, 0);
         }
