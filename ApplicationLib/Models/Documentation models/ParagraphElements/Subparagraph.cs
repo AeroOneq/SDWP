@@ -13,13 +13,13 @@ namespace ApplicationLib.Models
     public class Subparagraph : IParagraphElement
     {
         public string Text { get; set; }
-        public Paragraph ParentParagraph { get; }
+        public Item ParentItem { get; }
 
         public Subparagraph() { }
-        public Subparagraph(string text, Paragraph parentParagraph)
+        public Subparagraph(string text, Item parentItem)
         {
             Text = text;
-            ParentParagraph = parentParagraph;
+            ParentItem = parentItem;
         }
 
         public Task DeleteParagraph()

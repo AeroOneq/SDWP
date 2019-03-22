@@ -39,7 +39,7 @@ namespace SDWP
             InitializeComponent();
 
             InitializePositionObjects();
-            CommonObjects.Position = new Position(this);
+            Position.PositionObj.UpdateMainWindow(this);
 
             mainPageFrame.Content = new MainPage();
         }
@@ -72,15 +72,15 @@ namespace SDWP
         private void SDWPMainWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
-                CommonObjects.Position = new Position(this);
+                Position.PositionObj.UpdateMainWindow(this);
             if (userAccMainGrid.Visibility == Visibility.Visible)
             {
-                CommonObjects.Position.InitializeUserAccountGrids(UserAccountGrids);
-                CommonObjects.Position.InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids);
-                CommonObjects.Position.InitializeUserAccGridPagesParams(userGridFrame);
+                Position.PositionObj.InitializeUserAccountGrids(UserAccountGrids);
+                Position.PositionObj.InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids);
+                Position.PositionObj.InitializeUserAccGridPagesParams(userGridFrame);
             }
             else
-                CommonObjects.Position.InitializeMainGrids(MainGrids);
+                Position.PositionObj.InitializeMainGrids(MainGrids);
         }
         #endregion
 
@@ -283,8 +283,10 @@ namespace SDWP
         {
             userAccMainGrid.Width = 0;
             ClearFrameHistory(userGridFrame);
-            CommonObjects.Position.InitializeUserAccountGrids(UserAccountGrids);
-            CommonObjects.Position.InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids);
+
+            Position.PositionObj.InitializeUserAccountGrids(UserAccountGrids);
+            Position.PositionObj.InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids);
+
             userAccMainGrid.Visibility = Visibility.Visible;
             userAccMainGrid.BeginAnimation(WidthProperty,
                 CreateShowMainUserGridAnimation());
@@ -378,8 +380,7 @@ namespace SDWP
             {
                 case "0":
                     #warning Find better solution
-                    UserProfilePage userProfilePage = new UserProfilePage(
-                        CommonObjects.User)
+                    UserProfilePage userProfilePage = new UserProfilePage(UserInfo.CurrentUser)
                     {
                         Width = userGridFrame.Width
                     };

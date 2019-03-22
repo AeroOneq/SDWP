@@ -61,13 +61,22 @@
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="Height" Value="1"/>
         </Style>
+        <Style x:Key="listScrollViewerStyle" TargetType="ScrollViewer">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+        </Style>
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch"
           Background="Wheat">
-        <ScrollViewer>
+        <ScrollViewer VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch"
+                      VerticalScrollBarVisibility="Hidden">
             <Grid>
+
                 <Grid x:Name="leftDocumentsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
@@ -83,7 +92,7 @@
                                Width="30"
                                Height="30"
                                Margin="15, 15, 0, 0"
-                               Source="Resources/forwardArrowIconStatic.png"
+                               Source="../Resources/forwardArrowIconStatic.png"
                                MouseEnter="IconMouseEnter"/>
                         <Image x:Name="showLeftGridImageActive"
                                VerticalAlignment="Top"
@@ -92,7 +101,7 @@
                                Width="30"
                                Height="30"
                                Margin="15, 15, 0, 0"
-                               Source="Resources/forwardArrowIconActive.png"
+                               Source="../Resources/forwardArrowIconActive.png"
                                MouseLeave="IconMouseLeave"
                                MouseDown="ShowLeftDocumentsGrid"/>
                     </Grid>
@@ -106,7 +115,7 @@
                                Width="30"
                                Height="30"
                                Margin="15, 15, 0, 0"
-                               Source="Resources/closeAccGridStatic.png"
+                               Source="../Resources/closeAccGridStatic.png"
                                MouseEnter="IconMouseEnter"/>
                         <Image x:Name="hideLeftGridImageActive"
                                VerticalAlignment="Top"
@@ -115,7 +124,7 @@
                                Width="30"
                                Height="30"
                                Margin="15, 15, 0, 0"
-                               Source="Resources/closeAccGridActive.png"
+                               Source="../Resources/closeAccGridActive.png"
                                MouseLeave="IconMouseLeave"
                                MouseDown="HideLeftDocumentsGrid"/>
                     </Grid>
@@ -154,18 +163,74 @@
                             </Grid>
                         </Grid>
                     </Grid>
+                    <Grid x:Name="documentationGridBottomOptions"
+                              VerticalAlignment="Bottom"
+                              HorizontalAlignment="Stretch"
+                              Height="40"
+                              Margin="15, 0, 15, 0"
+                              Background="Pink"/>
                 </Grid>
-                <Grid x:Name="paragraphsGrid"
+                
+                <Grid x:Name="itemsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
                       Width="250"
                       Margin="250, 0, 0, 0"
-                      Background="Red"/>
-                <Grid x:Name="contentGrid"
+                      Background="{StaticResource mainPageItemsGridBackgroundBrush}">
+
+
+                    <Grid x:Name="topItemsGridNavBarGrid"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch"
+                          Height="40"
+                          Margin="15, 10, 15, 0"
+                          Background="Red"/>
+
+                    <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
+                                  Margin="0, 60, 0, 60">
+                        <Grid x:Name="itemsListGrid"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch"/>
+                    </ScrollViewer>
+
+                    <Grid x:Name="itemsGridBottomOptionsGrid"
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Stretch"
+                          Height="40"
+                          Margin="15, 0, 15, 0"
+                          Background="Green"/>
+
+                </Grid>
+                
+                <Grid x:Name="paragraphsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       Margin="500, 0, 0, 0"
-                      Background="Yellow"/>
+                      Background="{StaticResource mainPageParagraphsGridBackgroundBrush}">
+                    
+                    <Grid x:Name="paragraphsGridTopOptionsGrid"
+                          VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch"
+                          Margin="15, 10, 15, 0"
+                          Height="40"
+                          Background="Red"/>
+
+                    <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
+                                  Margin="15, 60, 15, 0">
+                        <Grid x:Name="paragraphsListGrid"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Stretch"/>
+                    </ScrollViewer>
+
+                    <Grid x:Name="paragraphsGridBottomOptionsGrid"
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Stretch"
+                          Height="40"
+                          Margin="15, 0, 15, 0"
+                          Background="Green"/>
+
+                </Grid>
+                    
             </Grid>
         </ScrollViewer>
     </Grid>

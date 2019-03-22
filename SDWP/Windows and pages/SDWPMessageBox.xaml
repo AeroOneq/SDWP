@@ -61,7 +61,7 @@
                    HorizontalAlignment="Center"
                    Width="100"
                    Height="100"
-                   Source="Resources/SDWPmessageBoxWarningIcon.png"/>
+                   Source="../Resources/SDWPmessageBoxWarningIcon.png"/>
             <Rectangle Width="1"
                        Height="100"
                        VerticalAlignment="Center"

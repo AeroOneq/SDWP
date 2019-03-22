@@ -613,7 +613,7 @@
                                  Margin="20, 20, 0, 0"
                                  Style="{StaticResource authorizationTextBoxLightStyle}"/>
                         <Image x:Name="loginQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -622,7 +622,7 @@
                                Width="15"
                                Margin="200, 0, 0, 0"/>
                         <Image x:Name="loginQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -644,7 +644,7 @@
                                  Margin="20, 80, 0, 0"
                                  Style="{StaticResource authorizationPasswordBoxLightStyle}"/>
                         <Image x:Name="passwordQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -653,7 +653,7 @@
                                Width="15"
                                Margin="200, 60, 0, 0"/>
                         <Image x:Name="passwordQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                Visibility="Collapsed"
@@ -675,7 +675,7 @@
                                  Margin="20, 140, 0, 0"
                                  Style="{StaticResource authorizationTextBoxLightStyle}"/>
                         <Image x:Name="nameQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -684,7 +684,7 @@
                                Width="15"
                                Margin="200, 120, 0, 0"/>
                         <Image x:Name="nameQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                Visibility="Collapsed"
@@ -706,7 +706,7 @@
                                  Margin="20, 200, 0, 0"
                                  Style="{StaticResource authorizationTextBoxLightStyle}"/>
                         <Image x:Name="surNQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -715,7 +715,7 @@
                                Width="15"
                                Margin="200, 180, 0, 0"/>
                         <Image x:Name="surNQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                Visibility="Collapsed"
@@ -753,7 +753,7 @@
                                  MaxLength="4"
                                  Style="{StaticResource yearTextBoxLightStyle}"/>
                         <Image x:Name="bDayQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -762,7 +762,7 @@
                                Width="15"
                                Margin="200, 240, 0, 0"/>
                         <Image x:Name="bDayQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -784,7 +784,7 @@
                                  Margin="20, 320, 0, 0"
                                  Style="{StaticResource authorizationTextBoxLightStyle}"/>
                         <Image x:Name="emailQMarkPng"
-                               Source="Resources/questionMarkStatic.png"
+                               Source="../Resources/questionMarkStatic.png"
                                MouseDown="ShowHintGrid"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
@@ -793,7 +793,7 @@
                                Width="15"
                                Margin="200, 300, 0, 0"/>
                         <Image x:Name="emailQMarkActivePng"
-                               Source="Resources/questionMarkActive.png"
+                               Source="../Resources/questionMarkActive.png"
                                MouseDown="ShowHintGrid"
                                Visibility="Collapsed"
                                VerticalAlignment="Top"
@@ -892,7 +892,7 @@
                            Style="{StaticResource hintTextBlockHeaderStyle}"
                            Margin="30, 35, 0, 0"/>
                 <Image x:Name="closeHintIcon"
-                       Source="Resources/closeHintIcon.png"
+                       Source="../Resources/closeHintIcon.png"
                        MouseDown="CloseTheHintGrid"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Right"
@@ -901,7 +901,7 @@
                        Height="20"
                        Margin="0, 10, 10, 0"/>
                 <Image x:Name="closeHintActiveIcon"
-                       Source="Resources/closeHintIconActive.png"
+                       Source="../Resources/closeHintIconActive.png"
                        MouseLeave="CloseHintMouseLeave"
                        MouseDown="CloseTheHintGrid"
                        VerticalAlignment="Top"

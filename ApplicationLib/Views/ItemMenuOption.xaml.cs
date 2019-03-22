@@ -12,27 +12,32 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
 using ApplicationLib.Models;
+
 
 namespace ApplicationLib.Views
 {
     /// <summary>
-    /// Логика взаимодействия для DocumentMenuOption.xaml
+    /// Логика взаимодействия для ItemMenuOption.xaml
     /// </summary>
-    public partial class DocumentMenuOption : UserControl
+    public partial class ItemMenuOption : UserControl
     {
-        public Document Document { get; }
-        public Button DocumentBtn { get; }
+        #region Properties
+        public Button ItemBtn { get; }
+        public Item Item { get; }
+        #endregion
 
-        public DocumentMenuOption() { InitializeComponent(); }
-        public DocumentMenuOption(Document document)
+        #region Constructors
+        public ItemMenuOption() { InitializeComponent(); }
+        public ItemMenuOption(Item item)
         {
             InitializeComponent();
-            Document = document;
 
-            DocumentBtn = documentBtn;
-            DocumentBtn.Content = Document.Name;
+            Item = item;
+
+            ItemBtn = itemBtn;
+            ItemBtn.Content = item.Name;
         }
+        #endregion
     }
 }

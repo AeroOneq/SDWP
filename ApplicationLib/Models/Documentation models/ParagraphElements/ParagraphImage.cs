@@ -11,12 +11,12 @@ namespace ApplicationLib.Models
     public class ParagraphImage : IParagraphElement
     {
         public byte[] ImageSource { get; set; }
-        public Paragraph ParentParagraph { get; }
+        public Item ParentItem { get; }
 
-        public ParagraphImage(byte[] imageSource, Paragraph parentParagraph)
+        public ParagraphImage(byte[] imageSource, Item parentItem)
         {
             ImageSource = imageSource;
-            ParentParagraph = parentParagraph;
+            ParentItem = parentItem;
         }
 
         public FrameworkElement VisualizeElement()

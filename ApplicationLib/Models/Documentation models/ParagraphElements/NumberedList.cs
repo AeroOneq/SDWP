@@ -12,12 +12,12 @@ namespace ApplicationLib.Models
     {
         public List<NumberedListElement> ListElements { get; set; }
 
-        public Paragraph ParentParagraph { get; }
+        public Item ParentItem { get; }
 
-        public NumberedList(List<NumberedListElement> listElements, Paragraph parentParagraph)
+        public NumberedList(List<NumberedListElement> listElements, Item parentItem)
         {
             ListElements = listElements;
-            ParentParagraph = parentParagraph;
+            ParentItem = parentItem;
         }
 
         public FrameworkElement VisualizeElement()

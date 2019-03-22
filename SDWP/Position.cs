@@ -29,14 +29,33 @@ namespace SDWP
         #region Constants (sizes)
         private const double LeftMenuOptionGridWidth = 230;
         #endregion
+
         #region Properties 
-        public SDWPMainWindow MainWindow { get; }
+        public SDWPMainWindow MainWindow { get; private set; }
         #endregion
-        public Position(SDWPMainWindow window)
+
+        #region Singleton
+        private static Position position;
+        public static Position PositionObj
         {
-            MainWindow = window;
-            MainWindow.Width = SystemParameters.MaximizedPrimaryScreenWidth;
-            MainWindow.Height = SystemParameters.MaximizedPrimaryScreenHeight;
+            get
+            {
+                if (position == null)
+                    position = new Position();
+                return position;
+            }
+        }
+        #endregion
+
+        #region Constrcutors
+        private Position() { }
+        #endregion
+
+        public void UpdateMainWindow(SDWPMainWindow mainWindow)
+        {
+            MainWindow = mainWindow;
+            MainWindow.Width = SystemParameters.FullPrimaryScreenWidth;
+            MainWindow.Height = SystemParameters.FullPrimaryScreenHeight;
         }
 
         #region Position methods

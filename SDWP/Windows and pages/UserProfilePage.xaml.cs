@@ -41,16 +41,16 @@ namespace SDWP
         }
         private void UploadUserDataToUI()
         {
-            nameTextBox.Text = CommonObjects.User.Name;
-            surnameTextBox.Text = CommonObjects.User.Surname;
-            loginTextBox.Text = CommonObjects.User.Login;
+            nameTextBox.Text = UserInfo.CurrentUser.Name;
+            surnameTextBox.Text = UserInfo.CurrentUser.Surname;
+            loginTextBox.Text = UserInfo.CurrentUser.Login;
             passwordTextBox.Text = passwordPasswordBox.Password =
-                CommonObjects.User.Password;
-            birthDateTextBox.Text = CommonObjects.User.BirthDate.
+                UserInfo.CurrentUser.Password;
+            birthDateTextBox.Text = UserInfo.CurrentUser.BirthDate.
                 ToShortDateString();
-            emailTextBox.Text = CommonObjects.User.Email;
-            if (CommonObjects.User.UserPhoto != null && CommonObjects.User.UserPhoto.Length > 1)
-                SetUserPhotoImageImageBrush(CommonObjects.User.UserPhoto);
+            emailTextBox.Text = UserInfo.CurrentUser.Email;
+            if (UserInfo.CurrentUser.UserPhoto != null && UserInfo.CurrentUser.UserPhoto.Length > 1)
+                SetUserPhotoImageImageBrush(UserInfo.CurrentUser.UserPhoto);
         }
         private void SetUserPhotoImageImageBrush(byte[] imageByteArray)
         {
@@ -201,7 +201,7 @@ namespace SDWP
 
                     UserInfo.CheckUserProperties(newUserInfo);
 
-                    if (newUserInfo.Email != CommonObjects.User.Email)
+                    if (newUserInfo.Email != UserInfo.CurrentUser.Email)
                     {
                         await UserService.GetService.CheckEmail(newUserInfo.Email);
                         await EmailService.GetService.SendCodeEmail(newUserInfo);
@@ -211,7 +211,7 @@ namespace SDWP
                     }
                     else
                     {
-                        if (CommonObjects.User.Login != newUserInfo.Login)
+                        if (UserInfo.CurrentUser.Login != newUserInfo.Login)
                             await UserService.GetService.CheckLogin(newUserInfo.Login);
 
                         await UserService.GetService.UpdateRecord(newUserInfo);
@@ -224,12 +224,14 @@ namespace SDWP
                 {
                     await EmailService.GetService.ResetCode();
                     SwitchOffTheLoader();
+
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
                 catch (Exception ex)
                 {
                     await EmailService.GetService.ResetCode();
                     SwitchOffTheLoader();
+
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
             }
@@ -247,8 +249,7 @@ namespace SDWP
 
         private async void UpdateCommonUserAndRefreshUI()
         {
-            CommonObjects.User = await UserService.GetService.GetUser("ID",
-                CommonObjects.User.ID);
+            UserInfo.CurrentUser = await UserService.GetService.GetUser("ID", UserInfo.CurrentUser.ID);
             Dispatcher.Invoke(() => UploadUserDataToUI());
         }
 
@@ -298,26 +299,26 @@ namespace SDWP
 
         private bool CheckIfDataChanged()
         {
-            return nameTextBox.Text == CommonObjects.User.Name &&
-                   surnameTextBox.Text == CommonObjects.User.Surname &&
-                   loginTextBox.Text == CommonObjects.User.Login &&
-                   passwordTextBox.Text == CommonObjects.User.Password &&
-                   emailTextBox.Text == CommonObjects.User.Email &&
-                   birthDateTextBox.Text == CommonObjects.User.BirthDate.ToShortDateString()
+            return nameTextBox.Text == UserInfo.CurrentUser.Name &&
+                   surnameTextBox.Text == UserInfo.CurrentUser.Surname &&
+                   loginTextBox.Text == UserInfo.CurrentUser.Login &&
+                   passwordTextBox.Text == UserInfo.CurrentUser.Password &&
+                   emailTextBox.Text == UserInfo.CurrentUser.Email &&
+                   birthDateTextBox.Text == UserInfo.CurrentUser.BirthDate.ToShortDateString()
                    && NewUserPhoto == null;
         }
         private UserInfo CreateNewUserObject()
         {
             return new UserInfo
             {
-                ID = CommonObjects.User.ID,
+                ID = UserInfo.CurrentUser.ID,
                 Login = loginTextBox.Text,
                 Password = passwordTextBox.Text,
                 Name = nameTextBox.Text,
                 Surname = surnameTextBox.Text,
                 BirthDate = GetNewUserDateTime(),
                 Email = emailTextBox.Text,
-                UserPhoto = NewUserPhoto ?? CommonObjects.User.UserPhoto
+                UserPhoto = NewUserPhoto ?? UserInfo.CurrentUser.UserPhoto
             };
         }
         private DateTime GetNewUserDateTime()

@@ -7,7 +7,16 @@
         <SolidColorBrush x:Key="mainThemeColor" Color="OrangeRed"/>
         <SolidColorBrush x:Key="subparagraphBorderBrush" Color="LightGray"/>
         <SolidColorBrush x:Key="defaultTextColorBrush" Color="Black"/>
-        <SolidColorBrush x:Key="documentsLeftGridBackgroundBrush" Color="#F1F1F2"/>
+        
+        <!--Menu option background brushes and colors-->
+        <SolidColorBrush x:Key="documentsLeftGridBackgroundBrush" Color="#E6E6E6"/>
+        <Color x:Key="documentsLeftGridBackgroundColor">#E6E6E6</Color>
+        <SolidColorBrush x:Key="mainPageItemsGridBackgroundBrush" Color="#F0F0F0"/>
+        <Color x:Key="mainPageItemsGridBackgroundColor">#F0F0F0</Color>
+        <SolidColorBrush x:Key="mainPageParagraphsGridBackgroundBrush" Color="White"/>
+        <Color x:Key="mainPageParagraphsGridBackgroundColor">#FFFFFF</Color>
+
+        <SolidColorBrush x:Key="mainWindowTopOptionsGridBavkgroundBrush" Color="White"/>
         <SolidColorBrush x:Key="propertyNameForeground" Color="Gray"/>
         <SolidColorBrush x:Key="devisionRectangleFill" Color="Gray"/>
     </Application.Resources>

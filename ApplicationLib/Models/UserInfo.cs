@@ -14,6 +14,11 @@ namespace ApplicationLib.Models
             "HJKLZXCVBNM1234567890!#$%&'*+-/=?^_`{|}~@\"(),:;<>@[\\]";
         #endregion
 
+        /// <summary>
+        /// The user who is now working with a system
+        /// </summary>
+        public static UserInfo CurrentUser { get; set; }
+
         #region Public database properties
         [CanBeNull(false)]
         [PrimaryKey]

@@ -11,13 +11,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
 using ApplicationLib.Models;
 
 namespace ApplicationLib.Interfaces
 {
     public interface IParagraphElement
     {
-        Models.Paragraph ParentParagraph { get; }
+        Item ParentItem { get; }
 
         FrameworkElement GetWatchView();
         FrameworkElement GetEditView();

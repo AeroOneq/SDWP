@@ -11,12 +11,12 @@ namespace ApplicationLib.Models
     public class Table : IParagraphElement
     {
         public TableCell[][] TableCells { get; set; }
-        public Paragraph ParentParagraph { get; }
+        public Item ParentItem { get; }
 
-        public Table(TableCell[][] tableCells, Paragraph parentParagraph)
+        public Table(TableCell[][] tableCells, Item parentItem)
         {
             TableCells = tableCells;
-            ParentParagraph = parentParagraph;
+            ParentItem = parentItem;
         }
 
         public FrameworkElement VisualizeElement()

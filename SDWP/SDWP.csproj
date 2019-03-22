@@ -60,64 +60,63 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="Windows and pages\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CommonObjects.cs" />
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Windows and pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ListBoxModels\DocumentationListBoxItem.cs" />
     <Compile Include="Position.cs" />
-    <Compile Include="SDWPMainWindow.xaml.cs">
+    <Compile Include="Windows and pages\SDWPMainWindow.xaml.cs">
       <DependentUpon>SDWPMainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Position models\UserAccLeftMenuGrids.cs" />
     <Compile Include="Models\Position models\UserAccountGrids.cs" />
-    <Compile Include="SDWPMessageBox.xaml.cs">
+    <Compile Include="Windows and pages\SDWPMessageBox.xaml.cs">
       <DependentUpon>SDWPMessageBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserDocsPage.xaml.cs">
+    <Compile Include="Windows and pages\UserDocsPage.xaml.cs">
       <DependentUpon>UserDocsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserProfilePage.xaml.cs">
+    <Compile Include="Windows and pages\UserProfilePage.xaml.cs">
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
-    <Page Include="MainPage.xaml">
+    <Page Include="Windows and pages\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SDWPMainWindow.xaml">
+    <Page Include="Windows and pages\SDWPMainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SDWPMessageBox.xaml">
+    <Page Include="Windows and pages\SDWPMessageBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserDocsPage.xaml">
+    <Page Include="Windows and pages\UserDocsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserProfilePage.xaml">
+    <Page Include="Windows and pages\UserProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WelcomeWindow.xaml">
+    <Page Include="Windows and pages\WelcomeWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="Windows and pages\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageGridAnimations.cs" />
-    <Compile Include="WelcomeWindow.xaml.cs">
+    <Compile Include="Windows and pages\WelcomeWindow.xaml.cs">
       <DependentUpon>WelcomeWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>

@@ -308,8 +308,10 @@ namespace SDWP
             {
                 SwitchOffTheLoader(leftLoaderGrid);
                 Hide();
-                CommonObjects.User = user;
-                SDWPMainWindow mainWindow = new SDWPMainWindow(CommonObjects.User);
+
+                UserInfo.CurrentUser = user;
+                SDWPMainWindow mainWindow = new SDWPMainWindow(UserInfo.CurrentUser);
+
                 mainWindow.Show();
             }
         }

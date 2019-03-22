@@ -65,7 +65,6 @@
     <Compile Include="Models\Documentation models\Document.cs" />
     <Compile Include="Models\Documentation models\Documentation.cs" />
     <Compile Include="Models\Documentation models\Item.cs" />
-    <Compile Include="Models\Documentation models\Paragraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphImage.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedList.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
@@ -81,12 +80,19 @@
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ItemMenuOption.xaml.cs">
+      <DependentUpon>ItemMenuOption.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SubparagraphWatchView.xaml.cs">
       <DependentUpon>SubparagraphWatchView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DocumentMenuOption.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ItemMenuOption.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

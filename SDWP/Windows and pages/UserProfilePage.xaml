@@ -286,7 +286,7 @@
                                  Fill="OrangeRed"/>
                     </Grid>
                     <Image x:Name="refreshIconActive"
-                           Source="Resources/refreshIconActive.png"
+                           Source="../Resources/refreshIconActive.png"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Right"
                            MouseLeave="RefreshIconMouseLeave"
@@ -295,7 +295,7 @@
                            Width="35"
                            Margin="0, 37.5, 20, 0"/>
                     <Image x:Name="refreshIconStatic"
-                           Source="Resources/refreshIconStatic.png"
+                           Source="../Resources/refreshIconStatic.png"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Right"
                            MouseEnter="RefreshIconMouseEnter"
@@ -328,7 +328,7 @@
                                  VerticalAlignment="Center"
                                  HorizontalAlignment="Center">
                             <Ellipse.Fill>
-                                <ImageBrush ImageSource="Resources/emptyUserPhotoImage.png"
+                                <ImageBrush ImageSource="../Resources/emptyUserPhotoImage.png"
                                             Stretch="UniformToFill"/>
                             </Ellipse.Fill>
                         </Ellipse>
@@ -403,7 +403,7 @@
                                      Style="{StaticResource userProfilePasswordBoxDisabled}"
                                      Margin="20, 245, 0, 0"/>
                         <Image x:Name="seePasswordActiveIcon"
-                               Source="Resources/seePasswordIconActive.png"
+                               Source="../Resources/seePasswordIconActive.png"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Width="24"
@@ -413,7 +413,7 @@
                                MouseDown="SeePasswordIconMouseDown"
                                MouseLeave="SeePasswordIconMouseLeave"/>
                         <Image x:Name="seePasswordStaticIcon"
-                               Source="Resources/seePasswordIconStatic.png"
+                               Source="../Resources/seePasswordIconStatic.png"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Width="24"

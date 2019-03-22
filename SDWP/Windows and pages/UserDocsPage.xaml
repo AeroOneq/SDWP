@@ -212,7 +212,7 @@
                                      Fill="OrangeRed"/>
                         </Grid>
                         <Image x:Name="refreshIconActive"
-                               Source="Resources/refreshIconActive.png"
+                               Source="../Resources/refreshIconActive.png"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Right"
                                MouseLeave="RefreshIconMouseLeave"
@@ -221,7 +221,7 @@
                                Width="35"
                                Margin="0, 37.5, 20, 0"/>
                         <Image x:Name="refreshIconStatic"
-                               Source="Resources/refreshIconStatic.png"
+                               Source="../Resources/refreshIconStatic.png"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Right"
                                MouseEnter="RefreshIconMouseEnter"
@@ -302,7 +302,7 @@
                                                       Height="35"
                                                       Background="OrangeRed"
                                                       Width="280">
-                                                    <Image Source="Resources/documentationIcon.png"
+                                                    <Image Source="../Resources/documentationIcon.png"
                                                            VerticalAlignment="Top"
                                                            HorizontalAlignment="Left"
                                                            Height="25"

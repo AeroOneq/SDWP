@@ -58,12 +58,11 @@
               HorizontalAlignment="Left"
               Width="800"
               Height="100"
-              Background="#E6E6E6">
+              Background="{StaticResource mainWindowTopOptionsGridBavkgroundBrush}">
             <!--User acc grid-->
             <Grid x:Name="userAccOptionsGrid"
                   Height="100"
                   Width="100"
-                  Background="#E6E6E6"
                   VerticalAlignment="Top"
                   HorizontalAlignment="Left"
                   MouseEnter="OptionGridMouseEnter"
@@ -73,7 +72,7 @@
                        Width="48"
                        Height="48"
                        Margin="0, 10, 0, 0"
-                       Source="Resources/userAccountStatic.png"
+                       Source="../Resources/userAccountStatic.png"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"/>
                 <Image x:Name="userAccIconActive"
@@ -83,7 +82,7 @@
                        Width="48"
                        Height="48"
                        Margin="0, 10, 0, 0"
-                       Source="Resources/userAccountActive.png"/>
+                       Source="../Resources/userAccountActive.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
                            Text="Личный кабинет"
                            Width="60"
@@ -107,15 +106,14 @@
                   Height="100"
                   Width="100"
                   MouseEnter="OptionGridMouseEnter"
-                  MouseLeave="OptionGridMouseLeave"
-                  Background="#E6E6E6">
+                  MouseLeave="OptionGridMouseLeave">
                 <Image x:Name="saveChangesIconStatic"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"
                        Width="48"
                        Height="48"
                        Margin="0, 10, 0, 0"
-                       Source="Resources/saveIconStatic.png"/>
+                       Source="../Resources/saveIconStatic.png"/>
                 <Image x:Name="saveChangesIconActive"
                        Visibility="Collapsed"
                        VerticalAlignment="Top"
@@ -123,7 +121,7 @@
                        Width="48"
                        Height="48"
                        Margin="0, 10, 0, 0"
-                       Source="Resources/saveIconActive.png"/>
+                       Source="../Resources/saveIconActive.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
                            Text="Сохранить изменения"
                            Width="60"
@@ -143,7 +141,6 @@
             <Grid x:Name="deleteDocumentationGrid"
                   Width="155"
                   Height="32"
-                  Background="#E6E6E6"
                   VerticalAlignment="Top"
                   HorizontalAlignment="Left"
                   MouseEnter="OptionGridMouseEnter"
@@ -155,7 +152,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/deleteIconStatic.png"/>
+                       Source="../Resources/deleteIconStatic.png"/>
                 <Image x:Name="deleteIconActive"
                        Visibility="Collapsed"
                        VerticalAlignment="Center"
@@ -163,7 +160,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/deleteIconActive.png"/>
+                       Source="../Resources/deleteIconActive.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
                            Text="Удалить документацию"
                            Margin="35, 0, 0, 0"
@@ -182,7 +179,6 @@
             <Grid x:Name="accessControlGrid"
                   Width="155"
                   Height="32"
-                  Background="#E6E6E6"
                   VerticalAlignment="Top"
                   HorizontalAlignment="Left"
                   MouseEnter="OptionGridMouseEnter"
@@ -194,7 +190,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/accessControlIconStatic.png"/>
+                       Source="../Resources/accessControlIconStatic.png"/>
                 <Image x:Name="accessControlIconActive"
                        Visibility="Collapsed"
                        VerticalAlignment="Center"
@@ -202,7 +198,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/accessControlIconActive.png"/>
+                       Source="../Resources/accessControlIconActive.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
                            Text="Настройки доступа"
                            Margin="35, 0, 0, 0"
@@ -221,7 +217,6 @@
             <Grid x:Name="publishDocumentationGrid"
                   Width="155"
                   Height="32"
-                  Background="#E6E6E6"
                   VerticalAlignment="Top"
                   MouseEnter="OptionGridMouseEnter"
                   MouseLeave="OptionGridMouseLeave"
@@ -233,7 +228,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/shareDocIconStatic.png"/>
+                       Source="../Resources/shareDocIconStatic.png"/>
                 <Image x:Name="publishIconActive"
                        Visibility="Collapsed"
                        VerticalAlignment="Center"
@@ -241,7 +236,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="Resources/shareDocIconActive.png"/>
+                       Source="../Resources/shareDocIconActive.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
                            Text="Опубликовать"
                            Margin="35, 0, 0, 0"
@@ -266,14 +261,14 @@
                    HorizontalAlignment="Center"
                    Width="10"
                    Height="10"
-                   Source="Resources/upperArrowIcon.png"/>
+                   Source="../Resources/upperArrowIcon.png"/>
             <Image x:Name="lowerArrowImage"
                    Visibility="Collapsed"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    Width="10"
                    Height="10"
-                   Source="Resources/lowerArrowIcon.png"/>
+                   Source="../Resources/lowerArrowIcon.png"/>
         </Grid>
         <!--User account-->
         <Grid x:Name="userAccMainGrid"
@@ -297,7 +292,7 @@
                        HorizontalAlignment="Left"
                        MouseEnter="CloseAccGridStaticIconMouseEnter"
                        Margin="10, 30, 0, 0"
-                       Source="Resources/closeAccGridStatic.png"
+                       Source="../Resources/closeAccGridStatic.png"
                        Width="48"
                        Height="48"
                        Visibility="Visible"/>
@@ -307,7 +302,7 @@
                        MouseDown="HideTheUserAccGrid"
                        HorizontalAlignment="Left"
                        Margin="10, 30, 0, 0"
-                       Source="Resources/closeAccGridActive.png"
+                       Source="../Resources/closeAccGridActive.png"
                        Width="48"
                        Height="48"
                        Visibility="Collapsed"/>

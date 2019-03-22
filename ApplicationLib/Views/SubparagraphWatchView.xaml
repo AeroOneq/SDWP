@@ -33,7 +33,6 @@
                 <Border.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Удалить"/>
-                        
                     </ContextMenu>
                 </Border.ContextMenu>
                 <Grid VerticalAlignment="Stretch"
