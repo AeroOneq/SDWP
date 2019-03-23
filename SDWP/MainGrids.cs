@@ -24,7 +24,6 @@ namespace SDWP
     {
         public Grid TopOptionsGrid { get; set; }
         public Grid MainGrid { get; set; } 
-        public Grid HideTopOptionsGrid { get; set; }
         public Grid UserAccountGrid { get; set; }
     }
 }

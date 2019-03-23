@@ -9,6 +9,7 @@
         Title="SDWPMainWindow" 
         SizeChanged="SDWPMainWindowSizeChanged"
         Height="450"
+        MouseMove="SDWPMainWindowMouseMove"
         MinWidth="1000"
         MinHeight="500"
         Width="800">
@@ -244,31 +245,6 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"/>
             </Grid>
-        </Grid>
-        <!--Hide top options grid-->
-        <Grid x:Name="hideOptionsGrid"
-              VerticalAlignment="Top"
-              HorizontalAlignment="Center"
-              Margin="0, 100, 0, 0"
-              Width="100"
-              Background="LightGray"
-              MouseEnter="HideOptionsGridMouseEnter"
-              MouseLeave="HideOptionsGridMouseLeave"
-              MouseDown="HideOptionsGridClick"
-              Height="15">
-            <Image x:Name="upperArrowImage"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Width="10"
-                   Height="10"
-                   Source="../Resources/upperArrowIcon.png"/>
-            <Image x:Name="lowerArrowImage"
-                   Visibility="Collapsed"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"
-                   Width="10"
-                   Height="10"
-                   Source="../Resources/lowerArrowIcon.png"/>
         </Grid>
         <!--User account-->
         <Grid x:Name="userAccMainGrid"

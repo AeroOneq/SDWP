@@ -14,6 +14,7 @@ namespace SDWP
 {
     public partial class MainPage : Page
     {
+        #region Test
         private Documentation Documentation { get; } = new Documentation()
         {
             Name = "SDWP Documentation",
@@ -33,17 +34,45 @@ namespace SDWP
                         Items = null,
                         Paragraphs = new List<IParagraphElement>()
                         {
-                            new Subparagraph("asldsadasld asdl;asdl;", new Item())
+                            new Subparagraph("qwertyqwertyqwertyy", new Item())
                         }
                     }
                 }
             },
         };
+        #endregion
+
+        #region Properties
+        private Grid LeftDocumentationGrid { get; set; }
+        private Grid ItemsGrid { get; set; }
+        private Grid ParagraphsGrid { get; set; }
+
+        private Grid HideLeftGridImagesGrid { get; set; } 
+        private Grid ShowLeftGridImagesGrid { get; set; }
+
+        private Grid ParagraphElementsGrid { get; set; } 
+        private Grid AddNewParagraphElementGrid { get; set; }
+        #endregion
 
         public MainPage()
         {
             InitializeComponent();
+
+            SetPropertiesValue();
             UploadDocumentationDataToUI();
+        }
+
+        private void SetPropertiesValue()
+        {
+            LeftDocumentationGrid = leftDocumentsGrid;
+            ItemsGrid = itemsGrid;
+            ParagraphsGrid = paragraphsGrid;
+
+            HideLeftGridImagesGrid = hideLeftGridImagesGrid;
+            ShowLeftGridImagesGrid = showLeftGridImagesGrid;
+
+            ParagraphElementsGrid = paragraphElementsGrid;
+            AddNewParagraphElementGrid = addNewParagraphElementGrid;
         }
 
         #region Upload new documentation
@@ -109,7 +138,7 @@ namespace SDWP
             {
                 for (int i = 0; i < item.Paragraphs.Count; i++)
                 {
-                    FrameworkElement paragraphView = item.Paragraphs[i].GetWatchView();
+                    FrameworkElement paragraphView = item.Paragraphs[i].GetEditView();
                     paragraphView.Margin = new Thickness(15, 0, 15, 0);
 
                     paragraphsListGrid.Children.Add(paragraphView);
@@ -144,7 +173,7 @@ namespace SDWP
         private void IconMouseLeave(object sender, MouseEventArgs e)
         {
             Image thisImage = sender as Image;
-            thisImage.Visibility = Visibility.Collapsed;
+            thisImage.Visibility = Visibility.Collapsed; 
 
             List<Image> images = (thisImage.Parent as Grid).Children.OfType<Image>().ToList();
             int thisImageIndex = images.FindIndex(img => img.Name == thisImage.Name);
@@ -153,30 +182,46 @@ namespace SDWP
 
         private void HideLeftDocumentsGrid(object sender, MouseButtonEventArgs e)
         {
-            MainPageAnimations.HideLeftDocumentationGrid(leftDocumentsGrid);
-            MainPageAnimations.AnimateMargin(itemsGrid, new Thickness(60, 0, 0, 0));
-            MainPageAnimations.AnimateMargin(paragraphsGrid, new Thickness(310, 0, 0, 0));
+            MainPageAnimations.HideLeftDocumentationGrid(LeftDocumentationGrid);
+            MainPageAnimations.AnimateMargin(ItemsGrid, new Thickness(60, 0, 0, 0));
+            MainPageAnimations.AnimateMargin(ParagraphsGrid, new Thickness(310, 0, 0, 0));
 
-            hideImagesGrid.Visibility = Visibility.Collapsed;
-            showImagesGrid.Visibility = Visibility.Visible;
+            HideLeftGridImagesGrid.Visibility = Visibility.Collapsed;
+            ShowLeftGridImagesGrid.Visibility = Visibility.Visible;
         }
+
         private void ShowLeftDocumentsGrid(object sender, MouseButtonEventArgs e)
         {
-            MainPageAnimations.AnimateMargin(itemsGrid, new Thickness(250, 0, 0, 0));
-            MainPageAnimations.AnimateMargin(paragraphsGrid, new Thickness(500, 0, 0, 0));
-            MainPageAnimations.ShowLeftDocumentationGrid(leftDocumentsGrid);
+            MainPageAnimations.AnimateMargin(ItemsGrid, new Thickness(250, 0, 0, 0));
+            MainPageAnimations.AnimateMargin(ParagraphsGrid, new Thickness(500, 0, 0, 0));
+            MainPageAnimations.ShowLeftDocumentationGrid(LeftDocumentationGrid);
 
-            hideImagesGrid.Visibility = Visibility.Visible;
-            showImagesGrid.Visibility = Visibility.Collapsed;
+            HideLeftGridImagesGrid.Visibility = Visibility.Visible;
+            ShowLeftGridImagesGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowParagraphElementsAddOptions(object sender, MouseButtonEventArgs e)
+        {
+            Size paragraphElementsGridNewSize = new Size(200, 35);
+
+            AddNewParagraphElementGrid.Visibility = Visibility.Collapsed;
+            ParagraphElementsGrid.Visibility = Visibility.Visible;
+
+            MainPageAnimations.AnimateSize(ParagraphElementsGrid, paragraphElementsGridNewSize,
+                new Action(()=> { }));
         }
         #endregion
 
-#warning Remove this useless method
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
         {
-            double w = ActualWidth;
-            double h = ActualHeight;
-            double ih = itemsGrid.ActualHeight;
+            Size paragraphElementsGridNewSize = new Size(0, 35);
+
+            MainPageAnimations.AnimateSize(ParagraphElementsGrid, paragraphElementsGridNewSize,
+                new Action(()=> 
+                {
+                    AddNewParagraphElementGrid.Visibility = Visibility.Visible;
+                    ParagraphElementsGrid.Visibility = Visibility.Collapsed;
+                }));
         }
     }
 }

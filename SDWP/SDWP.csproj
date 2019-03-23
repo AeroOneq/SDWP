@@ -184,12 +184,6 @@
     <Resource Include="Resources\shareDocIconStatic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\upperArrowIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\lowerArrowIcon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\closeHintIconActive.png" />
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +219,36 @@
       <Project>{c5c4109f-51c1-48d9-9a3c-59d41354892b}</Project>
       <Name>ApplicationLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewParagraphElementActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewParagraphElementStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewTableIconStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewTableActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewNumberedListActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewNumberedListStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewImageActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewImageStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewSubparagraphStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewSubparagraphActive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

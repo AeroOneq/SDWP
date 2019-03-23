@@ -4,10 +4,17 @@
              xmlns:local="clr-namespace:SDWP"
              StartupUri="WelcomeWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="mainThemeColor" Color="OrangeRed"/>
+        <!--Fonts for text-->
+        <FontFamily x:Key="mainFontFamily">Arial</FontFamily>
+        
+        <SolidColorBrush x:Key="mainThemeBrush" Color="OrangeRed"/>
+        <SolidColorBrush x:Key="mainThemeColor">OrangeRed</SolidColorBrush>
         <SolidColorBrush x:Key="subparagraphBorderBrush" Color="LightGray"/>
         <SolidColorBrush x:Key="defaultTextColorBrush" Color="Black"/>
-        
+
+        <SolidColorBrush x:Key="paragraphsTopOptionBrush" Color="#808080"/>
+        <Color x:Key="paragraphsTopOptionColor">#808080</Color>
+
         <!--Menu option background brushes and colors-->
         <SolidColorBrush x:Key="documentsLeftGridBackgroundBrush" Color="#E6E6E6"/>
         <Color x:Key="documentsLeftGridBackgroundColor">#E6E6E6</Color>

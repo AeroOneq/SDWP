@@ -63,5 +63,39 @@ namespace SDWP
 
             grid.BeginAnimation(FrameworkElement.MarginProperty, marginAnimation);
         }
+
+        public static void AnimateSize(Grid grid, Size newSize, Action afterAnimationAction)
+        {
+            DoubleAnimation widthAnimation = new DoubleAnimation()
+            {
+                To = newSize.Width,
+                Duration = TimeSpan.FromMilliseconds(200),
+                DecelerationRatio = 1,
+                SpeedRatio = 0.5,
+                FillBehavior = FillBehavior.Stop
+            };
+            widthAnimation.Completed += (sender, e) =>
+            {
+                grid.Width = newSize.Width;
+            };
+
+            DoubleAnimation heightAnimation = new DoubleAnimation()
+            {
+                To = newSize.Height,
+                Duration = TimeSpan.FromMilliseconds(200),
+                DecelerationRatio = 1,
+                SpeedRatio = 0.5,
+                FillBehavior = FillBehavior.Stop
+            };
+            heightAnimation.Completed += (sender, e) =>
+            {
+                afterAnimationAction();
+                grid.Height = newSize.Height;
+            };
+
+
+            grid.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+            grid.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+        }
     }
 }

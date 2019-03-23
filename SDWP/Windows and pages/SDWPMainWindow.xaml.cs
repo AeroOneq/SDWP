@@ -33,6 +33,7 @@ namespace SDWP
         private UserAccountGrids UserAccountGrids { get; set; }
         private UserAccLeftMenuGrids UserAccLeftMenuGrids { get; set; }
         #endregion
+
         #region Constructors and initializing methods
         public SDWPMainWindow(UserInfo user)
         {
@@ -49,7 +50,6 @@ namespace SDWP
             {
                 TopOptionsGrid = topOptionsGrid,
                 MainGrid = documentationGrid,
-                HideTopOptionsGrid = hideOptionsGrid,
                 UserAccountGrid = userAccMainGrid
             };
             UserAccountGrids = new UserAccountGrids
@@ -65,6 +65,7 @@ namespace SDWP
             };
         }
         #endregion
+
         #region Size changed events
         /// <summary>
         /// Resizes the elements when user changes the size of the window 
@@ -95,7 +96,7 @@ namespace SDWP
 
             List<TextBlock> gridTextBlocksList = grid.Children.OfType<TextBlock>().ToList();
             gridTextBlocksList[0].FontWeight = FontWeights.Bold;
-            grid.Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+            grid.Background = new SolidColorBrush(Color.FromRgb(250, 250, 250));
 
             List<Image> iconsList = grid.Children.OfType<Image>().ToList();
             iconsList[0].Visibility = Visibility.Collapsed;
@@ -112,7 +113,7 @@ namespace SDWP
             List<TextBlock> gridTextBlocksList = grid.Children.OfType<TextBlock>().ToList();
             gridTextBlocksList[0].FontWeight = FontWeights.Normal;
             //change the background back
-            grid.Background = new SolidColorBrush(Color.FromRgb(230, 230, 230));
+            grid.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             //set the static image visible
             List<Image> iconsList = grid.Children.OfType<Image>().ToList();
             iconsList[0].Visibility = Visibility.Visible;
@@ -134,44 +135,21 @@ namespace SDWP
             Grid grid = sender as Grid;
             grid.Background = new SolidColorBrush(Color.FromRgb(211, 211, 211));
         }
-        /// <summary>
-        /// Hides or shows the options grid when the hide options grid is clicked
-        /// </summary>
-        private void HideOptionsGridClick(object sender, MouseButtonEventArgs e)
-        {
-            if (upperArrowImage.Visibility == Visibility.Visible)
-            {
-                HideTopGrids();
-            }
-            else
-            {
-                ShowTopGrids();
-            }
-        }
+
         private void HideTopGrids()
         {
             topOptionsGrid.BeginAnimation(HeightProperty,
                 CreateUpTopGridAnimation());
-            hideOptionsGrid.BeginAnimation(MarginProperty,
-                CreateUpHideTopGridAnimation());
             mainPageFrame.BeginAnimation(MarginProperty,
                 CreateDocumentFrameUpAnimation());
-
-
-            upperArrowImage.Visibility = Visibility.Hidden;
-            lowerArrowImage.Visibility = Visibility.Visible;
         }
+
         private void ShowTopGrids()
         {
             topOptionsGrid.BeginAnimation(HeightProperty,
                 CreateDownTopGridAnimation());
-            hideOptionsGrid.BeginAnimation(MarginProperty,
-                CreateDownHideTopGridAnimation());
             mainPageFrame.BeginAnimation(MarginProperty,
                 CreateDocumentFrameDownAnimation());
-
-            upperArrowImage.Visibility = Visibility.Visible;
-            lowerArrowImage.Visibility = Visibility.Hidden;
         }
 
         private DoubleAnimation CreateUpTopGridAnimation()
@@ -220,10 +198,6 @@ namespace SDWP
                 SpeedRatio = 0.5,
                 FillBehavior = FillBehavior.Stop
             };
-            hideOptionsGridAnimation.Completed += (send, events) =>
-            {
-                hideOptionsGrid.Margin = new Thickness(0, 0, 0, 0);
-            };
             return hideOptionsGridAnimation;
         }
         private ThicknessAnimation CreateDownHideTopGridAnimation()
@@ -237,10 +211,7 @@ namespace SDWP
                 SpeedRatio = 0.5,
                 FillBehavior = FillBehavior.Stop
             };
-            hideOptionsGridAnimation.Completed += (send, events) =>
-            {
-                hideOptionsGrid.Margin = new Thickness(0, 100, 0, 0);
-            };
+
             return hideOptionsGridAnimation;
         }
 
@@ -293,7 +264,7 @@ namespace SDWP
         }
         private void ClearFrameHistory(Frame frame)
         {
-            #warning Find a better solution
+#warning Find a better solution
             frame.Navigate(new Page());
 
             if (!frame.CanGoBack && !frame.CanGoForward)
@@ -354,6 +325,7 @@ namespace SDWP
             closeAccGridActiveIcon.Visibility = Visibility.Visible;
         }
         #endregion
+
         #region User grid event handlers
         private void LeftMenuOptionGridMouseEnter(object sender, EventArgs e)
         {
@@ -379,7 +351,7 @@ namespace SDWP
             switch (clickedOptionGrid.Uid)
             {
                 case "0":
-                    #warning Find better solution
+#warning Find better solution
                     UserProfilePage userProfilePage = new UserProfilePage(UserInfo.CurrentUser)
                     {
                         Width = userGridFrame.Width
@@ -404,5 +376,19 @@ namespace SDWP
             }
         }
         #endregion
+
+        private void SDWPMainWindowMouseMove(object sender, MouseEventArgs e)
+        {
+            Point cursorCoordinates = e.GetPosition(this);
+
+            if (cursorCoordinates.Y < 5 && cursorCoordinates.X < 500 && topOptionsGrid.Height == 0)
+            {
+                ShowTopGrids();
+            }
+            else if (cursorCoordinates.Y > 100 && topOptionsGrid.Height == 100)
+            {
+                HideTopGrids();
+            }
+        }
     }
 }

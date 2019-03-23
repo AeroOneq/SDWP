@@ -27,11 +27,11 @@ namespace ApplicationLib.Models
             throw new NotImplementedException();
         }
 
-        public FrameworkElement GetWatchView() => new SubparagraphWatchView(this);
-
-        public FrameworkElement GetEditView()
+        public FrameworkElement GetWatchView()
         {
             throw new NotImplementedException();
         }
+
+        public FrameworkElement GetEditView() => new SubparagraphWatchView(this);
     }
 }

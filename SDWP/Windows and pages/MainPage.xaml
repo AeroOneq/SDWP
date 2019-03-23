@@ -23,6 +23,8 @@
             <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Width" Value="220"/>
+            <Setter Property="Height" Value="30"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -35,8 +37,8 @@
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
-                                          Width="220"
-                                          Height="20"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}"
                                           VerticalScrollBarVisibility="Disabled"
                                           HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
@@ -67,6 +69,68 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
         </Style>
+        <Style x:Key="paragraphsSearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="190"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="{StaticResource mainFontFamily}"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="5, 4, 0, 0"/>
+            <Setter Property="CaretBrush" Value="{StaticResource paragraphsTopOptionBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                Background="Transparent"
+                                BorderBrush="{StaticResource paragraphsTopOptionBrush}"
+                                CornerRadius="5">
+                            <ScrollViewer Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="#F8F8F8"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="Transparent"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="paragraphsLineGridStyle" TargetType="Grid">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Background" Value="{StaticResource paragraphsTopOptionBrush}"/>
+        </Style>
+        <Style x:Key="paragraphsTopOptionImageStyle" TargetType="Image">
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
@@ -82,8 +146,8 @@
                       HorizontalAlignment="Left"
                       Width="250"
                       Background="{StaticResource documentsLeftGridBackgroundBrush}">
-                    
-                    <Grid x:Name="showImagesGrid"
+
+                    <Grid x:Name="showLeftGridImagesGrid"
                           Visibility="Collapsed">
                         <Image x:Name="showLeftGridImageStatic"
                                VerticalAlignment="Top"
@@ -106,7 +170,7 @@
                                MouseDown="ShowLeftDocumentsGrid"/>
                     </Grid>
 
-                    <Grid x:Name="hideImagesGrid"
+                    <Grid x:Name="hideLeftGridImagesGrid"
                           Visibility="Visible">
                         <Image x:Name="hideLeftGridImageStatic"
                                VerticalAlignment="Top"
@@ -140,7 +204,7 @@
                             <TextBlock Style="{StaticResource propertyNameStyle}"
                                        Margin="15, 15, 0, 0"
                                        Text="Назавние:"/>
-                            <TextBox x:Name="documentationNameTextBlock"
+                            <TextBox x:Name="documentationNameTextBox"
                                      Margin="10, 30, 15, 0"
                                      Style="{StaticResource documentationNameGridStyle}"
                                      Text="SDWP Документация"/>
@@ -163,14 +227,8 @@
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="documentationGridBottomOptions"
-                              VerticalAlignment="Bottom"
-                              HorizontalAlignment="Stretch"
-                              Height="40"
-                              Margin="15, 0, 15, 0"
-                              Background="Pink"/>
                 </Grid>
-                
+
                 <Grid x:Name="itemsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
@@ -193,27 +251,112 @@
                               HorizontalAlignment="Stretch"/>
                     </ScrollViewer>
 
-                    <Grid x:Name="itemsGridBottomOptionsGrid"
-                          VerticalAlignment="Bottom"
-                          HorizontalAlignment="Stretch"
-                          Height="40"
-                          Margin="15, 0, 15, 0"
-                          Background="Green"/>
-
                 </Grid>
-                
+
                 <Grid x:Name="paragraphsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       Margin="500, 0, 0, 0"
                       Background="{StaticResource mainPageParagraphsGridBackgroundBrush}">
-                    
+
                     <Grid x:Name="paragraphsGridTopOptionsGrid"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
-                          Margin="15, 10, 15, 0"
+                          Margin="25, 10, 25, 0"
                           Height="40"
-                          Background="Red"/>
+                          Background="Transparent">
+                        <TextBox x:Name="paragraphsSearchTextBox"
+                                 Margin="0, 0, 0, 0"
+                                 Style="{StaticResource paragraphsSearchTextBoxStyle}"/>
+
+                        <Grid x:Name="addNewParagraphElementGrid"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right"
+                              Height="35"
+                              Width="35">
+                            <Image x:Name="addNewParagraphElementImageStatic"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Visible"
+                                   Source="../Resources/addNewParagraphElementStatic.png"
+                                   MouseEnter="IconMouseEnter"/>
+                            <Image x:Name="addNewParagraphElementImageActive"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Collapsed"
+                                   Source="../Resources/addNewParagraphElementActive.png"
+                                   MouseLeave="IconMouseLeave"
+                                   MouseDown="ShowParagraphElementsAddOptions"/>
+                        </Grid>
+
+                        <Grid x:Name="paragraphElementsGrid"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Right"
+                              Visibility="Collapsed"
+                              Width="0"
+                              Height="35"
+                              MouseLeave="ParagraphElementsGridMouseLeave"
+                              Background="Transparent">
+                            <Image x:Name="addNewTableImageStatic"
+                                   Width="30"
+                                   Height="30"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Visible"
+                                   Source="../Resources/addNewTableIconStatic.png"
+                                   MouseEnter="IconMouseEnter"/>
+                            <Image x:Name="addNewTableImageActive"
+                                   Width="30"
+                                   Height="30"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Collapsed"
+                                   Source="../Resources/addNewTableActive.png"
+                                   MouseLeave="IconMouseLeave"/>
+
+                            <Image x:Name="addNewNumberedListImageStatic"
+                                   Margin="0, 0, 35, 0"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Visible"
+                                   Source="../Resources/addNewNumberedListStatic.png"
+                                   MouseEnter="IconMouseEnter"/>
+                            <Image x:Name="addNewNumberedListImageActive"
+                                   Margin="0, 0, 35, 0"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Collapsed"
+                                   Source="../Resources/addNewNumberedListActive.png"
+                                   MouseLeave="IconMouseLeave"/>
+
+                            <Image x:Name="addNewImageImageStatic"
+                                   Margin="0, 0, 75, 0"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Visible"
+                                   Source="../Resources/addNewImageStatic.png"
+                                   MouseEnter="IconMouseEnter"/>
+                            <Image x:Name="addNewImageImageActive"
+                                   Margin="0, 0, 75, 0"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Collapsed"
+                                   Source="../Resources/addNewImageActive.png"
+                                   MouseLeave="IconMouseLeave"/>
+
+                            <Image x:Name="addNewSubparagraphImageStatic"
+                                   Margin="0, 0, 115, 0"
+                                   Width="25"
+                                   Height="25"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Visible"
+                                   Source="../Resources/addNewSubparagraphStatic.png"
+                                   MouseEnter="IconMouseEnter"/>
+                            <Image x:Name="addNewSubparagraphImageActive"
+                                   Margin="0, 0, 115, 0"
+                                   Width="25"
+                                   Height="25"
+                                   Style="{StaticResource paragraphsTopOptionImageStyle}"
+                                   Visibility="Collapsed"
+                                   Source="../Resources/addNewSubparagraphActive.png"
+                                   MouseLeave="IconMouseLeave"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Style="{StaticResource paragraphsLineGridStyle}"
+                          Margin="25, 55, 25, 0"/>
 
                     <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
                                   Margin="15, 60, 15, 0">
@@ -221,19 +364,8 @@
                               VerticalAlignment="Top"
                               HorizontalAlignment="Stretch"/>
                     </ScrollViewer>
-
-                    <Grid x:Name="paragraphsGridBottomOptionsGrid"
-                          VerticalAlignment="Bottom"
-                          HorizontalAlignment="Stretch"
-                          Height="40"
-                          Margin="15, 0, 15, 0"
-                          Background="Green"/>
-
                 </Grid>
-                    
             </Grid>
         </ScrollViewer>
     </Grid>
-
-
 </Page>
