@@ -48,7 +48,7 @@
               Background="Red"
               Margin="0, 0, 0, 0">
             <Frame x:Name="mainPageFrame"
-                   Margin="0, 100, 0, 0"
+                   Margin="0, 0, 0, 0"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch"
                    Background="Green"/>
@@ -58,7 +58,7 @@
               VerticalAlignment="Top"
               HorizontalAlignment="Left"
               Width="800"
-              Height="100"
+              Height="0"
               Background="{StaticResource mainWindowTopOptionsGridBavkgroundBrush}">
             <!--User acc grid-->
             <Grid x:Name="userAccOptionsGrid"

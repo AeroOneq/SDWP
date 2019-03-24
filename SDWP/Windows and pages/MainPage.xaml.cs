@@ -34,7 +34,17 @@ namespace SDWP
                         Items = null,
                         Paragraphs = new List<IParagraphElement>()
                         {
-                            new Subparagraph("qwertyqwertyqwertyy", new Item())
+                            new Subparagraph("qwertyqwertyqwertyy", new Item()),
+                            new Subparagraph("qwe ewq qwe eq qwe qwe qwe qwe ", new Item())
+                        }
+                    },
+                    new Item()
+                    {
+                        Name="Основная часть",
+                        Items = null,
+                        Paragraphs = new List<IParagraphElement>()
+                        {
+                            new Subparagraph("asdasdasdasdasdasdasdasdasdasdasd", new Item())
                         }
                     }
                 }
@@ -47,11 +57,15 @@ namespace SDWP
         private Grid ItemsGrid { get; set; }
         private Grid ParagraphsGrid { get; set; }
 
-        private Grid HideLeftGridImagesGrid { get; set; } 
+        private Grid HideLeftGridImagesGrid { get; set; }
         private Grid ShowLeftGridImagesGrid { get; set; }
 
-        private Grid ParagraphElementsGrid { get; set; } 
+        private StackPanel ParagraphsListPannel { get; set; }
+        private Grid ItemsListGrid { get; set; }
+        private Grid ParagraphElementsGrid { get; set; }
         private Grid AddNewParagraphElementGrid { get; set; }
+
+        private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
         #endregion
 
         public MainPage()
@@ -71,6 +85,8 @@ namespace SDWP
             HideLeftGridImagesGrid = hideLeftGridImagesGrid;
             ShowLeftGridImagesGrid = showLeftGridImagesGrid;
 
+            ParagraphsListPannel = paragraphsListPannel;
+            ItemsListGrid = itemsListGrid;
             ParagraphElementsGrid = paragraphElementsGrid;
             AddNewParagraphElementGrid = addNewParagraphElementGrid;
         }
@@ -92,12 +108,20 @@ namespace SDWP
         #endregion
 
         #region Option click events
+        /// <summary>
+        /// Uploads all visualizations of Items to the ItemsListGrid and then 
+        /// begins the animation to show this grid
+        /// </summary>
         private void UploadDocumentItems(object sender, EventArgs e)
         {
+            ItemsListGrid.Visibility = Visibility.Collapsed;
+            ItemsListGrid.Width = 0;
+
             DocumentMenuOption clickedDocumentMenuOption = sender as DocumentMenuOption;
             ChangeBackgroundsOfDocumentBtns(clickedDocumentMenuOption);
 
             Document document = clickedDocumentMenuOption.Document;
+            ItemsListGrid.Children.Clear();
 
             for (int i = 0; i < document.Items.Count; i++)
             {
@@ -107,10 +131,17 @@ namespace SDWP
                 };
                 itemMenuOption.PreviewMouseDown += UploadItemData;
 
-                itemsListGrid.Children.Add(itemMenuOption);
+                ItemsListGrid.Children.Add(itemMenuOption);
             }
+
+            ItemsListGrid.Visibility = Visibility.Visible;
+            MainPageAnimations.AnimateWidth(ItemsListGrid, 250);
         }
 
+        /// <summary>
+        /// After the click on an document element changes the background of this document item to 
+        /// the color of the ItemsGrid
+        /// </summary>
         private void ChangeBackgroundsOfDocumentBtns(DocumentMenuOption clickedOption)
         {
             foreach (FrameworkElement el in documentsListGrid.Children)
@@ -123,6 +154,10 @@ namespace SDWP
             clickedOption.DocumentBtn.Background = new SolidColorBrush(clickedBtnBackgroundColor);
         }
 
+        /// <summary>
+        /// After the click on an item element uploads the data of this item to either the paragraphs grid
+        /// if this Item object contains paragraphs or to the ItemsGrid, if this item contains Items
+        /// </summary>
         private void UploadItemData(object sender, EventArgs e)
         {
             ItemMenuOption clickedItemMenuOption = sender as ItemMenuOption;
@@ -136,16 +171,22 @@ namespace SDWP
             }
             else
             {
+                ParagraphsListPannel.Children.Clear();
+
                 for (int i = 0; i < item.Paragraphs.Count; i++)
                 {
                     FrameworkElement paragraphView = item.Paragraphs[i].GetEditView();
-                    paragraphView.Margin = new Thickness(15, 0, 15, 0);
+                    paragraphView.Margin = new Thickness(0, 10, 0, 0);
 
-                    paragraphsListGrid.Children.Add(paragraphView);
+                    ParagraphsListPannel.Children.Add(paragraphView);
                 }
             }
         }
 
+        /// <summary>
+        /// After the click on an items element changes the background of this item to 
+        /// the color of the ParagraphsGrid
+        /// </summary>
         private void ChangeBackgroundOfItemBtns(ItemMenuOption clickedItem)
         {
             foreach (FrameworkElement el in itemsListGrid.Children)
@@ -173,7 +214,7 @@ namespace SDWP
         private void IconMouseLeave(object sender, MouseEventArgs e)
         {
             Image thisImage = sender as Image;
-            thisImage.Visibility = Visibility.Collapsed; 
+            thisImage.Visibility = Visibility.Collapsed;
 
             List<Image> images = (thisImage.Parent as Grid).Children.OfType<Image>().ToList();
             int thisImageIndex = images.FindIndex(img => img.Name == thisImage.Name);
@@ -202,26 +243,51 @@ namespace SDWP
 
         private void ShowParagraphElementsAddOptions(object sender, MouseButtonEventArgs e)
         {
-            Size paragraphElementsGridNewSize = new Size(200, 35);
-
             AddNewParagraphElementGrid.Visibility = Visibility.Collapsed;
             ParagraphElementsGrid.Visibility = Visibility.Visible;
 
-            MainPageAnimations.AnimateSize(ParagraphElementsGrid, paragraphElementsGridNewSize,
-                new Action(()=> { }));
+            MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 200);
         }
         #endregion
 
         private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
         {
-            Size paragraphElementsGridNewSize = new Size(0, 35);
-
-            MainPageAnimations.AnimateSize(ParagraphElementsGrid, paragraphElementsGridNewSize,
-                new Action(()=> 
+            MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 0,
+                new Action(() =>
                 {
                     AddNewParagraphElementGrid.Visibility = Visibility.Visible;
                     ParagraphElementsGrid.Visibility = Visibility.Collapsed;
                 }));
+        }
+
+        /// <summary>
+        /// If the text of a search text box is a default text (like a placeholder)
+        /// we must clear the textbox for a user's purposes
+        /// </summary>
+        private void ParagraphSearchTextBoxGotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox.Text == ParagraphSearchTextBoxDefaultTetx)
+                textBox.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// If the textbox's text is an empty string then we must place a placeholder in that
+        /// textbox
+        /// </summary>
+        private void ParagraphSearchTextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox.Text == string.Empty)
+                textBox.Text = ParagraphSearchTextBoxDefaultTetx;
+        }
+
+        /// <summary>
+        /// On every text changed we must find all the elements which sutisfiy the search query
+        /// </summary>
+        private void ParagraphSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+#warning place a search logic here
         }
     }
 }

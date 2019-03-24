@@ -19,6 +19,7 @@ namespace ApplicationLib.Interfaces
     public interface IParagraphElement
     {
         Item ParentItem { get; }
+        string Hint { get; set; }
 
         FrameworkElement GetWatchView();
         FrameworkElement GetEditView();

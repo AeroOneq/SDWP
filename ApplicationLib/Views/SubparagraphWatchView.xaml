@@ -14,10 +14,10 @@
         <Style x:Key="textBlockBorderStyle" TargetType="Border">
             <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="Margin" Value="0, 0, 00, 0"/>
+            <Setter Property="Margin" Value="0, 0, 0, 0"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="{StaticResource mainThemeColor}"/>
-            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="CornerRadius" Value="0, 5, 5, 5"/>
             <Setter Property="Padding" Value="0"/>
         </Style>
         <Style x:Key="subparagraphTextBoxStyle" TargetType="TextBox">
@@ -39,7 +39,67 @@
                                 VerticalAlignment="Top"
                                 HorizontalAlignment="Stretch"
                                 Background="Transparent"
-                                CornerRadius="5">
+                                CornerRadius="0, 5, 5, 5">
+                            <ScrollViewer Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Top"   
+                                          HorizontalAlignment="Stretch"
+                                          x:Name="PART_ContentHost"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="#F8F8F8"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="Transparent"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="hintBorderStyle" TargetType="Border">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Width" Value="250"/>
+            <Setter Property="BorderBrush" Value="{StaticResource mainThemeBrush}"/>
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="CornerRadius" Value="5, 5, 0, 0"/>
+        </Style>
+        <Style x:Key="hintTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="LightGray"/>
+            <Setter Property="Foreground" Value="{StaticResource defaultTextColorBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontWeight" Value="Light"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Justify"/>
+            <Setter Property="Padding" Value="5, 4, 0, 0"/>
+            <Setter Property="MaxLines" Value="1"/>
+            <Setter Property="Text" Value="WrapWithOverflow"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border x:Name="border"
+                                Height="35"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                Background="Transparent"
+                                CornerRadius="5, 5, 5, 5">
                             <ScrollViewer Margin="{TemplateBinding Padding}"
                                           VerticalAlignment="Top"   
                                           HorizontalAlignment="Stretch"
@@ -79,8 +139,15 @@
     <UserControl.Content>
         <Grid VerticalAlignment="Top"
               HorizontalAlignment="Stretch">
+            <Border Style="{StaticResource hintBorderStyle}"
+                    Height="30"
+                    Margin="5, 0, 5, 0">
+                <TextBox x:Name="hintTextBox"
+                         Style="{StaticResource hintTextBoxStyle}"
+                         Text="Hint hint hint hint hint hint hint hint hint hint hint"/>
+            </Border>
             <Border Style="{StaticResource subparagraphBorderSyle}"
-                    Margin="0"
+                    Margin="0, 25, 0, 0"
                     Padding="5">
                 <Grid VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch">

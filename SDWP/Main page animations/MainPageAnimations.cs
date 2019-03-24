@@ -64,11 +64,15 @@ namespace SDWP
             grid.BeginAnimation(FrameworkElement.MarginProperty, marginAnimation);
         }
 
-        public static void AnimateSize(Grid grid, Size newSize, Action afterAnimationAction)
+        public static void AnimateWidth(FrameworkElement frameworkElement, double newWidth) =>
+            AnimateWidth(frameworkElement, newWidth, new Action(() => { }));
+
+        public static void AnimateWidth(FrameworkElement frameworkElement, double newWidth,
+            Action afterAnimationAction)
         {
             DoubleAnimation widthAnimation = new DoubleAnimation()
             {
-                To = newSize.Width,
+                To = newWidth,
                 Duration = TimeSpan.FromMilliseconds(200),
                 DecelerationRatio = 1,
                 SpeedRatio = 0.5,
@@ -76,12 +80,22 @@ namespace SDWP
             };
             widthAnimation.Completed += (sender, e) =>
             {
-                grid.Width = newSize.Width;
+                frameworkElement.Width = newWidth;
+                afterAnimationAction();
             };
 
+            frameworkElement.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
+        }
+
+        public static void AnimateHeight(FrameworkElement frameworkElement, double newHeight) =>
+            AnimateHeight(frameworkElement, newHeight, new Action(() => { }));
+
+        public static void AnimateHeight(FrameworkElement frameworkElement, double newHeight,
+            Action afterAnimationAction)
+        {
             DoubleAnimation heightAnimation = new DoubleAnimation()
             {
-                To = newSize.Height,
+                To = newHeight,
                 Duration = TimeSpan.FromMilliseconds(200),
                 DecelerationRatio = 1,
                 SpeedRatio = 0.5,
@@ -89,13 +103,11 @@ namespace SDWP
             };
             heightAnimation.Completed += (sender, e) =>
             {
+                frameworkElement.Height = newHeight;
                 afterAnimationAction();
-                grid.Height = newSize.Height;
             };
 
-
-            grid.BeginAnimation(FrameworkElement.WidthProperty, widthAnimation);
-            grid.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
+            frameworkElement.BeginAnimation(FrameworkElement.HeightProperty, heightAnimation);
         }
     }
 }

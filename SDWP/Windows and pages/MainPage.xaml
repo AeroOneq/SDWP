@@ -247,8 +247,9 @@
                     <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
                                   Margin="0, 60, 0, 60">
                         <Grid x:Name="itemsListGrid"
+                              Width="0"
                               VerticalAlignment="Stretch"
-                              HorizontalAlignment="Stretch"/>
+                              HorizontalAlignment="Left"/>
                     </ScrollViewer>
 
                 </Grid>
@@ -266,6 +267,10 @@
                           Height="40"
                           Background="Transparent">
                         <TextBox x:Name="paragraphsSearchTextBox"
+                                 Text="Введите запрос..."
+                                 GotFocus="ParagraphSearchTextBoxGotFocus"
+                                 LostFocus="ParagraphSearchTextBoxLostFocus"
+                                 TextChanged="ParagraphSearchTextBoxTextChanged"
                                  Margin="0, 0, 0, 0"
                                  Style="{StaticResource paragraphsSearchTextBoxStyle}"/>
 
@@ -360,9 +365,10 @@
 
                     <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
                                   Margin="15, 60, 15, 0">
-                        <Grid x:Name="paragraphsListGrid"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Stretch"/>
+                        <StackPanel x:Name="paragraphsListPannel"
+                                    Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"/>
                     </ScrollViewer>
                 </Grid>
             </Grid>

@@ -10,8 +10,12 @@ namespace ApplicationLib.Models
 {
     public class ParagraphImage : IParagraphElement
     {
+        #region Properties
         public byte[] ImageSource { get; set; }
+
         public Item ParentItem { get; }
+        public string Hint { get; set; }
+        #endregion
 
         public ParagraphImage(byte[] imageSource, Item parentItem)
         {

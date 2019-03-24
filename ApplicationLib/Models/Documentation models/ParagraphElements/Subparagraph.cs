@@ -12,8 +12,12 @@ namespace ApplicationLib.Models
 {
     public class Subparagraph : IParagraphElement
     {
+        #region Properties
         public string Text { get; set; }
+
         public Item ParentItem { get; }
+        public string Hint { get; set; }
+        #endregion
 
         public Subparagraph() { }
         public Subparagraph(string text, Item parentItem)

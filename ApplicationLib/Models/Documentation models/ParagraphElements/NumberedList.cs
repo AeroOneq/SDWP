@@ -10,9 +10,12 @@ namespace ApplicationLib.Models
 {
     class NumberedList : IParagraphElement
     {
+        #region Properties
         public List<NumberedListElement> ListElements { get; set; }
 
         public Item ParentItem { get; }
+        public string Hint { get; set; }
+        #endregion
 
         public NumberedList(List<NumberedListElement> listElements, Item parentItem)
         {

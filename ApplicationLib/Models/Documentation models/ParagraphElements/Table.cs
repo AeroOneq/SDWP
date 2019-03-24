@@ -10,8 +10,12 @@ namespace ApplicationLib.Models
 {
     public class Table : IParagraphElement
     {
+        #region Properties
         public TableCell[][] TableCells { get; set; }
+
         public Item ParentItem { get; }
+        public string Hint { get; set; }
+        #endregion
 
         public Table(TableCell[][] tableCells, Item parentItem)
         {
