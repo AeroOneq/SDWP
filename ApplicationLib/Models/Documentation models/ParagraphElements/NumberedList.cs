@@ -15,6 +15,7 @@ namespace ApplicationLib.Models
 
         public Item ParentItem { get; }
         public string Hint { get; set; }
+        public string HeaderText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         #endregion
 
         public NumberedList(List<NumberedListElement> listElements, Item parentItem)

@@ -31,7 +31,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -68,7 +68,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border CornerRadius="5"
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 BorderThickness="1"
                                 SnapsToDevicePixels="True"
                                 Background="{TemplateBinding Background}">

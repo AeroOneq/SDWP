@@ -64,6 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Windows and pages\CreateNewItemWindow.xaml.cs">
+      <DependentUpon>CreateNewItemWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExceptionHandler.cs" />
     <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
@@ -87,6 +90,10 @@
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
+    <Page Include="Windows and pages\CreateNewItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows and pages\MainPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -249,6 +256,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\addNewSubparagraphActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\backToPreviousItemIconActive.png" />
+    <Resource Include="Resources\backToPreviousItemIconStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\addNewItemIconActive.png" />
+    <Resource Include="Resources\addNewItemIconStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Documentation ViewModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

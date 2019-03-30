@@ -52,10 +52,42 @@
             </Setter>
         </Style>
     </UserControl.Resources>
+
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Переименовать"
+                      Click="StartRenamingDocument">
+                <MenuItem.Icon>
+                    <Image Source="Resources/contextMenuRename.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Удалить"
+                      Click="DeleteDocument">
+                <MenuItem.Icon>
+                    <Image Source="Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     
     <Grid VerticalAlignment="Top"
           HorizontalAlignment="Stretch">
         <Button x:Name="documentBtn"
-                Style="{StaticResource doucmentBtnStyle}"/>
+                Style="{StaticResource doucmentBtnStyle}">
+            <TextBox Width="250"
+                     Height="40"
+                     BorderThickness="0"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="False"
+                     Cursor="Arrow"
+                     Background="Transparent"
+                     VerticalContentAlignment="Center"
+                     Foreground="{StaticResource defaultTextColorBrush}"
+                     PreviewKeyDown="OnDocumentBtnKeyDown"
+                     LostFocus="OnDocumentBtnTextBoxLostFocus"
+                     PreviewMouseLeftButtonDown="OnDocumentBtnTextBoxClick"
+                     MouseDoubleClick="OnDocumentBtnTextBoxDoubleClick"/>
+        </Button>
     </Grid>
 </UserControl>

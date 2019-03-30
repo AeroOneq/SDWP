@@ -34,7 +34,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -95,7 +95,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -158,12 +158,12 @@
             <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Background" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border CornerRadius="5"
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 BorderThickness="1"
                                 SnapsToDevicePixels="True"
                                 Background="{TemplateBinding Background}">
@@ -179,7 +179,7 @@
         <Style x:Key="userProfileTextBlockStyle" TargetType="TextBlock">
             <Setter Property="OverridesDefaultStyle" Value="False"/>
             <Setter Property="FontFamily" Value="Arial, Verdana"/>
-            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>

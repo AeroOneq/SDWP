@@ -14,19 +14,6 @@ namespace ApplicationLib.Services
     {
         private UsersDB Database { get; } = new UsersDB();
 
-        #region Singleton
-        private static UserService userService;
-        public static UserService GetService
-        {
-            get
-            {
-                if (userService == null)
-                    userService = new UserService();
-                return userService;
-            }
-        }
-        #endregion
-
         public async Task<UserInfo> AuthorizeUserAsync(LoginData loginData) =>
             await Database.TryToLoginAsync(loginData);
 

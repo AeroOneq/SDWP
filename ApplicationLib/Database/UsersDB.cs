@@ -5,14 +5,27 @@ using ApplicationLib.Services;
 using System;
 using System.Threading.Tasks;
 
+using ApplicationLib.Interfaces;
+
 namespace ApplicationLib.Database
 {
     public class UsersDB
     {
+        #region Services
+        private IEmailService<UserInfo> EmailService { get; }
+
+        #endregion
+
         #region Properties
         private Random Random { get; } = new Random();
         private string ConnectionString { get; } = DatabaseProperties.ConnectionString;
         #endregion
+
+        public UsersDB()
+        {
+            IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
+            EmailService = serviceFactory.GetEmailService();
+        }
 
         #region Authorization methods
         public async Task<UserInfo> TryToLoginAsync(LoginData loginData)
@@ -79,7 +92,7 @@ namespace ApplicationLib.Database
                 UserInfo user = FindSuitableUserRecord(login, email);
                 string newPassword = CreateNewPassword();
                 ChangePassInTheDataBase(user, newPassword);
-                await EmailService.GetService.SendNewPasswordToUser(user, newPassword);
+                await EmailService.SendNewPasswordToUser(user, newPassword);
             });
         }
 

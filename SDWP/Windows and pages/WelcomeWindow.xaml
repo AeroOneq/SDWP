@@ -29,7 +29,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -58,7 +58,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="PasswordBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -87,7 +87,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -116,7 +116,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -145,7 +145,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -174,7 +174,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border BorderThickness="0, 0, 0, 1.5" 
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0"
                                 SnapsToDevicePixels="True">
                             <ScrollViewer Name="PART_ContentHost" 
@@ -191,7 +191,7 @@
         <Style x:Key="authorizationTextBlockStyle" TargetType="TextBlock">
             <Setter Property="OverridesDefaultStyle" Value="False"/>
             <Setter Property="FontFamily" Value="Arial, Verdana"/>
-            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
@@ -199,7 +199,7 @@
             <Setter Property="FontFamily" Value="Garamond"/>
             <Setter Property="FontSize" Value="55"/>
             <Setter Property="Language" Value="English"/>
-            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="FontWeight" Value="500"/>
@@ -208,7 +208,7 @@
             <Setter Property="FontFamily" Value="Garamond"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="Language" Value="English"/>
-            <Setter Property="Foreground" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
         </Style>
@@ -222,12 +222,12 @@
             <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="{StaticResource mainThemeColor}"/>
+            <Setter Property="Background" Value="{StaticResource mainThemeBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border CornerRadius="5"
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 BorderThickness="1"
                                 SnapsToDevicePixels="True"
                                 Background="{TemplateBinding Background}">
@@ -340,21 +340,21 @@
                   Margin="0, 100, 0, 0"
                   Height="10">
                 <Rectangle x:Name="loaderRect1"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
                            Margin="0, 0, 0, 0"/>
                 <Rectangle x:Name="loaderRect2"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
                            Margin="15, 0, 0, 0"/>
                 <Rectangle x:Name="loaderRect3"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
@@ -480,21 +480,21 @@
                   Margin="0, 0, 0, 0"
                   Height="10">
                     <Rectangle x:Name="rightRemindPassLoaderRect1"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
                            Margin="0, 0, 0, 0"/>
                     <Rectangle x:Name="rightRemindPassLoaderRect2"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
                            Margin="15, 0, 0, 0"/>
                     <Rectangle x:Name="rightRemindPassLoaderRect3"
-                           Fill="{StaticResource mainThemeColor}"
+                           Fill="{StaticResource mainThemeBrush}"
                            Width="10"
                            Height="10"
                            VerticalAlignment="Top"
@@ -565,21 +565,21 @@
                       Margin="0, 0, 0, 0"
                       Height="10">
                     <Rectangle x:Name="rightCreateAccLoaderRect1"
-                               Fill="{StaticResource mainThemeColor}"
+                               Fill="{StaticResource mainThemeBrush}"
                                Width="10"
                                Height="10"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Margin="0, 0, 0, 0"/>
                     <Rectangle x:Name="rightCreateAccLoaderRect2"
-                               Fill="{StaticResource mainThemeColor}"
+                               Fill="{StaticResource mainThemeBrush}"
                                Width="10"
                                Height="10"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Margin="15, 0, 0, 0"/>
                     <Rectangle x:Name="rightCreateAccLoaderRect3"
-                               Fill="{StaticResource mainThemeColor}"
+                               Fill="{StaticResource mainThemeBrush}"
                                Width="10"
                                Height="10"
                                VerticalAlignment="Top"

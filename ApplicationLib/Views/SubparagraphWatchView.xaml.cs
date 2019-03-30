@@ -10,10 +10,11 @@ namespace ApplicationLib.Views
     {
         private readonly int maxLineSymbolsCount = 200;
         public Subparagraph Subparagraph { get; }
-        private bool DoTextCahngedActions { get; set; } = true;
+        private bool DoTextChangedActions { get; set; } = true;
 
         #region Constructors
         public SubparagraphWatchView() { InitializeComponent(); }
+
         public SubparagraphWatchView(Subparagraph subparagraph)
         {
             InitializeComponent();
@@ -40,14 +41,14 @@ namespace ApplicationLib.Views
                 textBox.SelectionStart = textBox.Text.Length;
             }
 
-            if (!DoTextCahngedActions)
-                DoTextCahngedActions = true;
+            if (!DoTextChangedActions)
+                DoTextChangedActions = true;
         }
 
         #region Utility methods for Text Changed event
         private bool DoWeNeedToCreateNewLine(string text)
         {
-            return DoTextCahngedActions && (text.LastIndexOf("\n") > -1 &&
+            return DoTextChangedActions && (text.LastIndexOf("\n") > -1 &&
                 text.Substring(text.LastIndexOf("\n") + 1).Length == maxLineSymbolsCount) ||
                 text.Length == maxLineSymbolsCount;
         }
@@ -93,7 +94,7 @@ namespace ApplicationLib.Views
                 text += lastText;
 
             textBox.Text = text;
-            DoTextCahngedActions = false;
+            DoTextChangedActions = false;
         }
         #endregion
     }

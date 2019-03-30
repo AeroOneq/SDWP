@@ -54,10 +54,62 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid VerticalAlignment="Top"
-          HorizontalAlignment="Stretch">
-        <Button x:Name="itemBtn"
-                Style="{StaticResource itemBtnStyle}"/>
-    </Grid>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Переименовать"
+                      Click="StartRenamingItem">
+                <MenuItem.Icon>
+                    <Image Source="Resources/contextMenuRename.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Удалить"
+                      Click="DeleteItem">
+                <MenuItem.Icon>
+                    <Image Source="Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     
+    <UserControl.Content>
+        <Grid VerticalAlignment="Top"
+              HorizontalAlignment="Stretch">
+            <Button x:Name="itemBtn"
+                    Style="{StaticResource itemBtnStyle}">
+                <Grid>
+                    <Image x:Name="itemListTypeImage"
+                           Width="30"
+                           Height="30"
+                           Visibility="Collapsed"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Source="Resources/itemListModeIcon.png"/>
+                    <Image x:Name="itemContentTypeImage"
+                           Width="30"
+                           Height="30"
+                           Visibility="Collapsed"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Source="Resources/itemContentModeIcon.png"/>
+                    <TextBox x:Name="itemNameTextBox"
+                             Width="220"
+                             Height="40"
+                             BorderThickness="0"
+                             IsReadOnly="True"
+                             IsReadOnlyCaretVisible="False"
+                             Cursor="Arrow"
+                             Margin="30, 0, 0, 0"
+                             Background="Transparent"
+                             VerticalContentAlignment="Center"
+                             Foreground="{StaticResource defaultTextColorBrush}"
+                             PreviewKeyDown="OnItemBtnKeyDown"
+                             LostFocus="OnItemBtnTextBoxLostFocus"
+                             PreviewMouseLeftButtonDown="OnItemBtnTextBoxClick"
+                             MouseDoubleClick="OnItemBtnTextBoxDoubleClick"/>
+                </Grid>
+            </Button>
+        </Grid>
+    </UserControl.Content>
+
 </UserControl>

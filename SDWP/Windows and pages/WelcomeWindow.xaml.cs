@@ -20,6 +20,7 @@ using System.Net.Mail;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
 using ApplicationLib.Services;
+using ApplicationLib.Interfaces;
 
 namespace SDWP
 {
@@ -28,11 +29,16 @@ namespace SDWP
     /// </summary>
     public partial class MainWindow : Window
     {
+        private IEmailService<UserInfo> EmailService { get; set; }
+        private IUserService<UserInfo> UserService { get; set; }
+
         private UserInfo NewUser { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            InitializeServices();
             ExceptionHandler.Dispatcher = Dispatcher;
             loginTextBox.Focus();
             //initialize the list of all grids
@@ -42,6 +48,14 @@ namespace SDWP
                 remindPassGrid,
                 createAnAccountGrid
             };
+        }
+
+        private void InitializeServices()
+        {
+            IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
+
+            EmailService = serviceFactory.GetEmailService();
+            UserService = serviceFactory.GetUserService();
         }
 
         #region Registration process
@@ -83,8 +97,8 @@ namespace SDWP
             {
                 UserInfo.CheckUserProperties(newUser);
 
-                await UserService.GetService.CheckLogin(newUser.Login);
-                await UserService.GetService.CheckEmail(newUser.Email);
+                await UserService.CheckLogin(newUser.Login);
+                await UserService.CheckEmail(newUser.Email);
 
                 return true;
             }
@@ -114,7 +128,7 @@ namespace SDWP
             try
             {
                 NewUser = newUser;
-                await EmailService.GetService.SendCodeEmail(NewUser);
+                await EmailService.SendCodeEmail(NewUser);
             }
             catch (InvalidOperationException ex)
             {
@@ -177,8 +191,8 @@ namespace SDWP
         {
             try
             {
-                if (code == EmailService.GetService.Code)
-                    await UserService.GetService.CreateNewAccountAsync(NewUser);
+                if (code == EmailService.Code)
+                    await UserService.CreateNewAccountAsync(NewUser);
             }
             catch (NotAppropriateUserParam ex)
             {
@@ -281,7 +295,7 @@ namespace SDWP
         {
             try
             {
-                return await UserService.GetService.AuthorizeUserAsync(loginData);
+                return await UserService.AuthorizeUserAsync(loginData);
             }
             catch (UserNotFoundException ex)
             {
@@ -477,7 +491,7 @@ namespace SDWP
         {
             try
             {
-                await UserService.GetService.RemindPassAsync(login, email);
+                await UserService.RemindPassAsync(login, email);
                 return true;
             }
             catch (UserNotFoundException ex)

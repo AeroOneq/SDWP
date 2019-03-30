@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows.Threading;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
+using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
 
 namespace SDWP
@@ -25,6 +26,9 @@ namespace SDWP
     /// </summary
     public partial class UserProfilePage : Page
     {
+        private IEmailService<UserInfo> EmailService { get; set; }
+        private IUserService<UserInfo> UserService { get; set; }
+
         #region Properties
         private byte[] NewUserPhoto { get; set; } = null;
         private Connector Connector { get; } = new Connector(
@@ -37,8 +41,19 @@ namespace SDWP
         public UserProfilePage(UserInfo user)
         {
             InitializeComponent();
+
+            InitializeServices();
             UploadUserDataToUI();
         }
+
+        private void InitializeServices()
+        {
+            IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
+
+            EmailService = serviceFactory.GetEmailService();
+            UserService = serviceFactory.GetUserService();
+        }
+
         private void UploadUserDataToUI()
         {
             nameTextBox.Text = UserInfo.CurrentUser.Name;
@@ -203,8 +218,8 @@ namespace SDWP
 
                     if (newUserInfo.Email != UserInfo.CurrentUser.Email)
                     {
-                        await UserService.GetService.CheckEmail(newUserInfo.Email);
-                        await EmailService.GetService.SendCodeEmail(newUserInfo);
+                        await UserService.CheckEmail(newUserInfo.Email);
+                        await EmailService.SendCodeEmail(newUserInfo);
 
                         ShowEnterCodeGrid();
                         StartCodeTimer();
@@ -212,24 +227,24 @@ namespace SDWP
                     else
                     {
                         if (UserInfo.CurrentUser.Login != newUserInfo.Login)
-                            await UserService.GetService.CheckLogin(newUserInfo.Login);
+                            await UserService.CheckLogin(newUserInfo.Login);
 
-                        await UserService.GetService.UpdateRecord(newUserInfo);
-                        await EmailService.GetService.ResetCode();
+                        await UserService.UpdateRecord(newUserInfo);
+                        await EmailService.ResetCode();
 
                         OnSuccesfullUpdate();
                     }
                 }
                 catch (NotAppropriateUserParam ex)
                 {
-                    await EmailService.GetService.ResetCode();
+                    await EmailService.ResetCode();
                     SwitchOffTheLoader();
 
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
                 catch (Exception ex)
                 {
-                    await EmailService.GetService.ResetCode();
+                    await EmailService.ResetCode();
                     SwitchOffTheLoader();
 
                     ExceptionHandler.HandleWithMessageBox(ex);
@@ -249,7 +264,7 @@ namespace SDWP
 
         private async void UpdateCommonUserAndRefreshUI()
         {
-            UserInfo.CurrentUser = await UserService.GetService.GetUser("ID", UserInfo.CurrentUser.ID);
+            UserInfo.CurrentUser = await UserService.GetUser("ID", UserInfo.CurrentUser.ID);
             Dispatcher.Invoke(() => UploadUserDataToUI());
         }
 
@@ -258,8 +273,8 @@ namespace SDWP
         {
             SwitchOnTopLoader();
             UserInfo newUserInfo = CreateNewUserObject();
-            if (!(EmailService.GetService.Code == null) && emailCodeTextBox.Text == EmailService.GetService.Code)
-                await UserService.GetService.UpdateRecord(newUserInfo);
+            if (!(EmailService.Code == null) && emailCodeTextBox.Text == EmailService.Code)
+                await UserService.UpdateRecord(newUserInfo);
             else
             {
                 SwitchOffTheLoader();
@@ -282,7 +297,7 @@ namespace SDWP
                 currentTimerTime += new TimeSpan(0, 0, 1);
                 if (currentTimerTime.Seconds == 0 && currentTimerTime.Minutes == 2)
                 {
-                    await EmailService.GetService.ResetCode();
+                    await EmailService.ResetCode();
                     timeTillCodeExpireTextBlock.Text = "Код недействителен";
                     timer.Stop();
                 }
@@ -293,7 +308,7 @@ namespace SDWP
         private async void CloseEnterCodeGrid(object sender, MouseButtonEventArgs e)
         {
             emailCodeTextBox.Text = string.Empty;
-            await EmailService.GetService.ResetCode();
+            await EmailService.ResetCode();
             HideEnterCodeGrid();
         }
 

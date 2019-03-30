@@ -14,19 +14,6 @@ namespace ApplicationLib.Services
         private Email Email { get; } = new Email();
         public string Code => Email.Code;
 
-        #region Singleton
-        private static EmailService emailService;
-        public static EmailService GetService
-        {
-            get
-            {
-                if (emailService == null)
-                    emailService = new EmailService();
-                return emailService;
-            }
-        }
-        #endregion
-
         public async Task SendCodeEmail(UserInfo user) =>
             await Email.SendCodeEmail(user);
 

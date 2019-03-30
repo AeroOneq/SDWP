@@ -22,17 +22,80 @@ namespace ApplicationLib.Views
     /// </summary>
     public partial class DocumentMenuOption : UserControl
     {
+        #region Properties
         public Document Document { get; }
-        public Button DocumentBtn { get; }
+        public List<Document> ParentList { get; }
 
+        public Button DocumentBtn { get; }
+        private TextBox DocumentBtnTextBox { get; set; }
+
+        public EventHandler OnDocumentItemClick { get; set; }
+        #endregion
+
+        #region Constructors
         public DocumentMenuOption() { InitializeComponent(); }
-        public DocumentMenuOption(Document document)
+        public DocumentMenuOption(Document document, List<Document> parentList)
         {
             InitializeComponent();
+
             Document = document;
+            ParentList = parentList;
 
             DocumentBtn = documentBtn;
-            DocumentBtn.Content = Document.Name;
+            DocumentBtnTextBox = DocumentBtn.Content as TextBox;
+            DocumentBtnTextBox.Text = Document.Name;
+            DocumentBtnTextBox.ContextMenu = ContextMenu;
+        }
+        #endregion
+
+        private void OnDocumentBtnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Document.Name = DocumentBtnTextBox.Text;
+                MakeDocumentBtnTextBoxReadOnly(DocumentBtnTextBox);
+            }
+        }
+
+        private void MakeDocumentBtnTextBoxReadOnly(TextBox textBox)
+        {
+            textBox.IsReadOnly = true;
+            textBox.Cursor = Cursors.Arrow;
+        }
+
+        private void MakeDocumentBtnTextBoxNotReadOnly(TextBox textBox)
+        {
+            textBox.IsReadOnly = false;
+            textBox.Cursor = Cursors.IBeam;
+        }
+
+        private void OnDocumentBtnTextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            DocumentBtnTextBox.Text = Document.Name;
+            MakeDocumentBtnTextBoxReadOnly(DocumentBtnTextBox);
+        }
+
+        private void OnDocumentBtnTextBoxClick(object sender, MouseButtonEventArgs e)
+        {
+            if (DocumentBtnTextBox.IsReadOnly)
+            {
+                OnDocumentItemClick(this, e);
+            }
+        }
+
+        private void OnDocumentBtnTextBoxDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            StartRenamingDocument(null, null);
+        }
+
+        private void StartRenamingDocument(object sender, RoutedEventArgs e)
+        {
+            MakeDocumentBtnTextBoxNotReadOnly(DocumentBtnTextBox);
+        }
+
+        private void DeleteDocument(object sender, RoutedEventArgs e)
+        {
+            ParentList.Remove(Document);
         }
     }
 }

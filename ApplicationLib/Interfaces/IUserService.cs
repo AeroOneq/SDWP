@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Interfaces
 {
-    interface IUserService<UserType>
+    public interface IUserService<UserType>
     {
         Task<UserType> AuthorizeUserAsync(LoginData loginData);
         Task CreateNewAccountAsync(UserType user);
@@ -17,5 +17,6 @@ namespace ApplicationLib.Interfaces
         Task CheckEmail(string email);
 
         Task UpdateRecord(UserType user);
+        Task<UserInfo> GetUser(string columnName, object value);
     }
 }

@@ -17,6 +17,7 @@ namespace ApplicationLib.Models
 
         public Item ParentItem { get; }
         public string Hint { get; set; }
+        public string HeaderText { get; set; }
         #endregion
 
         public Subparagraph() { }

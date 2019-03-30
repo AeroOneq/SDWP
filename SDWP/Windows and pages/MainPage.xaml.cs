@@ -7,8 +7,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using ApplicationLib.Models;
-using ApplicationLib.Views;
 using ApplicationLib.Interfaces;
+using ApplicationLib.Views;
 
 namespace SDWP
 {
@@ -30,13 +30,21 @@ namespace SDWP
                 {
                     new Item()
                     {
-                        Name="Введение",
-                        Items = null,
-                        Paragraphs = new List<IParagraphElement>()
+                        Name="Супер введение",
+                        Items = new List<Item>()
                         {
-                            new Subparagraph("qwertyqwertyqwertyy", new Item()),
-                            new Subparagraph("qwe ewq qwe eq qwe qwe qwe qwe ", new Item())
-                        }
+                            new Item()
+                            {
+                                Name="Введение",
+                                Items = null,
+                                Paragraphs = new List<IParagraphElement>()
+                                {
+                                    new Subparagraph("qwertyqwertyqwertyy", new Item()),
+                                    new Subparagraph("qwe ewq qwe eq qwe qwe qwe qwe ", new Item())
+                                }
+                            }
+                        },
+                        Paragraphs = null,
                     },
                     new Item()
                     {
@@ -60,20 +68,31 @@ namespace SDWP
         private Grid HideLeftGridImagesGrid { get; set; }
         private Grid ShowLeftGridImagesGrid { get; set; }
 
-        private StackPanel ParagraphsListPannel { get; set; }
-        private Grid ItemsListGrid { get; set; }
+        private StackPanel DocumentsListStackPanel { get; set; }
+        private StackPanel ParagraphsListPanel { get; set; }
+        private StackPanel ItemsListStackPanel { get; set; }
         private Grid ParagraphElementsGrid { get; set; }
         private Grid AddNewParagraphElementGrid { get; set; }
 
         private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
+
+        private Documentation CurrentDocumentation { get; set; }
+        private Item CurrentItem { get; set; }
+        private List<Item> CurrentItemsList { get; set; }
         #endregion
 
         public MainPage()
         {
             InitializeComponent();
 
+            #warning TEST
+            Documents[0].Items[0].Items[0].ParentItem = Documents[0].Items[0];
+            Documents[0].Items[0].Items[0].ParentList = Documents[0].Items[0].Items;
+            Documents[0].Items[0].ParentList = Documents[0].Items;
+            Documents[0].Items[0].ParentItem = null;
+
             SetPropertiesValue();
-            UploadDocumentationDataToUI();
+            UploadDocumentationDataToUI(Documentation, Documents);
         }
 
         private void SetPropertiesValue()
@@ -85,57 +104,77 @@ namespace SDWP
             HideLeftGridImagesGrid = hideLeftGridImagesGrid;
             ShowLeftGridImagesGrid = showLeftGridImagesGrid;
 
-            ParagraphsListPannel = paragraphsListPannel;
-            ItemsListGrid = itemsListGrid;
+            DocumentsListStackPanel = documentsListStackPanel;
+            ParagraphsListPanel = paragraphsListPanel;
+            ItemsListStackPanel = itemsListStackPanel;
             ParagraphElementsGrid = paragraphElementsGrid;
             AddNewParagraphElementGrid = addNewParagraphElementGrid;
         }
 
         #region Upload new documentation
-        private void UploadDocumentationDataToUI()
+        /// <summary>
+        /// Uploads all documents which are in the current documentation to the left
+        /// document grid, and creates a PreviewMouseDown Event for every document
+        /// visual object
+        /// </summary>
+        private void UploadDocumentationDataToUI(Documentation documentation,
+            List<Document> documents)
         {
-            for (int i = 0; i < Documents.Count; i++)
+            for (int i = 0; i < documents.Count; i++)
             {
-                DocumentMenuOption documentMenuOption = new DocumentMenuOption(Documents[i])
-                {
-                    Margin = new Thickness(0, 20 + 40 * i, 0, 0)
-                };
-                documentMenuOption.PreviewMouseDown += UploadDocumentItems;
+                DocumentMenuOption documentMenuOption = new DocumentMenuOption(documents[i],
+                    Documents);
+                documentMenuOption.OnDocumentItemClick += UploadDocumentItems;
 
-                documentsListGrid.Children.Add(documentMenuOption);
+                DocumentsListStackPanel.Children.Add(documentMenuOption);
             }
         }
         #endregion
 
         #region Option click events
         /// <summary>
-        /// Uploads all visualizations of Items to the ItemsListGrid and then 
+        /// Uploads all visualizations of Items to the ItemsListStackPanel, creates a PreviewMouseDown event
+        /// (to upload the content of item when clicked) and then 
         /// begins the animation to show this grid
         /// </summary>
         private void UploadDocumentItems(object sender, EventArgs e)
         {
-            ItemsListGrid.Visibility = Visibility.Collapsed;
-            ItemsListGrid.Width = 0;
-
             DocumentMenuOption clickedDocumentMenuOption = sender as DocumentMenuOption;
             ChangeBackgroundsOfDocumentBtns(clickedDocumentMenuOption);
 
             Document document = clickedDocumentMenuOption.Document;
-            ItemsListGrid.Children.Clear();
 
-            for (int i = 0; i < document.Items.Count; i++)
+            UploadItemsToPanel(document.Items);
+            CurrentItemsList = document.Items;
+        }
+
+        /// <summary>
+        /// Uploads all items to the itmes list panel,
+        /// for each item the parent list is defined
+        /// </summary>
+        /// <param name="items"></param>
+        private void UploadItemsToPanel(List<Item> items)
+        {
+            ItemsListStackPanel.Visibility = Visibility.Collapsed;
+            ItemsListStackPanel.Width = 0;
+            ItemsListStackPanel.Children.Clear();
+
+            for (int i = 0; i < items.Count; i++)
             {
-                ItemMenuOption itemMenuOption = new ItemMenuOption(document.Items[i])
-                {
-                    Margin = new Thickness(0, 20 + 40 * i, 0, 0)
-                };
-                itemMenuOption.PreviewMouseDown += UploadItemData;
-
-                ItemsListGrid.Children.Add(itemMenuOption);
+                UploadSingleItemToPanel(items[i], i);
+                items[i].ParentList = items;
             }
 
-            ItemsListGrid.Visibility = Visibility.Visible;
-            MainPageAnimations.AnimateWidth(ItemsListGrid, 250);
+            ItemsListStackPanel.Visibility = Visibility.Visible;
+            MainPageAnimations.AnimateWidth(ItemsListStackPanel, 250);
+        }
+
+        private void UploadSingleItemToPanel(Item item, int itemNumber)
+        {
+            ItemMenuOption itemMenuOption = new ItemMenuOption(item);
+            itemMenuOption.OnItemClick += UploadItemData;
+
+            ItemsListStackPanel.Children.Add(itemMenuOption);
         }
 
         /// <summary>
@@ -144,7 +183,7 @@ namespace SDWP
         /// </summary>
         private void ChangeBackgroundsOfDocumentBtns(DocumentMenuOption clickedOption)
         {
-            foreach (FrameworkElement el in documentsListGrid.Children)
+            foreach (FrameworkElement el in DocumentsListStackPanel.Children)
             {
                 if (el is DocumentMenuOption)
                     (el as DocumentMenuOption).DocumentBtn.Background = new SolidColorBrush(Colors.Transparent);
@@ -157,6 +196,8 @@ namespace SDWP
         /// <summary>
         /// After the click on an item element uploads the data of this item to either the paragraphs grid
         /// if this Item object contains paragraphs or to the ItemsGrid, if this item contains Items
+        /// If we upload items then we must set a backToPreviousItemTextBlock text (so we can get to the
+        /// previous item list)
         /// </summary>
         private void UploadItemData(object sender, EventArgs e)
         {
@@ -167,19 +208,34 @@ namespace SDWP
 
             if (item.Items != null)
             {
-#warning Create logic for appending other items here
+                UploadItemsToPanel(item.Items);
+                backToPreviousItemTextBlock.Text = "к " + item.Name;
+
+                CurrentItem = item;
+                CurrentItemsList = item.Items;
+
+                if (CurrentItem.ParentList != null)
+                    backToPreviousItemStaticImage.IsEnabled = true;
             }
             else
             {
-                ParagraphsListPannel.Children.Clear();
+                UploadParagraphsToParagraphsListPanel(item.Paragraphs);
+            }
+        }
 
-                for (int i = 0; i < item.Paragraphs.Count; i++)
-                {
-                    FrameworkElement paragraphView = item.Paragraphs[i].GetEditView();
-                    paragraphView.Margin = new Thickness(0, 10, 0, 0);
+        /// <summary>
+        /// Uploads all paragraphs of a current item to the paragraphs stack panel
+        /// </summary>
+        private void UploadParagraphsToParagraphsListPanel(List<IParagraphElement> paragraphs)
+        {
+            ParagraphsListPanel.Children.Clear();
 
-                    ParagraphsListPannel.Children.Add(paragraphView);
-                }
+            for (int i = 0; i < paragraphs.Count; i++)
+            {
+                FrameworkElement paragraphView = paragraphs[i].GetEditView();
+                paragraphView.Margin = new Thickness(0, 10, 0, 0);
+
+                ParagraphsListPanel.Children.Add(paragraphView);
             }
         }
 
@@ -189,7 +245,7 @@ namespace SDWP
         /// </summary>
         private void ChangeBackgroundOfItemBtns(ItemMenuOption clickedItem)
         {
-            foreach (FrameworkElement el in itemsListGrid.Children)
+            foreach (FrameworkElement el in ItemsListStackPanel.Children)
             {
                 if (el is ItemMenuOption)
                     (el as ItemMenuOption).ItemBtn.Background = new SolidColorBrush(Colors.Transparent);
@@ -288,6 +344,52 @@ namespace SDWP
         private void ParagraphSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
 #warning place a search logic here
+        }
+
+        /// <summary>
+        /// If the current item has a parent and parent has item's list, 
+        /// then we must upload get back to the parent item
+        /// </summary>
+        private void GoToPreviousItem(object sender, MouseButtonEventArgs e)
+        {
+            if (CurrentItem!=null && CurrentItem.ParentList!= null)
+            {
+                UploadItemsToPanel(CurrentItem.ParentList);
+
+                //update text of a backToPreviousItemTextBlock and if there is no parent disable the back img
+                if (CurrentItem.ParentItem != null)
+                {
+                    backToPreviousItemTextBlock.Text = "к " + CurrentItem.ParentItem.Name;
+                }
+                else
+                {
+                    backToPreviousItemTextBlock.Text = string.Empty;
+                    backToPreviousItemStaticImage.IsEnabled = false;
+                }
+
+                CurrentItemsList = CurrentItem.ParentList;
+                CurrentItem = CurrentItem.ParentItem;
+            }
+        }
+
+        /// <summary>
+        /// Starts the process of creation a new item in the current item
+        /// </summary>
+        private void CreateNewItem(object sender, MouseButtonEventArgs e)
+        {
+            if (CurrentItemsList != null)
+            {
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(CurrentItemsList,
+                    CurrentItem);
+                createNewItemWindow.ShowDialog();
+
+                UploadItemsToPanel(CurrentItemsList);
+            }
+            else
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите документ либо пункт",
+                    MessageBoxButton.OK);
+            }
         }
     }
 }

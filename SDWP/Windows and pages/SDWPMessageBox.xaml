@@ -31,7 +31,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border CornerRadius="5"
-                                BorderBrush="{StaticResource mainThemeColor}"
+                                BorderBrush="{StaticResource mainThemeBrush}"
                                 BorderThickness="1"
                                 SnapsToDevicePixels="True"
                                 Background="{TemplateBinding Background}">
@@ -41,6 +41,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            
             <EventSetter Event="MouseEnter" Handler="SDWPMessageBoxBtnMouseEnter"/>
             <EventSetter Event="MouseLeave" Handler="SDWPMessageBoxBtnMouseLeave"/>
         </Style>
