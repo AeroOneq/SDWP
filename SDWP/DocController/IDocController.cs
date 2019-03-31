@@ -20,6 +20,7 @@ namespace SDWP
         /// </summary>
         List<Document> Documents { get; }
 
+        Document CurrentDocument { get; set; }
         /// <summary>
         /// The item, which items are now uploaded
         /// </summary>

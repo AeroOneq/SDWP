@@ -251,10 +251,10 @@ namespace SDWP
             Item item = clickedItemMenuOption.Item;
 
             ChangeBackgroundOfItemBtns(clickedItemMenuOption);
+            DocController.UploadItem(item);
 
             if (item.Items != null)
             {
-                DocController.UploadItem(item);
                 UploadItemsToPanel(DocController.CurrentItem.Items);
                 backToPreviousItemTextBlock.Text = "к " + item.Name;
 
@@ -276,8 +276,11 @@ namespace SDWP
 
             for (int i = 0; i < paragraphs.Count; i++)
             {
-                FrameworkElement paragraphView = paragraphs[i].GetEditView();
+                UserControl paragraphView = paragraphs[i].GetEditView();
                 paragraphView.Margin = new Thickness(0, 10, 0, 0);
+
+                (paragraphView as IParagraphEditView).ParentList = paragraphs;
+                (paragraphView as IParagraphEditView).RefreshParagraphsUI = RefreshParagraphsUI;
 
                 ParagraphsListPanel.Children.Add(paragraphView);
             }

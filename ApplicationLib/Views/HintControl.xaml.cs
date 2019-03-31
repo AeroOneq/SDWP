@@ -10,21 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using ApplicationLib.Models;
-using ApplicationLib.Views;
-
-namespace ApplicationLib.Interfaces
+namespace ApplicationLib.Views
 {
-    public interface IParagraphElement
+    /// <summary>
+    /// Логика взаимодействия для HintControl.xaml
+    /// </summary>
+    public partial class HintControl : UserControl
     {
-        Item ParentItem { get; }
-        string Hint { get; set; }
-        string HeaderText { get; set; }
-
-        UserControl GetWatchView();
-        UserControl GetEditView();
-        Task DeleteParagraph();
+        public HintControl()
+        {
+            InitializeComponent();
+        }
     }
 }

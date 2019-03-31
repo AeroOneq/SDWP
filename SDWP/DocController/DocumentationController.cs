@@ -14,6 +14,7 @@ namespace SDWP
         public Documentation Documentation { get; }
         public List<Document> Documents { get; }
 
+        public Document CurrentDocument { get; set; }
         public Item CurrentItem { get; set; }
         public Item CurrentContentItem { get; set; }
         public List<Item> CurrentItemsList { get; set; }
@@ -43,6 +44,7 @@ namespace SDWP
         public void UploadDocument(Document document)
         {
             CurrentItemsList = document.Items;
+            CurrentDocument = document;
         }
 
         public void GoToPreviousItem(Item currentItem)

@@ -75,19 +75,30 @@
           HorizontalAlignment="Stretch">
         <Button x:Name="documentBtn"
                 Style="{StaticResource doucmentBtnStyle}">
-            <TextBox Width="250"
-                     Height="40"
-                     BorderThickness="0"
-                     IsReadOnly="True"
-                     IsReadOnlyCaretVisible="False"
-                     Cursor="Arrow"
-                     Background="Transparent"
-                     VerticalContentAlignment="Center"
-                     Foreground="{StaticResource defaultTextColorBrush}"
-                     PreviewKeyDown="OnDocumentBtnKeyDown"
-                     LostFocus="OnDocumentBtnTextBoxLostFocus"
-                     PreviewMouseLeftButtonDown="OnDocumentBtnTextBoxClick"
-                     MouseDoubleClick="OnDocumentBtnTextBoxDoubleClick"/>
+            <Grid>
+                <Image x:Name="itemContentTypeImage"
+                       Width="20"
+                       Height="20"
+                       Visibility="Visible"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left"
+                       Source="Resources/documentMenuItem.png"/>
+                <TextBox x:Name="documentBtnTextBox"
+                         Width="250"
+                         Height="40"
+                         BorderThickness="0"
+                         Margin="30, 0, 0, 0"
+                         IsReadOnly="True"
+                         IsReadOnlyCaretVisible="False"
+                         Cursor="Arrow"
+                         Background="Transparent"
+                         VerticalContentAlignment="Center"
+                         Foreground="{StaticResource defaultTextColorBrush}"
+                         PreviewKeyDown="OnDocumentBtnKeyDown"
+                         LostFocus="OnDocumentBtnTextBoxLostFocus"
+                         PreviewMouseLeftButtonDown="OnDocumentBtnTextBoxClick"
+                         MouseDoubleClick="OnDocumentBtnTextBoxDoubleClick"/>
+            </Grid>
         </Button>
     </Grid>
 </UserControl>

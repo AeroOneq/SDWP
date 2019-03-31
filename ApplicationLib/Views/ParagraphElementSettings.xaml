@@ -38,7 +38,8 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Right"
                    MouseLeave="IconMouseLeave"
-                   Source="Resources/paragraphElementHintActive.png"/>
+                   Source="Resources/paragraphElementHintActive.png"
+                   MouseDown="ShowOrHideParagraphHint"/>
         </Grid>
 
         <Grid x:Name="reorderGrid"
@@ -62,7 +63,8 @@
                    MouseLeave="IconMouseLeave"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Right"
-                   Source="Resources/reorderParagraphElementActive.png"/>
+                   Source="Resources/reorderParagraphElementActive.png"
+                   MouseDown="ReplaceParagraph"/>
         </Grid>
 
         <Grid x:Name="deletePargraphGrid"
@@ -82,7 +84,8 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Right"
                    MouseLeave="IconMouseLeave"
-                   Source="Resources/deleteIconActive.png"/>
+                   Source="Resources/deleteIconActive.png"
+                   MouseDown="DeletePragraph"/>
         </Grid>
 
     </StackPanel>

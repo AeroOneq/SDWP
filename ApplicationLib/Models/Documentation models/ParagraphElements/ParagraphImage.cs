@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using ApplicationLib.Interfaces;
 
 namespace ApplicationLib.Models
@@ -24,17 +25,12 @@ namespace ApplicationLib.Models
             ParentItem = parentItem;
         }
 
-        public FrameworkElement VisualizeElement()
+        public UserControl GetWatchView()
         {
             throw new NotImplementedException();
         }
 
-        public FrameworkElement GetWatchView()
-        {
-            throw new NotImplementedException();
-        }
-
-        public FrameworkElement GetEditView()
+        public UserControl GetEditView()
         {
             throw new NotImplementedException();
         }

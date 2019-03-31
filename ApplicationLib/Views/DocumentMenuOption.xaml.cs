@@ -45,7 +45,8 @@ namespace ApplicationLib.Views
             ParentList = parentList;
 
             DocumentBtn = documentBtn;
-            DocumentBtnTextBox = DocumentBtn.Content as TextBox;
+            DocumentBtnTextBox = documentBtnTextBox;
+
             DocumentBtnTextBox.Text = Document.Name;
             DocumentBtnTextBox.ContextMenu = ContextMenu;
         }

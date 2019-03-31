@@ -13,10 +13,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ApplicationLib.Interfaces;
+
 namespace ApplicationLib.Views
 {
-    public partial class ParagraphElementSettings : UserControl
+    public partial class ParagraphElementSettings : UserControl, IParagraphSettings
     {
+        #region IParagraphSettings
+        public Action OnParagraphDelete { get; set; }
+        public Action OnParagraphShowOrHideHint { get; set; }
+        public Action OnParagraphReplace { get; set; }
+        #endregion
+
         public ParagraphElementSettings()
         {
             InitializeComponent();
@@ -43,5 +51,20 @@ namespace ApplicationLib.Views
             images[thisImageIndex - 1].Visibility = Visibility.Visible;
         }
         #endregion
+
+        private void ShowOrHideParagraphHint(object sender, MouseButtonEventArgs e)
+        {
+            OnParagraphShowOrHideHint();
+        }
+
+        private void ReplaceParagraph(object sender, MouseButtonEventArgs e)
+        {
+            OnParagraphReplace();
+        }
+
+        private void DeletePragraph(object sender, MouseButtonEventArgs e)
+        {
+            OnParagraphDelete();
+        }
     }
 }

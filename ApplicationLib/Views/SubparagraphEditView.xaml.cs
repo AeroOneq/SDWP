@@ -1,28 +1,65 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
+using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 
 namespace ApplicationLib.Views
 {
-    public partial class SubparagraphWatchView : UserControl
+    public partial class SubparagraphEditView : UserControl, IParagraphEditView
     {
-        private readonly int maxLineSymbolsCount = 200;
         public Subparagraph Subparagraph { get; }
+
+        private readonly int maxLineSymbolsCount = 200;
         private bool DoTextChangedActions { get; set; } = true;
 
-        #region Constructors
-        public SubparagraphWatchView() { InitializeComponent(); }
+        private ParagraphElementSettings ParagraphSettings { get; }
+        private HintControl HintControl { get; set; }
 
-        public SubparagraphWatchView(Subparagraph subparagraph)
+        #region IParagraphEditView properties
+        public Action RefreshParagraphsUI { get; set; }
+        public List<IParagraphElement> ParentList { get; set; }
+        #endregion
+
+        #region Constructors
+        public SubparagraphEditView() { InitializeComponent(); }
+
+        public SubparagraphEditView(Subparagraph subparagraph)
         {
             InitializeComponent();
 
             Subparagraph = subparagraph;
             subparagraphTextBlock.Text = subparagraph.Text;
+
+            ParagraphSettings = paragraphsSettings;
+            HintControl = hintControl;
+
+            SetParagraphSettingsEvents();
         }
         #endregion
+
+
+        private void SetParagraphSettingsEvents()
+        {
+            IParagraphSettings pSettings = ParagraphSettings as IParagraphSettings;
+
+            pSettings.OnParagraphDelete += DeleteParagraph;
+            pSettings.OnParagraphShowOrHideHint += ShowOrHideHint;
+            pSettings.OnParagraphReplace += ReplaceParagraph;
+        }
 
         private void SubparagraphTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -95,6 +132,30 @@ namespace ApplicationLib.Views
 
             textBox.Text = text;
             DoTextChangedActions = false;
+        }
+        #endregion
+
+        #region IParagraphEditView methods
+        public void DeleteParagraph()
+        {
+            ParentList.Remove(Subparagraph);
+            RefreshParagraphsUI();
+        }
+
+        public void ReplaceParagraph()
+        { 
+        }
+
+        public void ShowOrHideHint()
+        {
+            if (HintControl.Visibility == Visibility.Collapsed)
+            {
+                HintControl.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                HintControl.Visibility = Visibility.Collapsed;
+            }
         }
         #endregion
     }

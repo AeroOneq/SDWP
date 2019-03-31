@@ -56,8 +56,13 @@
   <ItemGroup>
     <Compile Include="Database\Email.cs" />
     <Compile Include="Database\UsersDB.cs" />
+    <Compile Include="Interfaces\IParagraphEditView.cs" />
+    <Compile Include="Interfaces\IParagraphSettings.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HintControl.xaml.cs">
+      <DependentUpon>HintControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemMenuOption.xaml.cs">
       <DependentUpon>ItemMenuOption.xaml</DependentUpon>
@@ -65,8 +70,8 @@
     <Compile Include="Views\ParagraphElementSettings.xaml.cs">
       <DependentUpon>ParagraphElementSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SubparagraphWatchView.xaml.cs">
-      <DependentUpon>SubparagraphWatchView.xaml</DependentUpon>
+    <Compile Include="Views\SubparagraphEditView.xaml.cs">
+      <DependentUpon>SubparagraphEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Documentation models\Access.cs" />
     <Compile Include="Models\Documentation models\Document.cs" />
@@ -97,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\HintControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ItemMenuOption.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -105,7 +114,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SubparagraphWatchView.xaml">
+    <Page Include="Views\SubparagraphEditView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -140,6 +149,9 @@
   <ItemGroup>
     <Resource Include="Views\Resources\itemContentModeIcon.png" />
     <Resource Include="Views\Resources\itemListModeIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\documentMenuItem.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
@@ -32,11 +33,11 @@ namespace ApplicationLib.Models
             throw new NotImplementedException();
         }
 
-        public FrameworkElement GetWatchView()
+        public UserControl GetWatchView()
         {
             throw new NotImplementedException();
         }
 
-        public FrameworkElement GetEditView() => new SubparagraphWatchView(this);
+        public UserControl GetEditView() => new SubparagraphEditView(this);
     }
 }

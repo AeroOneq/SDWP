@@ -13,7 +13,6 @@ namespace ApplicationLib.Database
     {
         #region Services
         private IEmailService<UserInfo> EmailService { get; }
-
         #endregion
 
         #region Properties
