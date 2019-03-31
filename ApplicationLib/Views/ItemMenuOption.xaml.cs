@@ -24,6 +24,17 @@ namespace ApplicationLib.Views
         public Item Item { get; }
         private TextBox ItemBtnTextBox { get; set; }
         private Image ItemTypeImage { get; set; }
+        #endregion
+
+        #region Events
+        /// <summary>
+        /// This event is called when some changes were perfomed which must then refresh
+        /// the list in UI where this item is placed (e.g. deleteion of the item)
+        /// </summary>
+        public Action UpdateList { get; set; }
+        /// <summary>
+        /// This event is called when the item's button is called
+        /// </summary>
         public EventHandler OnItemClick { get; set; }
         #endregion
 
@@ -66,6 +77,7 @@ namespace ApplicationLib.Views
         private void DeleteItem(object sender, RoutedEventArgs e)
         {
             Item.ParentList.Remove(Item);
+            UpdateList();
         }
 
         private void OnItemBtnKeyDown(object sender, KeyEventArgs e)

@@ -10,6 +10,8 @@ using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
 
+using SDWP.Factories;
+
 namespace SDWP
 {
     public partial class MainPage : Page
@@ -76,23 +78,23 @@ namespace SDWP
 
         private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
 
-        private Documentation CurrentDocumentation { get; set; }
-        private Item CurrentItem { get; set; }
-        private List<Item> CurrentItemsList { get; set; }
+        private ISdwpAbstractFactory AbstractFactory { get; }
+        private IDocController DocController { get; set; }
         #endregion
 
         public MainPage()
         {
             InitializeComponent();
+            AbstractFactory = new SdwpAbstractFactory();
 
-            #warning TEST
+#warning TEST
             Documents[0].Items[0].Items[0].ParentItem = Documents[0].Items[0];
             Documents[0].Items[0].Items[0].ParentList = Documents[0].Items[0].Items;
             Documents[0].Items[0].ParentList = Documents[0].Items;
             Documents[0].Items[0].ParentItem = null;
 
             SetPropertiesValue();
-            UploadDocumentationDataToUI(Documentation, Documents);
+            UploadDocumentation(Documentation, Documents);
         }
 
         private void SetPropertiesValue()
@@ -112,22 +114,63 @@ namespace SDWP
         }
 
         #region Upload new documentation
+        private void UploadDocumentation(Documentation documentation, List<Document> documents)
+        {
+            DocController = AbstractFactory.GetDocController(documentation, documents);
+
+            UploadDocumentationDataToUI(DocController.Documentation);
+            UploadDocumentsDataToUI(DocController.Documents);
+        }
+
+        private void UploadDocumentationDataToUI(Documentation documentation)
+        {
+#warning Create Upload logic
+        }
+
         /// <summary>
         /// Uploads all documents which are in the current documentation to the left
         /// document grid, and creates a PreviewMouseDown Event for every document
         /// visual object
         /// </summary>
-        private void UploadDocumentationDataToUI(Documentation documentation,
-            List<Document> documents)
+        private void UploadDocumentsDataToUI(List<Document> documents)
         {
+            DocumentsListStackPanel.Children.Clear();
+
             for (int i = 0; i < documents.Count; i++)
             {
                 DocumentMenuOption documentMenuOption = new DocumentMenuOption(documents[i],
-                    Documents);
+                    documents);
+
+                //set events
                 documentMenuOption.OnDocumentItemClick += UploadDocumentItems;
+                documentMenuOption.UpdateList += RefreshDocumentUI;
 
                 DocumentsListStackPanel.Children.Add(documentMenuOption);
             }
+        }
+        #endregion
+
+        #region Refresh UI methods
+        /// <summary>
+        /// Updates the current item's list ui (uploads the items of a CurrentList again), 
+        /// if the current item's list is not null. Usualy this methods are used in events
+        /// </summary>
+        private void RefreshItemsUI()
+        {
+            if (DocController.CurrentItemsList != null)
+                UploadItemsToPanel(DocController.CurrentItemsList);
+        }
+
+        private void RefreshParagraphsUI()
+        {
+            if (DocController.CurrentParagraphsList != null)
+                UploadParagraphsToParagraphsListPanel(DocController.CurrentParagraphsList);
+        }
+
+        private void RefreshDocumentUI()
+        {
+            if (DocController.Documents != null)
+                UploadDocumentsDataToUI(DocController.Documents);
         }
         #endregion
 
@@ -144,8 +187,8 @@ namespace SDWP
 
             Document document = clickedDocumentMenuOption.Document;
 
+            DocController.UploadDocument(document);
             UploadItemsToPanel(document.Items);
-            CurrentItemsList = document.Items;
         }
 
         /// <summary>
@@ -161,7 +204,7 @@ namespace SDWP
 
             for (int i = 0; i < items.Count; i++)
             {
-                UploadSingleItemToPanel(items[i], i);
+                UploadSingleItemToPanel(items[i]);
                 items[i].ParentList = items;
             }
 
@@ -169,10 +212,13 @@ namespace SDWP
             MainPageAnimations.AnimateWidth(ItemsListStackPanel, 250);
         }
 
-        private void UploadSingleItemToPanel(Item item, int itemNumber)
+        private void UploadSingleItemToPanel(Item item)
         {
             ItemMenuOption itemMenuOption = new ItemMenuOption(item);
+
+            //set events
             itemMenuOption.OnItemClick += UploadItemData;
+            itemMenuOption.UpdateList += RefreshItemsUI;
 
             ItemsListStackPanel.Children.Add(itemMenuOption);
         }
@@ -208,13 +254,11 @@ namespace SDWP
 
             if (item.Items != null)
             {
-                UploadItemsToPanel(item.Items);
+                DocController.UploadItem(item);
+                UploadItemsToPanel(DocController.CurrentItem.Items);
                 backToPreviousItemTextBlock.Text = "к " + item.Name;
 
-                CurrentItem = item;
-                CurrentItemsList = item.Items;
-
-                if (CurrentItem.ParentList != null)
+                if (DocController.CurrentItem.ParentList != null)
                     backToPreviousItemStaticImage.IsEnabled = true;
             }
             else
@@ -352,14 +396,14 @@ namespace SDWP
         /// </summary>
         private void GoToPreviousItem(object sender, MouseButtonEventArgs e)
         {
-            if (CurrentItem!=null && CurrentItem.ParentList!= null)
+            if (DocController.CanGoToPrevItem())
             {
-                UploadItemsToPanel(CurrentItem.ParentList);
+                UploadItemsToPanel(DocController.CurrentItem.ParentList);
 
                 //update text of a backToPreviousItemTextBlock and if there is no parent disable the back img
-                if (CurrentItem.ParentItem != null)
+                if (DocController.CurrentItem.ParentItem != null)
                 {
-                    backToPreviousItemTextBlock.Text = "к " + CurrentItem.ParentItem.Name;
+                    backToPreviousItemTextBlock.Text = "к " + DocController.CurrentItem.ParentItem.Name;
                 }
                 else
                 {
@@ -367,8 +411,7 @@ namespace SDWP
                     backToPreviousItemStaticImage.IsEnabled = false;
                 }
 
-                CurrentItemsList = CurrentItem.ParentList;
-                CurrentItem = CurrentItem.ParentItem;
+                DocController.GoToPreviousItem(DocController.CurrentItem);
             }
         }
 
@@ -377,13 +420,13 @@ namespace SDWP
         /// </summary>
         private void CreateNewItem(object sender, MouseButtonEventArgs e)
         {
-            if (CurrentItemsList != null)
+            if (DocController.CurrentItemsList != null)
             {
-                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(CurrentItemsList,
-                    CurrentItem);
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(
+                    DocController.CurrentItemsList, DocController.CurrentItem);
                 createNewItemWindow.ShowDialog();
 
-                UploadItemsToPanel(CurrentItemsList);
+                UploadItemsToPanel(DocController.CurrentItemsList);
             }
             else
             {

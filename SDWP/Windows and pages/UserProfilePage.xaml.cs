@@ -14,10 +14,14 @@ using AeroORMFramework;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows.Threading;
+
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
+
+using SDWP.Exceptions;
+using SDWP.Factories;
 
 namespace SDWP
 {
@@ -28,6 +32,7 @@ namespace SDWP
     {
         private IEmailService<UserInfo> EmailService { get; set; }
         private IUserService<UserInfo> UserService { get; set; }
+        private IExceptionHandler ExceptionHandler { get; set; }
 
         #region Properties
         private byte[] NewUserPhoto { get; set; } = null;
@@ -42,16 +47,19 @@ namespace SDWP
         {
             InitializeComponent();
 
-            InitializeServices();
+            InitializeInterfaces();
             UploadUserDataToUI();
         }
 
-        private void InitializeServices()
+        private void InitializeInterfaces()
         {
             IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
+            ISdwpAbstractFactory sdwpAbstractFactory = new SdwpAbstractFactory();
 
             EmailService = serviceFactory.GetEmailService();
             UserService = serviceFactory.GetUserService();
+
+            ExceptionHandler = sdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
         private void UploadUserDataToUI()

@@ -12,16 +12,22 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SDWP
+namespace SDWP.Exceptions
 {
-    public static class ExceptionHandler
+    public class ExceptionHandler : IExceptionHandler
     {
         #region Propperties/Variables
-        public static Dispatcher Dispatcher { get; set; }
-        private static string MessageCaption { get; } = "SDWP Soft's message";
+        public Dispatcher Dispatcher { get; set; }
+        private string MessageCaption { get; } = "SDWP Soft's message";
         #endregion
+
+        public ExceptionHandler(Dispatcher dispatcher)
+        {
+            Dispatcher = dispatcher;
+        }
+
         #region Methods
-        public static void HandleWithMessageBox(Exception ex)
+        public void HandleWithMessageBox(Exception ex)
         {
             Dispatcher.Invoke(() => SDWPMessageBox.ShowSDWPMessageBox(
                 "SDWP's message", ex.Message, MessageBoxButton.OK));

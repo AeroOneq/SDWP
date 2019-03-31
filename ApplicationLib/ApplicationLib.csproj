@@ -138,8 +138,8 @@
     <Resource Include="Views\Resources\reorderParagraphElementStatic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Resources\itemContentModeIcon.png" />
-    <Content Include="Views\Resources\itemListModeIcon.png" />
+    <Resource Include="Views\Resources\itemContentModeIcon.png" />
+    <Resource Include="Views\Resources\itemListModeIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

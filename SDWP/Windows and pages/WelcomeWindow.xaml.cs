@@ -22,6 +22,9 @@ using ApplicationLib.Exceptions;
 using ApplicationLib.Services;
 using ApplicationLib.Interfaces;
 
+using SDWP.Factories;
+using SDWP.Exceptions;
+
 namespace SDWP
 {
     /// <summary>
@@ -31,6 +34,7 @@ namespace SDWP
     {
         private IEmailService<UserInfo> EmailService { get; set; }
         private IUserService<UserInfo> UserService { get; set; }
+        private IExceptionHandler ExceptionHandler { get; set; }
 
         private UserInfo NewUser { get; set; }
 
@@ -38,8 +42,8 @@ namespace SDWP
         {
             InitializeComponent();
 
-            InitializeServices();
-            ExceptionHandler.Dispatcher = Dispatcher;
+            InitializeInterfaces();
+
             loginTextBox.Focus();
             //initialize the list of all grids
             WelcomePageRightGridAnimations.RightGridsList = new List<Grid>
@@ -50,12 +54,15 @@ namespace SDWP
             };
         }
 
-        private void InitializeServices()
+        private void InitializeInterfaces()
         {
             IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
+            ISdwpAbstractFactory sdwpAbstractFactory = new SdwpAbstractFactory();
 
             EmailService = serviceFactory.GetEmailService();
             UserService = serviceFactory.GetUserService();
+
+            ExceptionHandler = sdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
         #region Registration process

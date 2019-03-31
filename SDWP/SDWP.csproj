@@ -64,10 +64,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DocController\DocumentationController.cs" />
+    <Compile Include="DocController\IDocController.cs" />
+    <Compile Include="Exceptions\IExceptionHandler.cs" />
+    <Compile Include="Factories\ISdwpAbstractFactory.cs" />
+    <Compile Include="Factories\SdwpAbstractFactory.cs" />
     <Compile Include="Windows and pages\CreateNewItemWindow.xaml.cs">
       <DependentUpon>CreateNewItemWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="Exceptions\ExceptionHandler.cs" />
     <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
     <Compile Include="Windows and pages\MainPage.xaml.cs">
@@ -265,8 +270,6 @@
     <Resource Include="Resources\addNewItemIconActive.png" />
     <Resource Include="Resources\addNewItemIconStatic.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Documentation ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

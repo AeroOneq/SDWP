@@ -28,8 +28,11 @@ namespace ApplicationLib.Views
 
         public Button DocumentBtn { get; }
         private TextBox DocumentBtnTextBox { get; set; }
+        #endregion
 
+        #region Events 
         public EventHandler OnDocumentItemClick { get; set; }
+        public Action UpdateList { get; set; }
         #endregion
 
         #region Constructors
@@ -96,6 +99,7 @@ namespace ApplicationLib.Views
         private void DeleteDocument(object sender, RoutedEventArgs e)
         {
             ParentList.Remove(Document);
+            UpdateList();
         }
     }
 }
