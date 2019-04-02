@@ -21,7 +21,7 @@ namespace ApplicationLib.Interfaces
     {
         Item ParentItem { get; }
         string Hint { get; set; }
-        string HeaderText { get; set; }
+        string Title { get; set; }
 
         UserControl GetWatchView();
         UserControl GetEditView();

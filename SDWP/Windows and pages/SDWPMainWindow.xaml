@@ -107,7 +107,8 @@
                   Height="100"
                   Width="100"
                   MouseEnter="OptionGridMouseEnter"
-                  MouseLeave="OptionGridMouseLeave">
+                  MouseLeave="OptionGridMouseLeave"
+                  MouseDown="SaveDocumentationGrid">
                 <Image x:Name="saveChangesIconStatic"
                        VerticalAlignment="Top"
                        HorizontalAlignment="Center"

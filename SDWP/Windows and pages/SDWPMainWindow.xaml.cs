@@ -20,6 +20,7 @@ using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 using ApplicationLib.Models;
+using Newtonsoft.Json;
 
 namespace SDWP
 {
@@ -32,6 +33,7 @@ namespace SDWP
         private MainGrids MainGrids { get; set; }
         private UserAccountGrids UserAccountGrids { get; set; }
         private UserAccLeftMenuGrids UserAccLeftMenuGrids { get; set; }
+        private MainPage MainPage { get; }
         #endregion
 
         #region Constructors and initializing methods
@@ -39,10 +41,13 @@ namespace SDWP
         {
             InitializeComponent();
 
+            Top = 0;
+            Left = 0;
+
             InitializePositionObjects();
             Position.PositionObj.UpdateMainWindow(this);
 
-            mainPageFrame.Content = new MainPage();
+            mainPageFrame.Content = MainPage = new MainPage();
         }
         private void InitializePositionObjects()
         {
@@ -389,6 +394,12 @@ namespace SDWP
             {
                 HideTopGrids();
             }
+        }
+
+        private void SaveDocumentationGrid(object sender, EventArgs e)
+        {
+            SDWPMessageBox.ShowSDWPMessageBox("JSON", JsonConvert.SerializeObject(MainPage.Documents),
+                MessageBoxButton.OK);
         }
     }
 }

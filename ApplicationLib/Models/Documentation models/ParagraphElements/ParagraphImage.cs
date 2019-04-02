@@ -7,6 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using ApplicationLib.Interfaces;
 
+using Newtonsoft.Json;
+
+
 namespace ApplicationLib.Models
 {
     public class ParagraphImage : IParagraphElement
@@ -14,9 +17,10 @@ namespace ApplicationLib.Models
         #region Properties
         public byte[] ImageSource { get; set; }
 
+        [JsonIgnore]
         public Item ParentItem { get; }
         public string Hint { get; set; }
-        public string HeaderText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Title { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         #endregion
 
         public ParagraphImage(byte[] imageSource, Item parentItem)

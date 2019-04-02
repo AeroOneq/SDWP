@@ -76,14 +76,19 @@
               Width="270"
               Height="130"
               Margin="120, 0, 0, 0">
-            <TextBlock x:Name="messageTextBlock"
-                       FontFamily="Arial, Verdana"
-                       FontSize="15"
-                       Margin="10, 10, 10, 10"
-                       TextWrapping="WrapWithOverflow"
-                       Foreground="OrangeRed"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
+            <ScrollViewer VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch"
+                          HorizontalScrollBarVisibility="Visible"
+                          VerticalScrollBarVisibility="Hidden">
+                <TextBlock x:Name="messageTextBlock"
+                           FontFamily="Arial, Verdana"
+                           FontSize="15"
+                           Margin="10, 10, 10, 10"
+                           TextWrapping="WrapWithOverflow"
+                           Foreground="OrangeRed"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Center"/>
+            </ScrollViewer>
         </Grid>
         <Grid VerticalAlignment="Top"
               HorizontalAlignment="Center"

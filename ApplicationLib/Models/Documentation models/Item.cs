@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ApplicationLib.Interfaces;
+using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
@@ -8,9 +9,11 @@ namespace ApplicationLib.Models
         public string Name { get; set; }
 
         public List<Item> Items { get; set; }
-        public Item ParentItem { get; set; }
-        public List<Item> ParentList { get; set; }
-        
         public List<IParagraphElement> Paragraphs { get; set; }
+
+        [JsonIgnore]
+        public Item ParentItem { get; set; }
+        [JsonIgnore]
+        public List<Item> ParentList { get; set; }
     }
 }

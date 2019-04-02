@@ -1,0 +1,64 @@
+﻿<Window x:Class="SDWP.CreateNewSubparagraphWindow"
+        x:Name="createNewSubparagraphWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SDWP"
+        Title="Создать новый пункт"
+        Height="200" 
+        Width="400"
+        MinHeight="200"
+        MinWidth="400"
+        MaxHeight="200"
+        MaxWidth="400">
+
+    <Grid>
+        <Grid VerticalAlignment="Top"
+              HorizontalAlignment="Left"
+              Background="White"
+              Width="{Binding ElementName=createNewSubparagraphWindow, Path=Width}"
+              Height="{Binding ElementName=createNewSubparagraphWindow, Path=Height}">
+            <StackPanel x:Name="mainContentStackPanel"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Margin="0, 0, 0, 44"
+                        Background="Transparent">
+                <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
+                           Text="Введите размеры таблицы: "
+                           Margin="20, 10, 0, 0"/>
+                <TextBox x:Name="subparagraphTitleTextBox"
+                         Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
+                         Text="Название абзаца..."
+                         Width="200"
+                         Margin="20, 10, 0, 0"
+                         GotFocus="SubparagraphTitleTextBoxGotFocus"
+                         LostFocus="SubparagraphTitleTextBoxGotFocus"/>
+            </StackPanel>
+            
+            <Grid VerticalAlignment="Bottom"
+                  HorizontalAlignment="Stretch"
+                  Height="44"
+                  Margin="0, 0, 0, 38"
+                  Background="#E1E1E1">
+                <StackPanel x:Name="buttonsGrid"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Height="44"
+                            Orientation="Horizontal"
+                            Background="#E1E1E1">
+
+                    <Button x:Name="createNewItemBtn"
+                            Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                            Content="Создать"
+                            Click="CreateNewSubparagraph"/>
+                    <Button x:Name="cancelBtn"
+                            Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                            Content="Отмена"
+                            Click="CancelCreation"/>
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

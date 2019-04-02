@@ -42,10 +42,12 @@ namespace ApplicationLib.Views
             InitializeComponent();
 
             Subparagraph = subparagraph;
-            subparagraphTextBlock.Text = subparagraph.Text;
+
+            DataContext = Subparagraph;
 
             ParagraphSettings = paragraphsSettings;
             HintControl = hintControl;
+            HintControl.SetBinding(Subparagraph);
 
             SetParagraphSettingsEvents();
         }

@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
+using Newtonsoft.Json;
+
 
 namespace ApplicationLib.Models
 {
@@ -16,15 +18,15 @@ namespace ApplicationLib.Models
         #region Properties
         public string Text { get; set; }
 
+        [JsonIgnore]
         public Item ParentItem { get; }
         public string Hint { get; set; }
-        public string HeaderText { get; set; }
+        public string Title { get; set; }
         #endregion
 
         public Subparagraph() { }
-        public Subparagraph(string text, Item parentItem)
+        public Subparagraph(Item parentItem)
         {
-            Text = text;
             ParentItem = parentItem;
         }
 

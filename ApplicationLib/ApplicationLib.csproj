@@ -82,7 +82,6 @@
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphImage.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Subparagraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Table.cs" />
-    <Compile Include="Models\Documentation models\ParagraphElements\TableCell.cs" />
     <Compile Include="Exceptions\NotAppropriateUserParam.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
@@ -96,6 +95,9 @@
     <Compile Include="Interfaces\IServiceAbstractFactory.cs" />
     <Compile Include="Services\ServiceAbstractFactory.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Views\TableEditView.xaml.cs">
+      <DependentUpon>TableEditView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DocumentMenuOption.xaml">
@@ -117,6 +119,10 @@
     <Page Include="Views\SubparagraphEditView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TableEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

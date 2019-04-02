@@ -7,6 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using ApplicationLib.Interfaces;
 
+using Newtonsoft.Json;
+
+
 namespace ApplicationLib.Models
 {
     class NumberedList : IParagraphElement
@@ -14,9 +17,10 @@ namespace ApplicationLib.Models
         #region Properties
         public List<NumberedListElement> ListElements { get; set; }
 
+        [JsonIgnore]
         public Item ParentItem { get; }
         public string Hint { get; set; }
-        public string HeaderText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Title { get; set; }
         #endregion
 
         public NumberedList(List<NumberedListElement> listElements, Item parentItem)

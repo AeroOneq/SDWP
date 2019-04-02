@@ -5,21 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
 using ApplicationLib.Interfaces;
+using ApplicationLib.Views;
+
+using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
     public class Table : IParagraphElement
     {
         #region Properties
-        public TableCell[][] TableCells { get; set; }
+        public string[][] TableCells { get; set; }
 
+        [JsonIgnore]
         public Item ParentItem { get; }
         public string Hint { get; set; }
-        public string HeaderText { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Title { get; set; }
         #endregion
 
-        public Table(TableCell[][] tableCells, Item parentItem)
+        public Table(string[][] tableCells, Item parentItem)
         {
             TableCells = tableCells;
             ParentItem = parentItem;
@@ -32,7 +37,7 @@ namespace ApplicationLib.Models
 
         public UserControl GetEditView()
         {
-            throw new NotImplementedException();
+            return new TableEditView(this);
         }
 
         public Task DeleteParagraph()

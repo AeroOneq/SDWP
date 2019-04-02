@@ -33,6 +33,7 @@ namespace SDWP
             if (selectedItem.Items == null)
             {
                 CurrentParagraphsList = selectedItem.Paragraphs;
+                CurrentContentItem = selectedItem;
             }
             else
             {

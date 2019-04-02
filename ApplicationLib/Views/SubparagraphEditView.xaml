@@ -148,7 +148,7 @@
                         Margin="5, 0, 5, 0">
                     <TextBox x:Name="hintTextBox"
                              Style="{StaticResource titleTextBoxStyle}"
-                             Text="TITLE TITLE"/>
+                             Text="{Binding Title}"/>
                 </Border>
                 <local:ParagraphElementSettings x:Name="paragraphsSettings"
                                                 VerticalAlignment="Top"
@@ -168,7 +168,8 @@
                         <TextBox x:Name="subparagraphTextBlock"
                                  TextChanged="SubparagraphTextChanged"
                                  PreviewKeyDown="SubparagraphKeyDown"
-                                 Style="{StaticResource subparagraphTextBoxStyle}"/>
+                                 Style="{StaticResource subparagraphTextBoxStyle}"
+                                 Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>
                 </Grid>
             </Border>

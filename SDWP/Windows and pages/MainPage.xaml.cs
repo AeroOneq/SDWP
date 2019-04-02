@@ -23,7 +23,7 @@ namespace SDWP
             CreationDate = DateTime.Now,
             AuthorName = "Степанов Евгений"
         };
-        private List<Document> Documents { get; } = new List<Document>()
+        public List<Document> Documents { get; } = new List<Document>()
         {
             new Document()
             {
@@ -41,8 +41,16 @@ namespace SDWP
                                 Items = null,
                                 Paragraphs = new List<IParagraphElement>()
                                 {
-                                    new Subparagraph("qwertyqwertyqwertyy", new Item()),
-                                    new Subparagraph("qwe ewq qwe eq qwe qwe qwe qwe ", new Item())
+                                    new Subparagraph(new Item())
+                                    {
+                                        Text = " asdsadasdsadsadasd", 
+                                        Hint = "HINT"
+                                    },
+                                    new Subparagraph(new Item())
+                                    {
+                                        Text = " asdsadasdsadsadasd",
+                                        Hint = "HINT"
+                                    },
                                 }
                             }
                         },
@@ -54,7 +62,10 @@ namespace SDWP
                         Items = null,
                         Paragraphs = new List<IParagraphElement>()
                         {
-                            new Subparagraph("asdasdasdasdasdasdasdasdasdasdasd", new Item())
+                            new Subparagraph( new Item())
+                            {
+                                Text = "asdasdasdasdasdasdasdasdasdasdasd"
+                            }
                         }
                     }
                 }
@@ -437,5 +448,35 @@ namespace SDWP
                     MessageBoxButton.OK);
             }
         }
+
+        #region Add new paragraphs (IParagraphElement) methods
+        private void AddNewSubparagraph(object sender, MouseEventArgs e)
+        {
+            if (DocController.CurrentContentItem != null)
+            {
+                Item contentItem = DocController.CurrentContentItem;
+
+                CreateNewSubparagraphWindow createWindow = new CreateNewSubparagraphWindow(contentItem);
+                createWindow.ShowDialog();
+
+                if (createWindow.DialogResult == true)
+                    RefreshParagraphsUI();
+            }
+        }
+
+        private void AddNewTable(object sender, MouseEventArgs e)
+        {
+            if (DocController.CurrentContentItem != null)
+            {
+                Item contentItem = DocController.CurrentContentItem;
+
+                CreateNewTableWindow createWindow = new CreateNewTableWindow(contentItem);
+                createWindow.ShowDialog();
+
+                if (createWindow.DialogResult == true)
+                    RefreshParagraphsUI();
+            }
+        }
+        #endregion
     }
 }

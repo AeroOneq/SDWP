@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
+
 namespace ApplicationLib.Views
 {
     /// <summary>
@@ -20,9 +23,17 @@ namespace ApplicationLib.Views
     /// </summary>
     public partial class HintControl : UserControl
     {
+        private TextBox HintTextBox { get; }
+        
         public HintControl()
         {
             InitializeComponent();
+            HintTextBox = hintTextBox;
+        }
+
+        public void SetBinding(IParagraphElement paragraphElement)
+        {
+            DataContext = paragraphElement;
         }
     }
 }

@@ -64,6 +64,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Windows and pages\CreateNewSubparagraphWindow.xaml.cs">
+      <DependentUpon>CreateNewSubparagraphWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows and pages\CreateNewTableWindow.xaml.cs">
+      <DependentUpon>CreateNewTableWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DocController\DocumentationController.cs" />
     <Compile Include="DocController\IDocController.cs" />
     <Compile Include="Exceptions\IExceptionHandler.cs" />
@@ -95,6 +101,14 @@
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
+    <Page Include="Windows and pages\CreateNewSubparagraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\CreateNewTableWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows and pages\CreateNewItemWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
