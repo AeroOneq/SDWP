@@ -10,6 +10,9 @@ using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
 
+using FileLib.Interfaces;
+using FileLib.FileParsers;
+
 using SDWP.Factories;
 
 namespace SDWP

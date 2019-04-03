@@ -7,13 +7,19 @@ using ApplicationLib.Database;
 using AeroORMFramework;
 using ApplicationLib.Models;
 
+using FileLib;
+
 namespace DatabaseController
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Connector connector = new Connector(DatabaseProperties.ConnectionString);
+            /*CSFileParser cSFileParser = new CSFileParser();
+            cSFileParser.GetMethodsTable("C:\\Users\\Aero\\Desktop\\Курсач\\SDWP\\SDWP\\ApplicationLib\\bin\\Debug\\ApplicationLib.dll");*/
+
+
+            /*Connector connector = new Connector(DatabaseProperties.ConnectionString);
             connector.DeleteTable<UserInfo>();
             connector.AddTable<UserInfo>();
             UserInfo userInfo = new UserInfo
@@ -29,7 +35,7 @@ namespace DatabaseController
             connector.Insert(userInfo);
             Console.WriteLine("Success");
 
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
     }
 }

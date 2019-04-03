@@ -7,6 +7,9 @@ using System.Windows.Threading;
 
 using ApplicationLib.Models;
 
+using FileLib.Interfaces;
+using FileLib.FileParsers;
+
 using SDWP.Exceptions;
 
 namespace SDWP.Factories
@@ -15,5 +18,6 @@ namespace SDWP.Factories
     {
         IDocController GetDocController(Documentation documentation, List<Document> documents);
         IExceptionHandler GetExceptionHandler(Dispatcher dispatcher);
+        IFileParser GetFileParser();
     }
 }

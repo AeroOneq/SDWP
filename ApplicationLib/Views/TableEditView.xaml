@@ -41,7 +41,7 @@
                                 CornerRadius="5, 5, 5, 5">
                             <ScrollViewer Margin="{TemplateBinding Padding}"
                                           VerticalAlignment="Top"   
-                                          HorizontalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch" 
                                           x:Name="PART_ContentHost"/>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
@@ -86,7 +86,50 @@
             <Setter Property="Padding" Value="3"/>
             <Setter Property="MinHeight" Value="10"/>
             <Setter Property="MinWidth" Value="20"/>
-            
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu>
+                        <MenuItem Header="Добавить столбец справа"
+                                  Click="AddNewRightCol">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/addColRightIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Добавить столбец слева"
+                                  Click="AddNewLeftCol">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/addColRightIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Добавить строку снизу"
+                                  Click="AddNewDownRow">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/addRowDownIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Добавить строку сверху"
+                                  Click="AddNewUpRow">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/addRowDownIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Удалить столбец"
+                                  Click="DeleteCol">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/deleteTableColIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Удалить строку"
+                                  Click="DeleteRow">
+                            <MenuItem.Icon>
+                                <Image Source="Resources/deleteTableRowIcon.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <UserControl.Content>

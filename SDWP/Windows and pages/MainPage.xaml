@@ -143,19 +143,17 @@
     <Grid VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch"
           Background="Wheat">
-        <ScrollViewer VerticalAlignment="Stretch"
-                      HorizontalAlignment="Stretch"
-                      VerticalScrollBarVisibility="Hidden">
-            <Grid>
-                <Grid x:Name="leftDocumentsGrid"
+        <Grid VerticalAlignment="Stretch"
+              HorizontalAlignment="Stretch">
+            <Grid x:Name="leftDocumentsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
                       Width="250"
                       Background="{StaticResource documentsLeftGridBackgroundBrush}">
 
-                    <Grid x:Name="showLeftGridImagesGrid"
+                <Grid x:Name="showLeftGridImagesGrid"
                           Visibility="Collapsed">
-                        <Image x:Name="showLeftGridImageStatic"
+                    <Image x:Name="showLeftGridImageStatic"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Visibility="Visible"
@@ -164,7 +162,7 @@
                                Margin="15, 15, 0, 0"
                                Source="../Resources/forwardArrowIconStatic.png"
                                MouseEnter="IconMouseEnter"/>
-                        <Image x:Name="showLeftGridImageActive"
+                    <Image x:Name="showLeftGridImageActive"
                                VerticalAlignment="Top"
                                Visibility="Collapsed"
                                HorizontalAlignment="Left"
@@ -174,11 +172,11 @@
                                Source="../Resources/forwardArrowIconActive.png"
                                MouseLeave="IconMouseLeave"
                                MouseDown="ShowLeftDocumentsGrid"/>
-                    </Grid>
+                </Grid>
 
-                    <Grid x:Name="hideLeftGridImagesGrid"
+                <Grid x:Name="hideLeftGridImagesGrid"
                           Visibility="Visible">
-                        <Image x:Name="hideLeftGridImageStatic"
+                    <Image x:Name="hideLeftGridImageStatic"
                                VerticalAlignment="Top"
                                HorizontalAlignment="Left"
                                Visibility="Visible"
@@ -187,7 +185,7 @@
                                Margin="15, 15, 0, 0"
                                Source="../Resources/closeAccGridStatic.png"
                                MouseEnter="IconMouseEnter"/>
-                        <Image x:Name="hideLeftGridImageActive"
+                    <Image x:Name="hideLeftGridImageActive"
                                VerticalAlignment="Top"
                                Visibility="Collapsed"
                                HorizontalAlignment="Left"
@@ -197,67 +195,67 @@
                                Source="../Resources/closeAccGridActive.png"
                                MouseLeave="IconMouseLeave"
                                MouseDown="HideLeftDocumentsGrid"/>
-                    </Grid>
+                </Grid>
 
 
-                    <Grid x:Name="leftDocumentsGridContent"
+                <Grid x:Name="leftDocumentsGridContent"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
                           Margin="0, 40, 0, 0">
-                        <Grid x:Name="documentationPropertiesGrid"
+                    <Grid x:Name="documentationPropertiesGrid"
                               Margin="0, 0, 0, 0">
 
-                            <TextBlock Style="{StaticResource propertyNameStyle}"
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
                                        Margin="15, 15, 0, 0"
                                        Text="Назавние:"/>
-                            <TextBox x:Name="documentationNameTextBox"
+                        <TextBox x:Name="documentationNameTextBox"
                                      Margin="10, 30, 15, 0"
                                      Style="{StaticResource documentationNameGridStyle}"
                                      Text="SDWP Документация"/>
 
-                            <TextBlock Style="{StaticResource propertyNameStyle}"
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
                                    Text="Дата создания: "
                                    Margin="15, 55, 0, 0"/>
-                            <TextBlock x:Name="documentationCreationDateTextBlock"
+                        <TextBlock x:Name="documentationCreationDateTextBlock"
                                    Style="{StaticResource propertyValueStyle}"
                                    Text="30.05.2000"
                                    Margin="15, 70, 15, 0"/>
 
-                            <TextBlock Style="{StaticResource propertyNameStyle}"
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
                                                Margin="15, 130, 0, 0"
                                                FontSize="15"
                                                Text="Документы:"/>
-                            
-                            <ScrollViewer VerticalAlignment="Stretch"
+
+                        <ScrollViewer VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch"
                                           Margin="0, 150, 0, 0"
                                           VerticalScrollBarVisibility="Hidden">
-                                <StackPanel x:Name="documentsListStackPanel"
+                            <StackPanel x:Name="documentsListStackPanel"
                                       VerticalAlignment="Top"
                                       HorizontalAlignment="Stretch">
-     
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
+
+                            </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
+            </Grid>
 
-                <Grid x:Name="itemsGrid"
+            <Grid x:Name="itemsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
                       Width="250"
                       Margin="250, 0, 0, 0"
                       Background="{StaticResource mainPageItemsGridBackgroundBrush}">
 
-                    <Grid x:Name="topItemsGridNavBarGrid"
+                <Grid x:Name="topItemsGridNavBarGrid"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
                           Height="40"
                           Margin="15, 10, 15, 0"
                           Background="Transparent">
-                        
-                        <Grid x:Name="backToPreviousItemGrid">
-                            <Image x:Name="backToPreviousItemStaticImage"
+
+                    <Grid x:Name="backToPreviousItemGrid">
+                        <Image x:Name="backToPreviousItemStaticImage"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Left"
                                    Visibility="Visible"
@@ -267,7 +265,7 @@
                                    IsEnabled="False"
                                    Source="../Resources/backToPreviousItemIconStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="backToPreviousItemActiveImage"
+                        <Image x:Name="backToPreviousItemActiveImage"
                                    VerticalAlignment="Center"
                                    Visibility="Collapsed"
                                    HorizontalAlignment="Left"
@@ -278,16 +276,16 @@
                                    MouseLeave="IconMouseLeave"
                                    MouseDown="GoToPreviousItem"/>
 
-                            <TextBlock x:Name="backToPreviousItemTextBlock"
+                        <TextBlock x:Name="backToPreviousItemTextBlock"
                                        FontFamily="Arial, Verdana"
                                        Foreground="Black"
                                        Visibility="Visible"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Center"
                                        Margin="35, 0, 0, 0"/>
-                        </Grid>
+                    </Grid>
 
-                        <Image x:Name="addNewItemActiveImage"
+                    <Image x:Name="addNewItemActiveImage"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Visibility="Visible"
@@ -296,7 +294,7 @@
                                    Margin="0, 0, 0, 0"
                                    Source="../Resources/addNewItemIconStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                        <Image x:Name="addNewItemStaticImage"
+                    <Image x:Name="addNewItemStaticImage"
                                VerticalAlignment="Center"
                                Visibility="Collapsed"
                                HorizontalAlignment="Right"
@@ -306,40 +304,40 @@
                                Source="../Resources/addNewItemIconActive.png"
                                MouseLeave="IconMouseLeave"
                                MouseDown="CreateNewItem"/>
-                    </Grid>
+                </Grid>
 
-                    <Grid Style="{StaticResource paragraphsLineGridStyle}"
+                <Grid Style="{StaticResource paragraphsLineGridStyle}"
                           Margin="10, 55, 10, 0"/>
 
-                    <TextBlock Style="{StaticResource propertyNameStyle}"
+                <TextBlock Style="{StaticResource propertyNameStyle}"
                                            Margin="15, 90, 0, 0"
                                            FontSize="15"
                                            Text="Пункты:"/>
 
-                    <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
+                <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
                                   Margin="0, 110, 0, 60">
-                        <StackPanel x:Name="itemsListStackPanel"
+                    <StackPanel x:Name="itemsListStackPanel"
                                     Width="0"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Left"
                                     Orientation="Vertical"/>
-                    </ScrollViewer>
+                </ScrollViewer>
 
-                </Grid>
+            </Grid>
 
-                <Grid x:Name="paragraphsGrid"
+            <Grid x:Name="paragraphsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       Margin="500, 0, 0, 0"
                       Background="{StaticResource mainPageParagraphsGridBackgroundBrush}">
 
-                    <Grid x:Name="paragraphsGridTopOptionsGrid"
+                <Grid x:Name="paragraphsGridTopOptionsGrid"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
                           Margin="25, 10, 25, 0"
                           Height="40"
                           Background="Transparent">
-                        <TextBox x:Name="paragraphsSearchTextBox"
+                    <TextBox x:Name="paragraphsSearchTextBox"
                                  Text="Введите запрос..."
                                  GotFocus="ParagraphSearchTextBoxGotFocus"
                                  LostFocus="ParagraphSearchTextBoxLostFocus"
@@ -347,25 +345,25 @@
                                  Margin="0, 0, 0, 0"
                                  Style="{StaticResource paragraphsSearchTextBoxStyle}"/>
 
-                        <Grid x:Name="addNewParagraphElementGrid"
+                    <Grid x:Name="addNewParagraphElementGrid"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Right"
                               Height="35"
                               Width="35">
-                            <Image x:Name="addNewParagraphElementImageStatic"
+                        <Image x:Name="addNewParagraphElementImageStatic"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Visible"
                                    Source="../Resources/addNewParagraphElementStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="addNewParagraphElementImageActive"
+                        <Image x:Name="addNewParagraphElementImageActive"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Collapsed"
                                    Source="../Resources/addNewParagraphElementActive.png"
                                    MouseLeave="IconMouseLeave"
                                    MouseDown="ShowParagraphElementsAddOptions"/>
-                        </Grid>
+                    </Grid>
 
-                        <Grid x:Name="paragraphElementsGrid"
+                    <Grid x:Name="paragraphElementsGrid"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Right"
                               Visibility="Collapsed"
@@ -373,14 +371,14 @@
                               Height="35"
                               MouseLeave="ParagraphElementsGridMouseLeave"
                               Background="Transparent">
-                            <Image x:Name="addNewTableImageStatic"
+                        <Image x:Name="addNewTableImageStatic"
                                    Width="30"
                                    Height="30"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Visible"
                                    Source="../Resources/addNewTableIconStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="addNewTableImageActive"
+                        <Image x:Name="addNewTableImageActive"
                                    Width="30"
                                    Height="30"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
@@ -389,33 +387,33 @@
                                    MouseLeave="IconMouseLeave"
                                    PreviewMouseDown="AddNewTable"/>
 
-                            <Image x:Name="addNewNumberedListImageStatic"
+                        <Image x:Name="addNewNumberedListImageStatic"
                                    Margin="0, 0, 35, 0"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Visible"
                                    Source="../Resources/addNewNumberedListStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="addNewNumberedListImageActive"
+                        <Image x:Name="addNewNumberedListImageActive"
                                    Margin="0, 0, 35, 0"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Collapsed"
                                    Source="../Resources/addNewNumberedListActive.png"
                                    MouseLeave="IconMouseLeave"/>
 
-                            <Image x:Name="addNewImageImageStatic"
+                        <Image x:Name="addNewImageImageStatic"
                                    Margin="0, 0, 75, 0"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Visible"
                                    Source="../Resources/addNewImageStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="addNewImageImageActive"
+                        <Image x:Name="addNewImageImageActive"
                                    Margin="0, 0, 75, 0"
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Collapsed"
                                    Source="../Resources/addNewImageActive.png"
                                    MouseLeave="IconMouseLeave"/>
 
-                            <Image x:Name="addNewSubparagraphImageStatic"
+                        <Image x:Name="addNewSubparagraphImageStatic"
                                    Margin="0, 0, 115, 0"
                                    Width="25"
                                    Height="25"
@@ -423,7 +421,7 @@
                                    Visibility="Visible"
                                    Source="../Resources/addNewSubparagraphStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                            <Image x:Name="addNewSubparagraphImageActive"
+                        <Image x:Name="addNewSubparagraphImageActive"
                                    Margin="0, 0, 115, 0"
                                    Width="25"
                                    Height="25"
@@ -432,21 +430,24 @@
                                    Source="../Resources/addNewSubparagraphActive.png"
                                    MouseLeave="IconMouseLeave"
                                    PreviewMouseLeftButtonDown="AddNewSubparagraph"/>
-                        </Grid>
                     </Grid>
+                </Grid>
 
-                    <Grid Style="{StaticResource paragraphsLineGridStyle}"
+                <Grid Style="{StaticResource paragraphsLineGridStyle}"
                           Margin="25, 55, 25, 0"/>
 
-                    <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
-                                  Margin="40, 60, 40, 0">
-                        <StackPanel x:Name="paragraphsListPanel"
+                <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
+                                  Margin="40, 60, 40, 0"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Stretch"
+                             VerticalScrollBarVisibility="Visible">
+                    <StackPanel x:Name="paragraphsListPanel"
                                     Orientation="Vertical"
+                                    CanVerticallyScroll="True"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"/>
-                    </ScrollViewer>
-                </Grid>
+                </ScrollViewer>
             </Grid>
-        </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>

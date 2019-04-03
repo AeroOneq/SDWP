@@ -159,5 +159,13 @@
   <ItemGroup>
     <Resource Include="Views\Resources\documentMenuItem.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\deleteTableColIcon.png" />
+    <Resource Include="Views\Resources\deleteTableRowIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\addColRightIcon.png" />
+    <Resource Include="Views\Resources\addRowDownIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

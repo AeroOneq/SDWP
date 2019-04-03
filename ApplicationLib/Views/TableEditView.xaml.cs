@@ -95,5 +95,45 @@ namespace ApplicationLib.Views
             }
         }
         #endregion
+
+        private void AddNewRightRow(object sender, RoutedEventArgs e)
+        {
+            DataGridCell clickedCell = e.OriginalSource as DataGridCell;
+            DataGridColumn cellColumn = clickedCell.Column;
+
+            int columnIndex = 0, rowIndex = 0;
+
+            for (int i = 0; i<TableDataGrid.Columns.Count; i++)
+                if (TableDataGrid.Columns[i].Equals(cellColumn))
+                {
+                    columnIndex = i;
+                    break;
+                }
+        }
+
+        private void AddNewLeftRow(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddNewUpCol(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddNewDownCol(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteRow(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteCol(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

@@ -10,6 +10,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+
+using Microsoft.Win32;
+
+using FileLib.Interfaces;
+using FileLib.FileParsers;
+
+using SDWP.Factories;
+using SDWP.Exceptions;
 
 using ApplicationLib.Models;
 
@@ -28,6 +37,10 @@ namespace SDWP
         private TextBox TableHeightTextBox { get; }
         private TextBox FilePathTextBox { get; }
         private TextBox TableTitleTextBox { get; }
+
+        private ISdwpAbstractFactory AbstractFactory { get; set; }
+        private IFileParser FileParser { get; set; }
+        private IExceptionHandler ExceptionHandler { get; set; }
         #endregion
 
         public CreateNewTableWindow(Item currentItem)
@@ -40,6 +53,16 @@ namespace SDWP
             TableHeightTextBox = tableHeightTextBox;
             FilePathTextBox = filePathTexxBox;
             TableTitleTextBox = tableTitleTextBox;
+
+            GetServices();
+        }
+
+        private void GetServices()
+        {
+            AbstractFactory = new SdwpAbstractFactory();
+
+            FileParser = AbstractFactory.GetFileParser();
+            ExceptionHandler = AbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
         #region Event handlers
@@ -87,7 +110,7 @@ namespace SDWP
         private void CreateNewTable(object sender, RoutedEventArgs e)
         {
             if (FilePathTextBox.Text != FilePathTextBoxHint)
-                CreateTableFromCSFile();
+                CreateTableFromCSFile(FilePathTextBox.Text);
             else
                 CreateEmptyTable();
         }
@@ -96,13 +119,52 @@ namespace SDWP
         {
             Close();
         }
+
+        private void SelectAssembly(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Filter = "(*dll)|*dll",
+                CheckFileExists = true,
+                CheckPathExists = true,
+                Title = "Выберете DLL файл для сканирования",
+                Multiselect = false,
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                FilePathTextBox.Text = openFileDialog.FileName;
+            }
+        }
         #endregion
 
         #region Table creation 
-        private void CreateTableFromCSFile()
+        private void CreateTableFromCSFile(string filePath)
         {
-#warning Create logic for creation table from file
-            throw new NotImplementedException();
+            try
+            {
+                Table[] tables = FileParser.GetAssemblyTables(filePath, CurrentItem);
+
+                for (int i = 0; i<tables.Length; i++)
+                    AddNewTable(tables[i]);
+                DialogResult = true;
+                Close();
+            }
+            catch (IOException ex)
+            {
+                DialogResult = false;
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                DialogResult = false;
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+
+        private void AddNewTable(Table table)
+        {
+            CurrentItem.Paragraphs.Add(table);
         }
 
         private void CreateEmptyTable()
@@ -119,8 +181,7 @@ namespace SDWP
                     Title = tableTitle
                 };
 
-                CurrentItem.Paragraphs.Add(table);
-
+                AddNewTable(table);
                 DialogResult = true;
                 Close();
             }

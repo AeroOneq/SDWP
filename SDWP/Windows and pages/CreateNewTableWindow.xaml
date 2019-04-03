@@ -74,7 +74,8 @@
                     <Button Style="{StaticResource createNewObjectWindowsBtnStyle}"
                             Content="Обзор"
                             Margin="10, 0, 0, 0"
-                            VerticalAlignment="Center"/>
+                            VerticalAlignment="Center"
+                            Click="SelectAssembly"/>
                 </StackPanel>
             </StackPanel>
             <Grid VerticalAlignment="Bottom"

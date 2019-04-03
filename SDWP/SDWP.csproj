@@ -245,6 +245,10 @@
       <Project>{c5c4109f-51c1-48d9-9a3c-59d41354892b}</Project>
       <Name>ApplicationLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileLib\FileLib.csproj">
+      <Project>{364bc5f5-c473-4603-897a-f4419b7b39f3}</Project>
+      <Name>FileLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\addNewParagraphElementActive.png" />

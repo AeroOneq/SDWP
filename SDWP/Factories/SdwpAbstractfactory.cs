@@ -4,7 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+
 using ApplicationLib.Models;
+
+using FileLib.Interfaces;
+using FileLib.FileParsers;
+
 using SDWP.Exceptions;
 
 namespace SDWP.Factories
@@ -19,6 +24,11 @@ namespace SDWP.Factories
         public IExceptionHandler GetExceptionHandler(Dispatcher dispatcher)
         {
             return new ExceptionHandler(dispatcher);
+        }
+
+        public IFileParser GetFileParser()
+        {
+            return new CSFileParser();
         }
     }
 }
