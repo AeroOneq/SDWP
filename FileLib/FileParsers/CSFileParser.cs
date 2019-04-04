@@ -194,7 +194,7 @@ namespace FileLib.FileParsers
         private Type[] GetAssemblyTypes(string filePath)
         {
             Assembly assembly = Assembly.LoadFrom(filePath);
-            Type[] types = assembly.GetTypes();
+            Type[] types = assembly.GetExportedTypes();
 
             return types;
         }

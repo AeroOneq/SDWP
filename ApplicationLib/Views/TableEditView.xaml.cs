@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
@@ -41,8 +33,6 @@ namespace ApplicationLib.Views
             SetParagraphSettingsEvents();
             HintControl.SetBinding(CurrentTable);
             SetItemsSource();
-
-            DataContext = CurrentTable;
         }
 
         private void SetParagraphSettingsEvents()
@@ -56,6 +46,7 @@ namespace ApplicationLib.Views
 
         private void SetItemsSource()
         {
+            TableDataGrid.Columns.Clear();
             string[][] tableCells = CurrentTable.TableCells;
 
             for (int i = 0; i < tableCells[0].Length; i++)
@@ -70,6 +61,14 @@ namespace ApplicationLib.Views
 
                 TableDataGrid.Columns.Add(col);
             }
+
+            RefreshDataContext();
+        }
+
+        private void RefreshDataContext()
+        {
+            DataContext = null;
+            DataContext = CurrentTable;
         }
 
         #region IParagraphEditView 
@@ -96,44 +95,60 @@ namespace ApplicationLib.Views
         }
         #endregion
 
-        private void AddNewRightRow(object sender, RoutedEventArgs e)
+        public void AddNewRightCol(object sender, RoutedEventArgs e)
         {
-            DataGridCell clickedCell = e.OriginalSource as DataGridCell;
-            DataGridColumn cellColumn = clickedCell.Column;
-
-            int columnIndex = 0, rowIndex = 0;
-
-            for (int i = 0; i<TableDataGrid.Columns.Count; i++)
-                if (TableDataGrid.Columns[i].Equals(cellColumn))
-                {
-                    columnIndex = i;
-                    break;
-                }
+            CurrentTable.AddNewRightCol(GetSelectedCellCol());
+            SetItemsSource();
         }
 
-        private void AddNewLeftRow(object sender, RoutedEventArgs e)
+        public void AddNewLeftCol(object sender, RoutedEventArgs e)
         {
-
+            CurrentTable.AddNewLeftCol(GetSelectedCellCol());
+            SetItemsSource();
         }
 
-        private void AddNewUpCol(object sender, RoutedEventArgs e)
+        public void AddNewUpRow(object sender, RoutedEventArgs e)
         {
-
+            CurrentTable.AddNewUpRow(GetSelectedCellRow());
+            SetItemsSource();
         }
 
-        private void AddNewDownCol(object sender, RoutedEventArgs e)
+        public void AddNewDownRow(object sender, RoutedEventArgs e)
         {
-
+            CurrentTable.AddNewDownRow(GetSelectedCellRow());
+            SetItemsSource();
         }
 
-        private void DeleteRow(object sender, RoutedEventArgs e)
+        public void DeleteRow(object sender, RoutedEventArgs e)
         {
-
+            CurrentTable.DeleteRow(GetSelectedCellRow());
+            SetItemsSource();
         }
 
-        private void DeleteCol(object sender, RoutedEventArgs e)
+        public void DeleteCol(object sender, RoutedEventArgs e)
         {
+            CurrentTable.DeleteCol(GetSelectedCellCol());
+            SetItemsSource();
+        }
 
+        public int GetSelectedCellRow()
+        {
+            DataGridCellInfo selectedCell = TableDataGrid.SelectedCells[0];
+            for (int i = 0; i < CurrentTable.TableCells.Length; i++)
+                if (CurrentTable.TableCells[i].Equals(selectedCell.Item as string[]))
+                    return i;
+
+            return 0;
+        }
+
+        public int GetSelectedCellCol()
+        {
+            DataGridColumn selectedCol = TableDataGrid.SelectedCells[0].Column;
+            for (int i = 0; i < TableDataGrid.Columns.Count; i++)
+                if (selectedCol.Equals(TableDataGrid.Columns[i]))
+                    return i;
+
+            return 0;
         }
     }
 }

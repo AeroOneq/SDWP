@@ -80,56 +80,23 @@
             <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="CanUserResizeRows" Value="True"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="SelectionUnit" Value="Cell"/>
+            <Setter Property="SelectionMode" Value="Single"/>
         </Style>
-        
+
         <Style x:Key="tableDataGridCellStyle" TargetType="DataGridCell">
             <Setter Property="Padding" Value="3"/>
             <Setter Property="MinHeight" Value="10"/>
             <Setter Property="MinWidth" Value="20"/>
-            <Setter Property="ContextMenu">
-                <Setter.Value>
-                    <ContextMenu>
-                        <MenuItem Header="Добавить столбец справа"
-                                  Click="AddNewRightCol">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/addColRightIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Добавить столбец слева"
-                                  Click="AddNewLeftCol">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/addColRightIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator/>
-                        <MenuItem Header="Добавить строку снизу"
-                                  Click="AddNewDownRow">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/addRowDownIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Добавить строку сверху"
-                                  Click="AddNewUpRow">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/addRowDownIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator/>
-                        <MenuItem Header="Удалить столбец"
-                                  Click="DeleteCol">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/deleteTableColIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Удалить строку"
-                                  Click="DeleteRow">
-                            <MenuItem.Icon>
-                                <Image Source="Resources/deleteTableRowIcon.png"/>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </Setter.Value>
-            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected"
+                         Value="True">
+                    <Setter Property="Background"
+                        Value="{StaticResource mainThemeBrush}" />
+                    <Setter Property="Foreground"
+                        Value="White" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
     <UserControl.Content>
@@ -169,7 +136,61 @@
                     <DataGrid x:Name="tableDataGrid"
                               ItemsSource="{Binding TableCells, UpdateSourceTrigger=PropertyChanged}"
                               Style="{StaticResource tableDataGridStyle}"
-                              CellStyle="{StaticResource tableDataGridCellStyle}"/>
+                              CellStyle="{StaticResource tableDataGridCellStyle}">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Добавить столбец справа"
+                                  Click="AddNewRightCol">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/addColRightIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Добавить столбец слева"
+                                  Click="AddNewLeftCol">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/addColRightIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Добавить строку снизу"
+                                  Click="AddNewDownRow">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/addRowDownIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Добавить строку сверху"
+                                  Click="AddNewUpRow">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/addRowDownIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator/>
+                                <MenuItem Header="Удалить столбец"
+                                  Click="DeleteCol">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/deleteTableColIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Удалить строку"
+                                  Click="DeleteRow">
+                                    <MenuItem.Icon>
+                                        <Image Source="Resources/deleteTableRowIcon.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected"
+                                             Value="True">
+                                        <Setter Property="BorderBrush"
+                                                Value="{StaticResource mainThemeBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
                 </ScrollViewer>
             </Border>
 
