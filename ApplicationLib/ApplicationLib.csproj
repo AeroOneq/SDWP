@@ -64,6 +64,7 @@
     <Compile Include="Database\UsersDB.cs" />
     <Compile Include="Interfaces\IParagraphEditView.cs" />
     <Compile Include="Interfaces\IParagraphSettings.cs" />
+    <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
     <Compile Include="Tests\TableTest.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
@@ -73,6 +74,9 @@
     </Compile>
     <Compile Include="Views\ItemMenuOption.xaml.cs">
       <DependentUpon>ItemMenuOption.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NumberedListEditView.xaml.cs">
+      <DependentUpon>NumberedListEditView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ParagraphElementSettings.xaml.cs">
       <DependentUpon>ParagraphElementSettings.xaml</DependentUpon>
@@ -85,7 +89,6 @@
     <Compile Include="Models\Documentation models\Documentation.cs" />
     <Compile Include="Models\Documentation models\Item.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedList.cs" />
-    <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphImage.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Subparagraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Table.cs" />
@@ -118,6 +121,10 @@
     <Page Include="Views\ItemMenuOption.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NumberedListEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ParagraphElementSettings.xaml">
       <Generator>MSBuild:Compile</Generator>

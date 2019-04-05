@@ -9,10 +9,12 @@ using ApplicationLib.Interfaces;
 
 using Newtonsoft.Json;
 
+using ApplicationLib.Views;
+
 
 namespace ApplicationLib.Models
 {
-    class NumberedList : IParagraphElement
+    public class NumberedList : IParagraphElement
     {
         #region Properties
         public List<NumberedListElement> ListElements { get; set; }
@@ -36,7 +38,7 @@ namespace ApplicationLib.Models
 
         public UserControl GetEditView()
         {
-            throw new NotImplementedException();
+            return new NumberedListEditView(this);
         }
 
         public Task DeleteParagraph()

@@ -57,6 +57,7 @@ namespace SDWP
                 textBox.Text = textBoxHint;
         }
 
+
         private void CancelCreation(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

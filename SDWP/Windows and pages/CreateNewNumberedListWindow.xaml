@@ -1,10 +1,7 @@
-﻿<Window x:Class="SDWP.CreateNewSubparagraphWindow"
-        x:Name="createNewSubparagraphWindow"
+﻿<Window x:Class="SDWP.CreateNewNumberedListWindow"
+        x:Name="createNewNumberedListWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:SDWP"
         Title="Создать новый пункт"
         Height="200" 
         Width="400"
@@ -17,25 +14,25 @@
         <Grid VerticalAlignment="Top"
               HorizontalAlignment="Left"
               Background="White"
-              Width="{Binding ElementName=createNewSubparagraphWindow, Path=Width}"
-              Height="{Binding ElementName=createNewSubparagraphWindow, Path=Height}">
+              Width="{Binding ElementName=createNewNumberedListWindow, Path=Width}"
+              Height="{Binding ElementName=createNewNumberedListWindow, Path=Height}">
             <StackPanel x:Name="mainContentStackPanel"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         Margin="0, 0, 0, 44"
                         Background="Transparent">
                 <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
-                           Text="Введите навание параграфа: "
+                           Text="Введите название списка: "
                            Margin="20, 10, 0, 0"/>
-                <TextBox x:Name="subparagraphTitleTextBox"
+                <TextBox x:Name="numberedListTitleTextBox"
                          Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
-                         Text="Имя абзаца..."
+                         Text="Название списка..."
                          Width="200"
                          Margin="20, 10, 0, 0"
-                         GotFocus="SubparagraphTitleTextBoxGotFocus"
-                         LostFocus="SubparagraphTitleTextBoxGotFocus"/>
+                         GotFocus="NumberedListTitleTextBoxGotFocus"
+                         LostFocus="NumberedListTitleTextBoxGotFocus"/>
             </StackPanel>
-            
+
             <Grid VerticalAlignment="Bottom"
                   HorizontalAlignment="Stretch"
                   Height="44"
@@ -51,7 +48,7 @@
                     <Button x:Name="createNewItemBtn"
                             Style="{StaticResource createNewObjectWindowsBtnStyle}"
                             Content="Создать"
-                            Click="CreateNewSubparagraph"/>
+                            Click="CreateNewNumberedList"/>
                     <Button x:Name="cancelBtn"
                             Style="{StaticResource createNewObjectWindowsBtnStyle}"
                             Content="Отмена"

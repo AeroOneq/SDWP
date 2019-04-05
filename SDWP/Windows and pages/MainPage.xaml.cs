@@ -46,7 +46,7 @@ namespace SDWP
                                 {
                                     new Subparagraph(new Item())
                                     {
-                                        Text = " asdsadasdsadsadasd", 
+                                        Text = " asdsadasdsadsadasd",
                                         Hint = "HINT"
                                     },
                                     new Subparagraph(new Item())
@@ -54,6 +54,16 @@ namespace SDWP
                                         Text = " asdsadasdsadsadasd",
                                         Hint = "HINT"
                                     },
+                                    new NumberedList(new List<NumberedListElement>()
+                                    {
+                                        new NumberedListElement("asdsadasdasd"),
+                                        new NumberedListElement("asdsadasdasd"),
+                                        new NumberedListElement("asdsadasdasd"),
+                                        new NumberedListElement("asdsadasdasd"),
+                                    }, new Item())
+                                    {
+                                        Title = "Numbered LIST"
+                                    }
                                 }
                             }
                         },
@@ -474,6 +484,20 @@ namespace SDWP
                 Item contentItem = DocController.CurrentContentItem;
 
                 CreateNewTableWindow createWindow = new CreateNewTableWindow(contentItem);
+                createWindow.ShowDialog();
+
+                if (createWindow.DialogResult == true)
+                    RefreshParagraphsUI();
+            }
+        }
+
+        private void AddNewNumberedList(object sender, MouseEventArgs e)
+        {
+            if (DocController.CurrentContentItem != null)
+            {
+                Item contentItem = DocController.CurrentContentItem;
+
+                CreateNewNumberedListWindow createWindow = new CreateNewNumberedListWindow(contentItem);
                 createWindow.ShowDialog();
 
                 if (createWindow.DialogResult == true)
