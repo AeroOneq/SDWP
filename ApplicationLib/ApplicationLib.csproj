@@ -62,15 +62,23 @@
   <ItemGroup>
     <Compile Include="Database\Email.cs" />
     <Compile Include="Database\UsersDB.cs" />
+    <Compile Include="Interfaces\IImageSettings.cs" />
     <Compile Include="Interfaces\IParagraphEditView.cs" />
     <Compile Include="Interfaces\IParagraphSettings.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
+    <Compile Include="Tests\NumberedListTests.cs" />
     <Compile Include="Tests\TableTest.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HintControl.xaml.cs">
       <DependentUpon>HintControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImageEditView.xaml.cs">
+      <DependentUpon>ImageEditView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ImageParagraphSettings.xaml.cs">
+      <DependentUpon>ImageParagraphSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ItemMenuOption.xaml.cs">
       <DependentUpon>ItemMenuOption.xaml</DependentUpon>
@@ -115,6 +123,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\HintControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImageEditView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ImageParagraphSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -183,6 +199,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\replaceItemLowerActive.png" />
+    <Resource Include="Views\Resources\replaceItemLowerStatic.png" />
+    <Resource Include="Views\Resources\replaceItemUpperActive.png" />
+    <Resource Include="Views\Resources\replaceItemUpperStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\addNewListItemStatic.png" />
+    <Resource Include="Views\Resources\addNewListItemActive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\Resources\uploadNewImageActive.png" />
+    <Resource Include="Views\Resources\uploadNewImageStatic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

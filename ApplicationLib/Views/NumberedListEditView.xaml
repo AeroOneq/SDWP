@@ -116,6 +116,24 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="numberedListItemOptionImageStaticStyle" TargetType="Image">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Visibility" Value="Visible"/>
+
+            <EventSetter Event="MouseEnter" Handler="IconMouseEnter"/>
+        </Style>
+        <Style x:Key="numberedListItemOptionImageActiveStyle" TargetType="Image">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Visibility" Value="Collapsed"/>
+
+            <EventSetter Event="MouseLeave" Handler="IconMouseLeave"/>
+        </Style>
         <Style x:Key="numberedListListBoxStyle" TargetType="ListBox">
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -132,12 +150,62 @@
                                 BorderBrush="{StaticResource mainThemeBrush}"
                                 CornerRadius="0, 5, 5, 0"
                                 Margin="-5, 0, 0, 0">
-                            <StackPanel VerticalAlignment="Stretch"
-                                        HorizontalAlignment="Stretch"
-                                        Orientation="Horizontal">
+                            <Grid x:Name="listItemStackPannel"
+                                  Background="Transparent"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch">
                                 <TextBox Style="{StaticResource listBoxItemTextBoxStyle}"
+                                         Margin="0, 0, 125, 0"
                                          Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
+                                <Grid HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0, 0, 95, 0"> 
+                                    <Image x:Name="replaceItemUpperStaticImage"
+                                           Style="{StaticResource numberedListItemOptionImageStaticStyle}"
+                                           Source="Resources/replaceItemUpperStatic.png"/>
+                                    <Image x:Name="replaceItemUpperActiveImage"
+                                           Uid="{Binding Index}"
+                                           Style="{StaticResource numberedListItemOptionImageActiveStyle}"
+                                           Source="Resources/replaceItemUpperActive.png"
+                                           MouseDown="MoveItemUpper"/>
+                                </Grid>
+                                <Grid HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0, 0, 65, 0">
+                                    <Image x:Name="replaceItemLowerStaticImage"
+                                           Style="{StaticResource numberedListItemOptionImageStaticStyle}"
+                                           Source="Resources/replaceItemLowerStatic.png"/>
+                                    <Image x:Name="replaceItemLowerActiveImage"
+                                           Uid="{Binding Index}"
+                                           Style="{StaticResource numberedListItemOptionImageActiveStyle}"
+                                           Source="Resources/replaceItemLowerActive.png"
+                                           MouseDown="MoveItemLower"/>
+                                </Grid>
+                                <Grid HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0, 0, 35, 0">
+                                    <Image x:Name="addNewItemStaticImage"
+                                           Style="{StaticResource numberedListItemOptionImageStaticStyle}"
+                                           Source="Resources/addNewListItemStatic.png"/>
+                                    <Image x:Name="addNewItemActiveImage"
+                                           Uid="{Binding Index}"
+                                           Style="{StaticResource numberedListItemOptionImageActiveStyle}"
+                                           Source="Resources/addNewListItemActive.png"
+                                           MouseDown="AddNewItem"/>
+                                </Grid>
+                                <Grid HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="0, 0, 5, 0">
+                                    <Image x:Name="deleteItemStaticImage"
+                                           Style="{StaticResource numberedListItemOptionImageStaticStyle}"
+                                           Source="Resources/deleteIconStatic.png"/>
+                                    <Image x:Name="deleteItemActiveImage"
+                                           Uid="{Binding Index}"
+                                           Style="{StaticResource numberedListItemOptionImageActiveStyle}"
+                                           Source="Resources/deleteIconActive.png"
+                                           MouseDown="DeleteItem"/>
+                                </Grid>
+                            </Grid>
                         </Border>
                     </DataTemplate>
                 </Setter.Value>

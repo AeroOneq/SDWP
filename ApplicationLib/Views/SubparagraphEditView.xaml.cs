@@ -23,7 +23,7 @@ namespace ApplicationLib.Views
     {
         public Subparagraph Subparagraph { get; }
 
-        private readonly int maxLineSymbolsCount = 200;
+        private readonly int maxLineSymbolsCount = 20;
         private bool DoTextChangedActions { get; set; } = true;
 
         private ParagraphElementSettings ParagraphSettings { get; }
@@ -94,17 +94,22 @@ namespace ApplicationLib.Views
 
         private void AppendNewLineWithLastWord(TextBox textBox, string text, int lastSpaceIndex)
         {
+            DoTextChangedActions = false;
             string lastWord = text.Substring(lastSpaceIndex + 1);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("\n").Append(lastWord);
 
-            textBox.Text = text.Remove(lastSpaceIndex);
-            textBox.Text += sb.ToString();
+            string newText = text.Remove(lastSpaceIndex);
+            newText += sb.ToString();
+            textBox.Text = newText;
         }
 
-        private void AppendNewLine(TextBox textBox) =>
-            textBox.Text += "\n";
+        private void AppendNewLine(TextBox textBox)
+        {
+            if (DoTextChangedActions)
+                textBox.Text += "\n";
+        }
         #endregion
 
         private void SubparagraphKeyDown(object sender, KeyEventArgs e)
@@ -116,9 +121,8 @@ namespace ApplicationLib.Views
                 textBox.Text[textBox.Text.Length - 1] == '\n' && textBox.LineCount > 1)
             {
                 DeleteLastLine(textBox);
+                textBox.SelectionStart = textBox.Text.Length;
             }
-
-            textBox.SelectionStart = textBox.Text.Length;
         }
 
         #region PreviewKeyDown utility methods
@@ -145,7 +149,7 @@ namespace ApplicationLib.Views
         }
 
         public void ReplaceParagraph()
-        { 
+        {
         }
 
         public void ShowOrHideHint()

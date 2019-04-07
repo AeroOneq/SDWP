@@ -9,6 +9,7 @@ namespace ApplicationLib.Models
     public class NumberedListElement
     {
         public string Text { get; set; }
+        public string Index { get; set; }
 
         public NumberedListElement(string text)
         {

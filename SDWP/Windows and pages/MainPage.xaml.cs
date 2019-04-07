@@ -14,6 +14,7 @@ using FileLib.Interfaces;
 using FileLib.FileParsers;
 
 using SDWP.Factories;
+using System.IO;
 
 namespace SDWP
 {
@@ -78,7 +79,8 @@ namespace SDWP
                             new Subparagraph( new Item())
                             {
                                 Text = "asdasdasdasdasdasdasdasdasdasdasd"
-                            }
+                            },
+                            new ParagraphImage(new byte[0], new Item()),
                         }
                     }
                 }
@@ -116,6 +118,16 @@ namespace SDWP
             Documents[0].Items[0].Items[0].ParentList = Documents[0].Items[0].Items;
             Documents[0].Items[0].ParentList = Documents[0].Items;
             Documents[0].Items[0].ParentItem = null;
+
+            byte[] imgByteArr;
+            using (var ms = new FileStream(@"C:\Users\Aero\Desktop\python\s1200.jpg", FileMode.Open, FileAccess.Read))
+            {
+                ms.Seek(0, SeekOrigin.Begin);
+                imgByteArr = new byte[ms.Length];
+                ms.Read(imgByteArr, 0, (int)ms.Length);
+            }
+
+            (Documents[0].Items[1].Paragraphs[1] as ParagraphImage).ImageSource = imgByteArr;
 
             SetPropertiesValue();
             UploadDocumentation(Documentation, Documents);

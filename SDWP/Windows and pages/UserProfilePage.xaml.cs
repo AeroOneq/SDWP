@@ -117,6 +117,7 @@ namespace SDWP
             };
             enterCodeGrid.BeginAnimation(FrameworkElement.MarginProperty, lowerTheGrid);
         }
+
         private void HideEnterCodeGrid()
         {
             ChangeEnablePropertyOfUserDataElemenets(true);
@@ -260,6 +261,7 @@ namespace SDWP
             }
             SwitchOffTheLoader();
         }
+            
         private void OnSuccesfullUpdate()
         {
             UpdateCommonUserAndRefreshUI();

@@ -1,0 +1,118 @@
+﻿<UserControl x:Class="ApplicationLib.Views.ImageParagraphSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ApplicationLib.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="settingsPannelStyle" TargetType="StackPanel">
+            <Setter Property="Width" Value="Auto"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Orientation" Value="Horizontal"/>
+        </Style>
+        <Style x:Key="paragraphElementSettingImageStyle" TargetType="Image">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel x:Name="settingsPannel"
+                Style="{StaticResource settingsPannelStyle}"
+                Orientation="Horizontal">
+
+        <Grid x:Name="uploadImageGrid"
+              Width="19"
+              Height="19"
+              Margin="0, 0, 0, 0"
+              VerticalAlignment="Center">
+            <Image x:Name="uploadImageIconStatic"
+                   Visibility="Visible"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseEnter="IconMouseEnter"
+                   Source="Resources/uploadNewImageStatic.png"/>
+            <Image x:Name="uploadImageIconActive"
+                   Visibility="Collapsed"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseLeave="IconMouseLeave"
+                   Source="Resources/uploadNewImageActive.png"
+                   MouseDown="UploadNewImage"/>
+        </Grid>
+
+        <Grid x:Name="hintGrid"
+              Width="20"
+              Height="20"
+              HorizontalAlignment="Right"
+              Margin="5, 0, 0, 0"
+              VerticalAlignment="Center">
+            <Image x:Name="hintImageStatic"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseEnter="IconMouseEnter"
+                   Source="Resources/paragraphElementHintStatic.png"/>
+            <Image x:Name="hintImageActive"
+                   Visibility="Collapsed"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseLeave="IconMouseLeave"
+                   Source="Resources/paragraphElementHintActive.png"
+                   MouseDown="ShowOrHideParagraphHint"/>
+        </Grid>
+
+        <Grid x:Name="reorderGrid"
+              Width="20"
+              Height="20"
+              Margin="5, 0, 0, 0"
+              VerticalAlignment="Center">
+            <Image x:Name="reorderImageStatic"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   Width="20"
+                   Height="20"
+                   MouseEnter="IconMouseEnter"
+                   Source="Resources/reorderParagraphElementStatic.png"/>
+            <Image x:Name="reorderImageActive"
+                   Visibility="Collapsed"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   Width="20"
+                   Height="20"
+                   MouseLeave="IconMouseLeave"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   Source="Resources/reorderParagraphElementActive.png"
+                   MouseDown="ReplaceParagraph"/>
+        </Grid>
+
+        <Grid x:Name="deletePargraphGrid"
+              Width="20"
+              Height="20"
+              Margin="5, 0, 0, 0"
+              VerticalAlignment="Center">
+            <Image x:Name="deleteParagraphImageStatic"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseEnter="IconMouseEnter"
+                   Source="Resources/deleteIconStatic.png"/>
+            <Image x:Name="deleteParagraphImageActive"
+                   Visibility="Collapsed"
+                   Style="{StaticResource paragraphElementSettingImageStyle}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   MouseLeave="IconMouseLeave"
+                   Source="Resources/deleteIconActive.png"
+                   MouseDown="DeletePragraph"/>
+        </Grid>
+        
+    </StackPanel>
+</UserControl>

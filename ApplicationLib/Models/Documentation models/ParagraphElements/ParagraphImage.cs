@@ -9,6 +9,7 @@ using ApplicationLib.Interfaces;
 
 using Newtonsoft.Json;
 
+using ApplicationLib.Views;
 
 namespace ApplicationLib.Models
 {
@@ -36,7 +37,7 @@ namespace ApplicationLib.Models
 
         public UserControl GetEditView()
         {
-            throw new NotImplementedException();
+            return new ImageEditView(this);
         }
 
         public Task DeleteParagraph()
