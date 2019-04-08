@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Item
+    public class Item : IParentableItem
     {
         public string Name { get; set; }
 
@@ -12,8 +12,14 @@ namespace ApplicationLib.Models
         public List<IParagraphElement> Paragraphs { get; set; }
 
         [JsonIgnore]
-        public Item ParentItem { get; set; }
+        public Item ParentItem { get; private set; }
         [JsonIgnore]
-        public List<Item> ParentList { get; set; }
+        public List<Item> ParentList { get; private set; }
+
+        public void SetParents(Item parentItem, List<Item> parentList)
+        {
+            ParentItem = parentItem;
+            ParentList = parentList;
+        }
     }
 }

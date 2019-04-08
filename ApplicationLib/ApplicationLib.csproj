@@ -65,6 +65,8 @@
     <Compile Include="Interfaces\IImageSettings.cs" />
     <Compile Include="Interfaces\IParagraphEditView.cs" />
     <Compile Include="Interfaces\IParagraphSettings.cs" />
+    <Compile Include="Interfaces\IParentableParagraph.cs" />
+    <Compile Include="Interfaces\IParentableItem.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
     <Compile Include="Tests\NumberedListTests.cs" />
     <Compile Include="Tests\TableTest.cs" />
@@ -213,6 +215,9 @@
   <ItemGroup>
     <Resource Include="Views\Resources\uploadNewImageActive.png" />
     <Resource Include="Views\Resources\uploadNewImageStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -45,15 +45,15 @@ namespace SDWP
                                 Items = null,
                                 Paragraphs = new List<IParagraphElement>()
                                 {
-                                    new Subparagraph(new Item())
+                                    new Subparagraph(" asdsadasdsadsadasd")
                                     {
-                                        Text = " asdsadasdsadsadasd",
-                                        Hint = "HINT"
+                                        Hint = "HINT",
+                                        Title = "P1"
                                     },
-                                    new Subparagraph(new Item())
+                                    new Subparagraph(" asdsadasdsadsadasd")
                                     {
-                                        Text = " asdsadasdsadsadasd",
-                                        Hint = "HINT"
+                                        Hint = "HINT",
+                                        Title = "P2"
                                     },
                                     new NumberedList(new List<NumberedListElement>()
                                     {
@@ -61,7 +61,7 @@ namespace SDWP
                                         new NumberedListElement("asdsadasdasd"),
                                         new NumberedListElement("asdsadasdasd"),
                                         new NumberedListElement("asdsadasdasd"),
-                                    }, new Item())
+                                    })
                                     {
                                         Title = "Numbered LIST"
                                     }
@@ -76,11 +76,15 @@ namespace SDWP
                         Items = null,
                         Paragraphs = new List<IParagraphElement>()
                         {
-                            new Subparagraph( new Item())
-                            {
-                                Text = "asdasdasdasdasdasdasdasdasdasdasd"
+                           new Subparagraph(" asdsadasdsadsadasd")
+                           {
+                               Hint = "HINT",
+                               Title = "P3"
+                           },
+                           new ParagraphImage(new byte[0])
+                           {
+                               Title = "P4"
                             },
-                            new ParagraphImage(new byte[0], new Item()),
                         }
                     }
                 }
@@ -102,6 +106,11 @@ namespace SDWP
         private Grid ParagraphElementsGrid { get; set; }
         private Grid AddNewParagraphElementGrid { get; set; }
 
+        private TextBox GoToTreeViewModeTextBox { get; set; }
+        private TextBox GoToListModeTextBox { get; set; }
+        private TreeView DocumentTreeView { get; set; }
+        private ScrollViewer ListModeScroll { get; set; }
+
         private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
 
         private ISdwpAbstractFactory AbstractFactory { get; }
@@ -112,12 +121,6 @@ namespace SDWP
         {
             InitializeComponent();
             AbstractFactory = new SdwpAbstractFactory();
-
-#warning TEST
-            Documents[0].Items[0].Items[0].ParentItem = Documents[0].Items[0];
-            Documents[0].Items[0].Items[0].ParentList = Documents[0].Items[0].Items;
-            Documents[0].Items[0].ParentList = Documents[0].Items;
-            Documents[0].Items[0].ParentItem = null;
 
             byte[] imgByteArr;
             using (var ms = new FileStream(@"C:\Users\Aero\Desktop\python\s1200.jpg", FileMode.Open, FileAccess.Read))
@@ -147,6 +150,11 @@ namespace SDWP
             ItemsListStackPanel = itemsListStackPanel;
             ParagraphElementsGrid = paragraphElementsGrid;
             AddNewParagraphElementGrid = addNewParagraphElementGrid;
+
+            GoToTreeViewModeTextBox = goToTreeViewModeTextBox;
+            GoToListModeTextBox = goToListModeTextBox;
+            DocumentTreeView = documentTreeView;
+            ListModeScroll = listModelScroll;
         }
 
         #region Upload new documentation
@@ -194,7 +202,7 @@ namespace SDWP
         private void RefreshItemsUI()
         {
             if (DocController.CurrentItemsList != null)
-                UploadItemsToPanel(DocController.CurrentItemsList);
+                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
         }
 
         private void RefreshParagraphsUI()
@@ -224,7 +232,69 @@ namespace SDWP
             Document document = clickedDocumentMenuOption.Document;
 
             DocController.UploadDocument(document);
-            UploadItemsToPanel(document.Items);
+            UploadItemsToPanel(null, document.Items);
+            CreateDocumentTreeView(document);
+        }
+
+        /// <summary>
+        /// Creates the document tree view (the second way to observe the document)
+        /// </summary>
+        private void CreateDocumentTreeView(Document document)
+        {
+            DocumentTreeView.Items.Clear();
+            foreach (Item item in document.Items)
+            {
+                TreeViewItem treeViewItem = new TreeViewItem()
+                {
+                    Header = item.Name
+                };
+
+                UploadItemsToTreeView(item, treeViewItem);
+
+                DocumentTreeView.Items.Add(treeViewItem);
+            }
+        }
+
+        private void UploadItemsToTreeView(Item item, TreeViewItem rootItem)
+        {
+            if (item.Items != null)
+                foreach (Item i in item.Items)
+                {
+                    TreeViewItem treeViewItem = new TreeViewItem()
+                    {
+                        Header = i.Name
+                    };
+
+                    rootItem.Items.Add(treeViewItem);
+
+                    if (i.Items != null)
+                    {
+                        foreach (Item ii in i.Items)
+                        {
+                            UploadItemsToTreeView(ii, treeViewItem);
+                        }
+                    }
+
+                    if (i.Paragraphs != null)
+                    {
+                        foreach (IParagraphElement paragraph in i.Paragraphs)
+                        {
+                            treeViewItem.Items.Add(new TreeViewItem()
+                            {
+                                Header = paragraph.Title
+                            });
+                        }
+                    }
+                }
+
+            if (item.Paragraphs != null)
+                foreach (IParagraphElement paragraph in item.Paragraphs)
+                {
+                    rootItem.Items.Add(new TreeViewItem()
+                    {
+                        Header = paragraph.Title
+                    });
+                }
         }
 
         /// <summary>
@@ -232,7 +302,7 @@ namespace SDWP
         /// for each item the parent list is defined
         /// </summary>
         /// <param name="items"></param>
-        private void UploadItemsToPanel(List<Item> items)
+        private void UploadItemsToPanel(Item parentItem, List<Item> items)
         {
             ItemsListStackPanel.Visibility = Visibility.Collapsed;
             ItemsListStackPanel.Width = 0;
@@ -241,7 +311,7 @@ namespace SDWP
             for (int i = 0; i < items.Count; i++)
             {
                 UploadSingleItemToPanel(items[i]);
-                items[i].ParentList = items;
+                (items[i] as IParentableItem).SetParents(parentItem, items);
             }
 
             ItemsListStackPanel.Visibility = Visibility.Visible;
@@ -251,10 +321,10 @@ namespace SDWP
         private void UploadSingleItemToPanel(Item item)
         {
             ItemMenuOption itemMenuOption = new ItemMenuOption(item);
+            itemMenuOption.UpdateList += RefreshItemsUI;
 
             //set events
             itemMenuOption.OnItemClick += UploadItemData;
-            itemMenuOption.UpdateList += RefreshItemsUI;
 
             ItemsListStackPanel.Children.Add(itemMenuOption);
         }
@@ -286,12 +356,15 @@ namespace SDWP
             ItemMenuOption clickedItemMenuOption = sender as ItemMenuOption;
             Item item = clickedItemMenuOption.Item;
 
+            item.SetParents(DocController.CurrentItem,
+                DocController.CurrentItemsList);
+
             ChangeBackgroundOfItemBtns(clickedItemMenuOption);
             DocController.UploadItem(item);
 
             if (item.Items != null)
             {
-                UploadItemsToPanel(DocController.CurrentItem.Items);
+                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItem.Items);
                 backToPreviousItemTextBlock.Text = "к " + item.Name;
 
                 if (DocController.CurrentItem.ParentList != null)
@@ -312,10 +385,12 @@ namespace SDWP
 
             for (int i = 0; i < paragraphs.Count; i++)
             {
+                (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
+                    DocController.CurrentContentItem.Paragraphs);
+
                 UserControl paragraphView = paragraphs[i].GetEditView();
                 paragraphView.Margin = new Thickness(0, 10, 0, 0);
 
-                (paragraphView as IParagraphEditView).ParentList = paragraphs;
                 (paragraphView as IParagraphEditView).RefreshParagraphsUI = RefreshParagraphsUI;
 
                 ParagraphsListPanel.Children.Add(paragraphView);
@@ -387,6 +462,18 @@ namespace SDWP
 
             MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 200);
         }
+
+        private void TreeViewOptionTextBoxMouseEnter(object sender, MouseEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.TextDecorations.Add(TextDecorations.Underline);
+        }
+
+        private void TreeViewOptionTextBoxMouseLeave(object sender, MouseEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.TextDecorations.Clear();
+        }
         #endregion
 
         private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
@@ -437,7 +524,8 @@ namespace SDWP
         {
             if (DocController.CanGoToPrevItem())
             {
-                UploadItemsToPanel(DocController.CurrentItem.ParentList);
+                UploadItemsToPanel(DocController.CurrentItem.ParentItem,
+                    DocController.CurrentItem.ParentList);
 
                 //update text of a backToPreviousItemTextBlock and if there is no parent disable the back img
                 if (DocController.CurrentItem.ParentItem != null)
@@ -465,7 +553,7 @@ namespace SDWP
                     DocController.CurrentItemsList, DocController.CurrentItem);
                 createNewItemWindow.ShowDialog();
 
-                UploadItemsToPanel(DocController.CurrentItemsList);
+                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
             }
             else
             {
@@ -516,6 +604,29 @@ namespace SDWP
                     RefreshParagraphsUI();
             }
         }
+
+        private void AddNewParagraphImage(object sender, MouseButtonEventArgs e)
+        {
+            if (DocController.CurrentContentItem != null)
+            {
+                Item contentItem = DocController.CurrentContentItem;
+
+                CreateNewImageWindow createNewImageWindow = new CreateNewImageWindow(contentItem);
+                createNewImageWindow.ShowDialog();
+
+                if (createNewImageWindow.DialogResult == true)
+                    RefreshParagraphsUI();
+            }
+        }
         #endregion
+
+        private void GoToListMode(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+        private void GoToTreeViewMode(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

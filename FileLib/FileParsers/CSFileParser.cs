@@ -14,35 +14,53 @@ namespace FileLib.FileParsers
     {
         private const int TypePropertiesColCount = 5;
 
-        public Table[] GetAssemblyTables(string filePath, Item parentItem)
+        #region Fields
+        private FieldInfo[] fields;
+        private PropertyInfo[] properties;
+        private MethodInfo[] methods;
+        #endregion
+
+        public Table[] GetAssemblyTables(string filePath)
         {
             Type[] assemblyTypes = GetAssemblyTypes(filePath);
             Table[] assemblyTables = new Table[assemblyTypes.Length + 1];
 
             //classes table
-            assemblyTables[0] = GetClassesTable(parentItem, assemblyTypes, filePath);
+            assemblyTables[0] = GetClassesTable(assemblyTypes, filePath);
 
             for (int i = 0; i < assemblyTypes.Length; i++)
             {
-                assemblyTables[i + 1] = GetTypePropertiesTable(parentItem, assemblyTypes[i]);
+                assemblyTables[i + 1] = GetTypePropertiesTable(assemblyTypes[i]);
             }
 
             return assemblyTables;
         }
 
-        private Table GetTypePropertiesTable(Item parentItem, Type type)
+        private Table GetTypePropertiesTable(Type type)
         {
-            FieldInfo[] fields = type.GetFields();
-            PropertyInfo[] properties = type.GetProperties();
-            MethodInfo[] methods = type.GetMethods();
+            fields = type.GetFields();
+            properties = type.GetProperties();
+            methods = type.GetMethods();
 
             int tableRowCount = fields.Length + methods.Length + properties.Length
                 - CountNumberOfGetAndSet(properties, methods) + 6;
 
             string[][] tableCells = new string[tableRowCount][];
 
+            FillTheFieldsCells(tableCells);
+            FillThePropertiesCells(tableCells);
+            FillTheMethodsCells(tableCells);
+
+            return new Table(tableCells)
+            {
+                Title = type.Name
+            };
+        }
+
+        private void FillTheFieldsCells(string[][] tableCells)
+        {
             tableCells[0] = new string[TypePropertiesColCount]
-                { "Поля", string.Empty, string.Empty, string.Empty, string.Empty };
+               { "Поля", string.Empty, string.Empty, string.Empty, string.Empty };
             tableCells[1] = new string[TypePropertiesColCount]
                 { "Имя", "Модификатор досутпа", "Тип", "Назначение", string.Empty };
 
@@ -51,7 +69,10 @@ namespace FileLib.FileParsers
                 tableCells[i + 2] = new string[TypePropertiesColCount]
                     {fields[i].Name, GetFieldModificators(fields[i]), fields[i].FieldType.Name, string.Empty, string.Empty};
             }
+        }
 
+        private void FillThePropertiesCells(string[][] tableCells)
+        {
             tableCells[fields.Length + 2] = new string[TypePropertiesColCount]
                 { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
             tableCells[fields.Length + 3] = new string[TypePropertiesColCount]
@@ -63,7 +84,10 @@ namespace FileLib.FileParsers
                     {properties[i].Name, GetPropertiesModificators(properties[i], methods),
                     properties[i].PropertyType.Name, string.Empty, string.Empty};
             }
+        }
 
+        private void FillTheMethodsCells(string[][] tableCells)
+        {
             tableCells[fields.Length + properties.Length + 4] = new string[TypePropertiesColCount]
                 { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
             tableCells[fields.Length + properties.Length + 5] = new string[TypePropertiesColCount]
@@ -81,10 +105,6 @@ namespace FileLib.FileParsers
                 }
             }
 
-            return new Table(tableCells, parentItem)
-            {
-                Title = type.Name
-            };
         }
 
         private int CountNumberOfGetAndSet(PropertyInfo[] properties, MethodInfo[] methods)
@@ -181,11 +201,11 @@ namespace FileLib.FileParsers
             return mods;
         }
 
-        private Table GetClassesTable(Item parentItem, Type[] types, string filePath)
+        private Table GetClassesTable(Type[] types, string filePath)
         {
             string[][] classesTableCells = GetClassesTableCells(types);
 
-            return new Table(classesTableCells, parentItem)
+            return new Table(classesTableCells)
             {
                 Title = $"Таблица классов {filePath.Substring(filePath.LastIndexOf("\\") + 1)}"
             };

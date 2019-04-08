@@ -14,23 +14,30 @@ using ApplicationLib.Views;
 
 namespace ApplicationLib.Models
 {
-    public class NumberedList : IParagraphElement
+    public class NumberedList : IParagraphElement, IParentableParagraph
     {
         #region Properties
         public List<NumberedListElement> ListElements { get; set; }
-
-        [JsonIgnore]
-        public Item ParentItem { get; }
         public string Hint { get; set; }
         public string Title { get; set; }
+
+        [JsonIgnore]
+        public Item ParentItem { get; private set; }
+        [JsonIgnore]
+        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
-        public NumberedList(List<NumberedListElement> listElements, Item parentItem)
+        public NumberedList(List<NumberedListElement> listElements)
         {
             ListElements = listElements;
-            ParentItem = parentItem;
 
             SetIndexes();
+        }
+
+        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
+        {
+            ParentItem = parentItem;
+            ParentList = parentList;
         }
 
         private void SetIndexes()
@@ -110,9 +117,9 @@ namespace ApplicationLib.Models
             return new NumberedListEditView(this);
         }
 
-        public Task DeleteParagraph()
+        public void RemoveParagraphFromParentList()
         {
-            throw new NotImplementedException();
+            ParentList.Remove(this);
         }
     }
 }

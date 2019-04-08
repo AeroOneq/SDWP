@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
 
 namespace SDWP
 {
@@ -63,10 +64,14 @@ namespace SDWP
             string listTitle = NumberedListTitleTextBox.Text;
             if (!string.IsNullOrEmpty(listTitle) && !(listTitle == NumberedListTitleHintText))
             {
-                NumberedList numberedList = new NumberedList(new List<NumberedListElement>(), ContentItem)
+                NumberedList numberedList = new NumberedList(new List<NumberedListElement>()
+                {
+                    new NumberedListElement(string.Empty)
+                })
                 {
                     Title = listTitle,
                 };
+                (numberedList as IParentableParagraph).SetParents(ContentItem, ContentItem.Paragraphs);
 
                 ContentItem.Paragraphs.Add(numberedList);
 

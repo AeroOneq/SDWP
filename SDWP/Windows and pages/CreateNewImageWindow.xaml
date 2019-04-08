@@ -1,0 +1,78 @@
+﻿<Window x:Class="SDWP.CreateNewImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SDWP"
+        Title="Создать новый рисунок"
+        Height="400" 
+        Width="400"
+        MinHeight="300"
+        MinWidth="400"
+        MaxHeight="300"
+        MaxWidth="400">
+
+    <Grid VerticalAlignment="Top"
+              HorizontalAlignment="Left"
+              Background="White"
+              Width="400"
+              Height="300">
+        <StackPanel x:Name="mainContentStackPanel"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Margin="0, 0, 0, 44"
+                        Orientation="Vertical"
+                        Background="Transparent">
+            <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
+                           Text="Введите название рисунка: "
+                           Margin="20, 10, 0, 0"/>
+            <TextBox x:Name="imageTitleTextBox"
+                         Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
+                         Text="Aasdasdasdasd"
+                         GotFocus="ImageTitleTextBoxGotFocus"
+                         LostFocus="ImageTitleTextBoxLostFocus"
+                         Margin="20, 10, 0, 0"/>
+            <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
+                       Text="Выберете рисунок"
+                       Margin="20, 20, 0, 0"/>
+            <StackPanel Orientation="Horizontal"
+                            Margin="0, 10, 0, 0">
+                <TextBox x:Name="imagePathTextBox"
+                         Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
+                         Text="Путь до рисунка..."
+                         Width="200"
+                         Margin="20, 0, 0, 0"
+                         GotFocus="ImagePathTextBoxGotFocus"
+                         LostFocus="ImagePathTextBoxLostFocus"/>
+                <Button Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                        Content="Обзор"
+                        Margin="10, 0, 0, 0"
+                        VerticalAlignment="Center"
+                        Click="SelectImage"/>
+            </StackPanel>
+        </StackPanel>
+        <Grid VerticalAlignment="Bottom"
+                  HorizontalAlignment="Stretch"
+                  Height="44"
+                  Margin="0, 0, 0, 38"
+                  Background="#E1E1E1">
+            <StackPanel x:Name="buttonsGrid"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Height="44"
+                            Orientation="Horizontal"
+                            Background="#E1E1E1">
+
+                <Button x:Name="createNewItemBtn"
+                        Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                        Content="Создать"
+                        Click="CreateNewImage"/>
+                <Button x:Name="cancelBtn"
+                        Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                        Content="Отмена"
+                        Click="CancelCreation"/>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

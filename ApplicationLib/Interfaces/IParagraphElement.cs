@@ -19,12 +19,11 @@ namespace ApplicationLib.Interfaces
 {
     public interface IParagraphElement
     {
-        Item ParentItem { get; }
         string Hint { get; set; }
         string Title { get; set; }
 
         UserControl GetWatchView();
         UserControl GetEditView();
-        Task DeleteParagraph();
+        void RemoveParagraphFromParentList();
     }
 }

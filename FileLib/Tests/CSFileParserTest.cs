@@ -24,7 +24,7 @@ namespace FileLib.Tests
         public void TestGetAssenmblyTables()
         {
             string filePath = @"C:\Users\Aero\Desktop\Фракталы\Stepanov_159\Fractals\bin\Debug\Graphics.dll";
-            var tables = csFileParser.GetAssemblyTables(filePath, new ApplicationLib.Models.Item());
+            var tables = csFileParser.GetAssemblyTables(filePath);
 
             Assert.AreEqual(19, tables.Length);
         }

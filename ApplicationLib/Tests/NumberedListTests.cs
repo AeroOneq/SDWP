@@ -26,7 +26,7 @@ namespace ApplicationLib.Tests
                 new NumberedListElement("third"),
                 new NumberedListElement("fourth"),
                 new NumberedListElement("fifth")
-            }, new Item());
+            });
         }
 
         [TestCase(0, ExpectedResult = 4)]

@@ -13,21 +13,28 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Table : IParagraphElement
+    public class Table : IParagraphElement, IParentableParagraph
     {
         #region Properties
         public string[][] TableCells { get; set; }
-
-        [JsonIgnore]
-        public Item ParentItem { get; }
         public string Hint { get; set; }
         public string Title { get; set; }
+
+        [JsonIgnore]
+        public Item ParentItem { get; private set; }
+        [JsonIgnore]
+        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
-        public Table(string[][] tableCells, Item parentItem)
+        public Table(string[][] tableCells)
         {
             TableCells = tableCells;
+        }
+
+        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
+        {
             ParentItem = parentItem;
+            ParentList = parentList;
         }
 
         public void DeleteCol(int colNum)
@@ -181,9 +188,9 @@ namespace ApplicationLib.Models
             return new TableEditView(this);
         }
 
-        public Task DeleteParagraph()
+        public void RemoveParagraphFromParentList()
         {
-            throw new NotImplementedException();
+            ParentList.Remove(this);
         }
     }
 }

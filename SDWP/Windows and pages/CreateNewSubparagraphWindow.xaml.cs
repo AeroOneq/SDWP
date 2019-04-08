@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
 
 namespace SDWP
 {
@@ -69,10 +70,11 @@ namespace SDWP
             string subparagraphTitle = SubparagraphTitleTextBox.Text;
             if (CheckSubparagraphTitle(subparagraphTitle))
             {
-                Subparagraph subparagraph = new Subparagraph(CurrentItem)
+                Subparagraph subparagraph = new Subparagraph(string.Empty)
                 {
                     Title = subparagraphTitle
                 };
+                (subparagraph as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
 
                 CurrentItem.Paragraphs.Add(subparagraph);
 

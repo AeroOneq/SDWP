@@ -94,24 +94,37 @@
         </Grid>
 
         <Grid x:Name="deletePargraphGrid"
-              Width="20"
-              Height="20"
               Margin="5, 0, 0, 0"
               VerticalAlignment="Center">
-            <Image x:Name="deleteParagraphImageStatic"
-                   Style="{StaticResource paragraphElementSettingImageStyle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   MouseEnter="IconMouseEnter"
-                   Source="Resources/deleteIconStatic.png"/>
-            <Image x:Name="deleteParagraphImageActive"
-                   Visibility="Collapsed"
-                   Style="{StaticResource paragraphElementSettingImageStyle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   MouseLeave="IconMouseLeave"
-                   Source="Resources/deleteIconActive.png"
-                   MouseDown="DeletePragraph"/>
+            <Grid x:Name="deleteParagraphIconsGrid"
+                  Visibility="Visible">
+                <Image x:Name="deleteParagraphImageStatic"
+                       Style="{StaticResource paragraphElementSettingImageStyle}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       MouseEnter="IconMouseEnter"
+                       Source="Resources/deleteIconStatic.png"/>
+                <Image x:Name="deleteParagraphImageActive"
+                       Visibility="Collapsed"
+                       Style="{StaticResource paragraphElementSettingImageStyle}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       MouseLeave="IconMouseLeave"
+                       Source="Resources/deleteIconActive.png"
+                       MouseDown="DeletePragraph"/>
+            </Grid>
+            <TextBlock x:Name="deletionConfirmationTextBox"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"
+                       FontFamily="Arial, Verdana"
+                       Foreground="#FF8C00"
+                       FontSize="12"
+                       Margin="5, 0, 5, 0"
+                       Text="Точно?"
+                       ToolTip="Нажмите, если да"
+                       MouseLeave="DeletionConfirmationTextBlockMouseLeave"
+                       MouseDown="DeleteParagraph"/>
         </Grid>
         
     </StackPanel>

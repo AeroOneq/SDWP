@@ -10,6 +10,6 @@ namespace FileLib.Interfaces
 {
     public interface IFileParser
     {
-        Table[] GetAssemblyTables(string filePath, Item parentItem);
+        Table[] GetAssemblyTables(string filePath);
     }
 }

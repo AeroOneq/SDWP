@@ -27,7 +27,6 @@ namespace ApplicationLib.Views
 
         #region IParagraphEditView properties
         public Action RefreshParagraphsUI { get; set; }
-        public List<IParagraphElement> ParentList { get; set; }
         #endregion
 
         #region Constructors
@@ -56,7 +55,7 @@ namespace ApplicationLib.Views
         #region IParagraphEditView
         public void DeleteParagraph()
         {
-            ParentList.Remove(NumberedList);
+            (NumberedList as IParagraphElement).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 

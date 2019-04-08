@@ -9,7 +9,6 @@ namespace ApplicationLib.Interfaces
     public interface IParagraphEditView
     {
         Action RefreshParagraphsUI { get; set; }
-        List<IParagraphElement> ParentList { get; set; }
 
         void DeleteParagraph();
         void ReplaceParagraph();

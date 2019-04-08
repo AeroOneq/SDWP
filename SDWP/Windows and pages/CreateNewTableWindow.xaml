@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SDWP"
-        Title="Создать новый пункт"
+        Title="Создать новую таблицу"
         Height="400" 
         Width="400"
         MinHeight="400"

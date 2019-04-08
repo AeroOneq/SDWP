@@ -13,26 +13,33 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Subparagraph : IParagraphElement
+    public class Subparagraph : IParagraphElement, IParentableParagraph
     {
         #region Properties
         public string Text { get; set; }
-
-        [JsonIgnore]
-        public Item ParentItem { get; }
         public string Hint { get; set; }
         public string Title { get; set; }
+
+        [JsonIgnore]
+        public Item ParentItem { get; private set; }
+        [JsonIgnore]
+        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
-        public Subparagraph() { }
-        public Subparagraph(Item parentItem)
+        public Subparagraph(string text)
         {
-            ParentItem = parentItem;
+            Text = text;
         }
 
-        public Task DeleteParagraph()
+        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
         {
-            throw new NotImplementedException();
+            ParentItem = parentItem;
+            ParentList = parentList;
+        }
+
+        public void RemoveParagraphFromParentList()
+        {
+            ParentList.Remove(this);
         }
 
         public UserControl GetWatchView()

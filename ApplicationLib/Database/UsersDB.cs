@@ -114,6 +114,7 @@ namespace ApplicationLib.Database
         private void ChangePassInTheDataBase(UserInfo user, string newPassword)
         {
             Connector connector = new Connector(DatabaseProperties.ConnectionString);
+#warning FIX THIS SHIT
             connector.DeleteRecord(user);
             user.Password = newPassword;
             connector.Insert(user);

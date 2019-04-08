@@ -12,10 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
-using System.IO;
+
+using Microsoft.Win32;
 
 namespace ApplicationLib.Views
 {
@@ -24,13 +26,12 @@ namespace ApplicationLib.Views
         #region Properties
         private ParagraphImage ParagraphImage { get; }
         private Image MainImage { get; set; }
-        private ImageParagraphSettings ImageParagraphSettings { get;  }
+        private ImageParagraphSettings ImageParagraphSettings { get; }
         private HintControl HintControl { get; set; }
         #endregion
 
         #region IParagraphEditView properties
         public Action RefreshParagraphsUI { get; set; }
-        public List<IParagraphElement> ParentList { get; set; }
         #endregion
 
         public ImageEditView(ParagraphImage paragraphImage)
@@ -44,6 +45,8 @@ namespace ApplicationLib.Views
 
             SetParagraphSettingsEvents();
             SetImageSource(ParagraphImage.ImageSource);
+
+            DataContext = ParagraphImage;
         }
 
         private void SetImageSource(byte[] imageSource)
@@ -71,12 +74,13 @@ namespace ApplicationLib.Views
             imgSettings.OnParagraphDelete += DeleteParagraph;
             imgSettings.OnParagraphReplace += ReplaceParagraph;
             imgSettings.OnParagraphShowOrHideHint += ShowOrHideHint;
+            imgSettings.OnUploadNewImage += SelectAndUploadNewImage;
         }
 
         #region IParagraphEditView methods
         public void DeleteParagraph()
         {
-            ParentList.Remove(ParagraphImage);
+            (ParagraphImage as IParagraphElement).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 
@@ -93,6 +97,35 @@ namespace ApplicationLib.Views
             else
             {
                 HintControl.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public void SelectAndUploadNewImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Title = "Выберете рисунок для зкагрузки",
+                CheckFileExists = true,
+                Filter = "JPG files (*.jpg)|*.jpg|PNG files (*.png)|*png",
+                ValidateNames = true,
+                Multiselect = false
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+                UplodImage(openFileDialog.FileName);
+        }
+
+        private void UplodImage(string imagePath)
+        {
+            byte[] imageByteArr;
+            using (var fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+            {
+                fs.Seek(0, SeekOrigin.Begin);
+                imageByteArr = new byte[fs.Length];
+                fs.Read(imageByteArr, 0, (int)fs.Length);
+
+                ParagraphImage.ImageSource = imageByteArr;
+                SetImageSource(imageByteArr);
             }
         }
         #endregion

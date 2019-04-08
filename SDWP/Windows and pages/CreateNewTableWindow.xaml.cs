@@ -21,6 +21,7 @@ using SDWP.Factories;
 using SDWP.Exceptions;
 
 using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
 
 namespace SDWP
 {
@@ -143,10 +144,13 @@ namespace SDWP
         {
             try
             {
-                Table[] tables = FileParser.GetAssemblyTables(filePath, CurrentItem);
+                Table[] tables = FileParser.GetAssemblyTables(filePath);
 
                 for (int i = 0; i<tables.Length; i++)
+                {
+                    (tables[i] as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
                     AddNewTable(tables[i]);
+                }
                 DialogResult = true;
                 Close();
             }
@@ -176,10 +180,11 @@ namespace SDWP
                 CheckTableTitle(tableTitle))
             {
                 string[][] tableCells = GetEmptyTableCells(tableRowCount, tableColCount);
-                Table table = new Table(tableCells, CurrentItem)
+                Table table = new Table(tableCells)
                 {
                     Title = tableTitle
                 };
+                (table as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
 
                 AddNewTable(table);
                 DialogResult = true;

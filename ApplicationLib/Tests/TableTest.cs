@@ -19,7 +19,7 @@ namespace ApplicationLib.Tests
         [SetUp]
         public void SetUpTests()
         {
-            table = new Table(GetCells(), new Item());
+            table = new Table(GetCells());
         }
 
         private string[][] GetCells()

@@ -138,6 +138,53 @@
             <Setter Property="Width" Value="150"/>
             <Setter Property="Height" Value="20"/>
         </Style>
+        <Style x:Key="treeViewOptionTextBoxStyle" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="FontWeight" Value="UltraLight"/>
+            <Setter Property="Padding" Value="0, 0, 0, 0"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="SelectionBrush" Value="Transparent"/>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush x:Name="foregroundBrush"
+                                     Color="{StaticResource paragraphsTopOptionColor}">
+                    </SolidColorBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="0, 0, 0, 0"
+                                BorderBrush="{StaticResource paragraphsTopOptionBrush}">
+                            <ScrollViewer Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <EventSetter Event="MouseEnter" Handler="TreeViewOptionTextBoxMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="TreeViewOptionTextBoxMouseLeave"/>
+        </Style>
+
+        <HierarchicalDataTemplate x:Key="treeViewDataTemplate" ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}"
+                           FontFamily="Arial, Verdana"
+                           FontSize="12"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
@@ -309,13 +356,35 @@
                 <Grid Style="{StaticResource paragraphsLineGridStyle}"
                           Margin="10, 55, 10, 0"/>
 
-                <TextBlock Style="{StaticResource propertyNameStyle}"
-                                           Margin="15, 90, 0, 0"
-                                           FontSize="15"
-                                           Text="Пункты:"/>
+                <TextBox x:Name="goToTreeViewModeTextBox"
+                         Style="{StaticResource treeViewOptionTextBoxStyle}"
+                         Margin="12.5, 70, 0, 0"
+                         FontSize="11"
+                         Text="Перейти к дереву документа:"
+                         MouseDown="GoToTreeViewMode"/>
+                <TextBox x:Name="goToListModeTextBox"
+                         Style="{StaticResource treeViewOptionTextBoxStyle}"
+                         Margin="12.5, 70, 0, 0"
+                         Visibility="Collapsed"
+                         FontSize="11"
+                         Text="Перейти к дереву документа:"
+                         MouseDown="GoToListMode"/>
 
+                <TextBlock Style="{StaticResource propertyNameStyle}"
+                           Margin="15, 90, 0, 0"
+                           FontSize="15"
+                           Text="Пункты:"/>
+
+                <TreeView x:Name="documentTreeView"
+                          Margin="0, 110, 0, 60"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          Visibility="Visible"
+                          ItemTemplate="{StaticResource treeViewDataTemplate}"/>
                 <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
-                                  Margin="0, 110, 0, 60">
+                              Margin="0, 110, 0, 60"
+                              x:Name="listModelScroll"
+                              Visibility="Collapsed">
                     <StackPanel x:Name="itemsListStackPanel"
                                     Width="0"
                                     VerticalAlignment="Stretch"
@@ -412,7 +481,8 @@
                                    Style="{StaticResource paragraphsTopOptionImageStyle}"
                                    Visibility="Collapsed"
                                    Source="../Resources/addNewImageActive.png"
-                                   MouseLeave="IconMouseLeave"/>
+                                   MouseLeave="IconMouseLeave"
+                               PreviewMouseDown="AddNewParagraphImage"/>
 
                         <Image x:Name="addNewSubparagraphImageStatic"
                                    Margin="0, 0, 115, 0"

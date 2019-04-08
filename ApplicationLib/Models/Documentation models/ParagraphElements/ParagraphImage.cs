@@ -13,21 +13,28 @@ using ApplicationLib.Views;
 
 namespace ApplicationLib.Models
 {
-    public class ParagraphImage : IParagraphElement
+    public class ParagraphImage : IParagraphElement, IParentableParagraph
     {
         #region Properties
         public byte[] ImageSource { get; set; }
+        public string Hint { get; set; }
+        public string Title { get; set; }
 
         [JsonIgnore]
-        public Item ParentItem { get; }
-        public string Hint { get; set; }
-        public string Title { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Item ParentItem { get; private set; }
+        [JsonIgnore]
+        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
-        public ParagraphImage(byte[] imageSource, Item parentItem)
+        public ParagraphImage(byte[] imageSource)
         {
             ImageSource = imageSource;
+        }
+
+        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
+        {
             ParentItem = parentItem;
+            ParentList = parentList;
         }
 
         public UserControl GetWatchView()
@@ -40,9 +47,9 @@ namespace ApplicationLib.Models
             return new ImageEditView(this);
         }
 
-        public Task DeleteParagraph()
+        public void RemoveParagraphFromParentList()
         {
-            throw new NotImplementedException();
+            ParentList.Remove(this);
         }
     }
 }

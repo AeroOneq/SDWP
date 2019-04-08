@@ -51,25 +51,25 @@ namespace SDWP
 
             if (contentCreationModeRadioBtn.IsChecked == true)
             {
-                CurrentItemsList.Add(new Item()
+                Item newItem = new Item()
                 {
                     Items = null,
                     Paragraphs = new List<IParagraphElement>(),
-                    ParentItem = CurrentItem,
-                    ParentList = CurrentItemsList,
                     Name = itemNameTextBox.Text
-                });
+                };
+                (newItem as IParentableItem).SetParents(CurrentItem, CurrentItemsList);
+                CurrentItemsList.Add(newItem);
             }
             else
             {
-                CurrentItemsList.Add(new Item()
+                Item newItem = new Item()
                 {
                     Items = new List<Item>(),
                     Paragraphs = null,
-                    ParentItem = CurrentItem,
-                    ParentList = CurrentItemsList,
                     Name = itemNameTextBox.Text
-                });
+                };
+                (newItem as IParentableItem).SetParents(CurrentItem, CurrentItemsList);
+                CurrentItemsList.Add(newItem);
             }
 
             Close();

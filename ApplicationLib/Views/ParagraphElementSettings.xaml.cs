@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
 using ApplicationLib.Interfaces;
 
@@ -23,11 +24,21 @@ namespace ApplicationLib.Views
         public Action OnParagraphDelete { get; set; }
         public Action OnParagraphShowOrHideHint { get; set; }
         public Action OnParagraphReplace { get; set; }
+
+        private Image StaticDeleteIcon { get; }
+        private Image ActiveDeleteIcon { get; }
+        private TextBlock ConfirmDeletionTextBlock { get; }
+        private Grid DeleteParagraphIconsGrid { get; }
         #endregion
 
         public ParagraphElementSettings()
         {
             InitializeComponent();
+
+            StaticDeleteIcon = deleteParagraphImageStatic;
+            ActiveDeleteIcon = deleteParagraphImageActive;
+            ConfirmDeletionTextBlock = deletionConfirmationTextBox;
+            DeleteParagraphIconsGrid = deleteParagraphIconsGrid;
         }
 
         #region Event handlers
@@ -62,7 +73,48 @@ namespace ApplicationLib.Views
             OnParagraphReplace();
         }
 
-        private void DeletePragraph(object sender, MouseButtonEventArgs e)
+        private void GoToDeletionConfirmation(object sender, MouseButtonEventArgs e)
+        {
+            HideDeleteIcon();
+        }
+
+        private void HideDeleteIcon()
+        {
+            ActiveDeleteIcon.Visibility = Visibility.Visible;
+
+            ActiveDeleteIcon.BeginAnimation(OpacityProperty,
+                GetFadeOutAnimation((sender, e) =>
+                {
+                    DeleteParagraphIconsGrid.Visibility = Visibility.Collapsed;
+                    ConfirmDeletionTextBlock.Visibility = Visibility.Visible;
+                }));
+        }
+
+        private DoubleAnimation GetFadeOutAnimation(EventHandler onConpletedAnimation)
+        {
+            DoubleAnimation fadeOutAnimation = new DoubleAnimation()
+            {
+                To = 0,
+                AccelerationRatio = 0.5,
+                SpeedRatio = 20,
+                From = 1,
+                FillBehavior = FillBehavior.Stop
+            };
+            fadeOutAnimation.Completed += onConpletedAnimation;
+
+            return fadeOutAnimation;
+        }
+
+        private void DeletionConfirmationTextBlockMouseLeave(object sender, MouseEventArgs e)
+        {
+            ConfirmDeletionTextBlock.Visibility = Visibility.Collapsed;
+
+            ActiveDeleteIcon.Visibility = Visibility.Collapsed;
+            StaticDeleteIcon.Visibility = Visibility.Visible;
+            DeleteParagraphIconsGrid.Visibility = Visibility.Visible;
+        }
+
+        private void DeleteParagraph(object sender, MouseButtonEventArgs e)
         {
             OnParagraphDelete();
         }
