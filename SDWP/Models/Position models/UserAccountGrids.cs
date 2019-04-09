@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace SDWP
+namespace SDWP.Models
 {
     public class UserAccountGrids
     {

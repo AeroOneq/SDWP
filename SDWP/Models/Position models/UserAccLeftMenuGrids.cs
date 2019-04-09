@@ -19,7 +19,7 @@ using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 
-namespace SDWP
+namespace SDWP.Models
 {
     public class UserAccLeftMenuGrids
     {

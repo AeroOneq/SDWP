@@ -27,7 +27,6 @@
         <SolidColorBrush x:Key="propertyNameForeground" Color="Gray"/>
         <SolidColorBrush x:Key="devisionRectangleFill" Color="Gray"/>
 
-        
         <!--Create new objects (Documents, items etc) windows styles-->
         <Style x:Key="createNewObjectWindowsBtnStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
@@ -208,7 +207,7 @@
                             <ContentPresenter Margin="4,0,0,0"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"
-                                              RecognizesAccessKey="True" />   
+                                              RecognizesAccessKey="True" />
                         </BulletDecorator>
                     </ControlTemplate>
                 </Setter.Value>

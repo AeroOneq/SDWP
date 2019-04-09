@@ -5,16 +5,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.IO;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
 
-using FileLib.Interfaces;
-using FileLib.FileParsers;
-
 using SDWP.Factories;
-using System.IO;
+using SDWP.Models;
 
 namespace SDWP
 {
@@ -100,6 +98,8 @@ namespace SDWP
         private Grid HideLeftGridImagesGrid { get; set; }
         private Grid ShowLeftGridImagesGrid { get; set; }
 
+        private Image BackToPreviousItemStaticImage { get; set; }
+
         private StackPanel DocumentsListStackPanel { get; set; }
         private StackPanel ParagraphsListPanel { get; set; }
         private StackPanel ItemsListStackPanel { get; set; }
@@ -144,6 +144,8 @@ namespace SDWP
 
             HideLeftGridImagesGrid = hideLeftGridImagesGrid;
             ShowLeftGridImagesGrid = showLeftGridImagesGrid;
+
+            BackToPreviousItemStaticImage = backToPreviousItemStaticImage;
 
             DocumentsListStackPanel = documentsListStackPanel;
             ParagraphsListPanel = paragraphsListPanel;
@@ -191,6 +193,30 @@ namespace SDWP
 
                 DocumentsListStackPanel.Children.Add(documentMenuOption);
             }
+        }
+        #endregion
+
+        #region Document Tree View
+        private void TreeViewItemMouseDown(object sender, RoutedEventArgs e)
+        {
+            (sender as DocTreeViewItem).IsSelected = true;
+        }
+
+        private void OnTreeViewRenameItem(object sender, RoutedEventArgs e)
+        {
+            DocTreeViewItem docTreeViewItem = DocumentTreeView.SelectedItem as DocTreeViewItem;
+
+            docTreeViewItem.IsEnabledForEdditing = true;
+        }
+
+        private void OnTreeContextMenuAddNewItem(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void TreeViewItemLostFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as DocTreeViewItem).IsEnabledForEdditing = false;
         }
         #endregion
 
@@ -244,10 +270,7 @@ namespace SDWP
             DocumentTreeView.Items.Clear();
             foreach (Item item in document.Items)
             {
-                TreeViewItem treeViewItem = new TreeViewItem()
-                {
-                    Header = item.Name
-                };
+                DocTreeViewItem treeViewItem = CreateNewListItem(item);
 
                 UploadItemsToTreeView(item, treeViewItem);
 
@@ -255,15 +278,46 @@ namespace SDWP
             }
         }
 
-        private void UploadItemsToTreeView(Item item, TreeViewItem rootItem)
+        private DocTreeViewItem CreateNewListItem(Item item)
+        {
+            DocTreeViewItem treeItem = new DocTreeViewItem(item);
+
+            if (item.Paragraphs != null)
+                treeItem.Style = Resources["treeViewContentItemStyle"] as Style;
+            else
+                treeItem.Style = Resources["treeViewItemsItemStyle"] as Style;
+
+            treeItem.ContextMenu = Resources["treeViewItemContextMenu"] as ContextMenu;
+            treeItem.Margin = new Thickness(10, 0, 0, 0);
+            treeItem.MouseDoubleClick += OnTreeViewItemDoubleClick;
+
+            return treeItem;
+        }
+
+        private void OnTreeViewItemDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DocTreeViewItem treeItem = sender as DocTreeViewItem;
+            if (treeItem.Item.Paragraphs != null)
+            {
+                DocController.CurrentContentItem = treeItem.Item;
+                DocController.CurrentParagraphsList = treeItem.Item.Paragraphs;
+
+                UploadParagraphsToParagraphsListPanel(treeItem.Item.Paragraphs);
+            }
+        }
+            
+        /// <summary>
+        /// The recursive algorithm which creates the tree view for a selected doc.
+        /// Firstly we upload all "item" items and then upload the content of the item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="rootItem"></param>
+        private void UploadItemsToTreeView(Item item, DocTreeViewItem rootItem)
         {
             if (item.Items != null)
                 foreach (Item i in item.Items)
                 {
-                    TreeViewItem treeViewItem = new TreeViewItem()
-                    {
-                        Header = i.Name
-                    };
+                    DocTreeViewItem treeViewItem = CreateNewListItem(i);
 
                     rootItem.Items.Add(treeViewItem);
 
@@ -274,26 +328,6 @@ namespace SDWP
                             UploadItemsToTreeView(ii, treeViewItem);
                         }
                     }
-
-                    if (i.Paragraphs != null)
-                    {
-                        foreach (IParagraphElement paragraph in i.Paragraphs)
-                        {
-                            treeViewItem.Items.Add(new TreeViewItem()
-                            {
-                                Header = paragraph.Title
-                            });
-                        }
-                    }
-                }
-
-            if (item.Paragraphs != null)
-                foreach (IParagraphElement paragraph in item.Paragraphs)
-                {
-                    rootItem.Items.Add(new TreeViewItem()
-                    {
-                        Header = paragraph.Title
-                    });
                 }
         }
 
@@ -622,11 +656,22 @@ namespace SDWP
 
         private void GoToListMode(object sender, MouseButtonEventArgs e)
         {
+            backToPreviousItemStaticImage.IsEnabled = true;
+            DocumentTreeView.Visibility = Visibility.Collapsed;
+            ListModeScroll.Visibility = Visibility.Visible;
 
+            GoToListModeTextBox.Visibility = Visibility.Collapsed;
+            GoToTreeViewModeTextBox.Visibility = Visibility.Visible;
         }
+
         private void GoToTreeViewMode(object sender, MouseButtonEventArgs e)
         {
+            backToPreviousItemStaticImage.IsEnabled = false;
+            DocumentTreeView.Visibility = Visibility.Visible;
+            ListModeScroll.Visibility = Visibility.Collapsed;
 
+            GoToListModeTextBox.Visibility = Visibility.Visible;
+            GoToTreeViewModeTextBox.Visibility = Visibility.Collapsed;
         }
     }
 }

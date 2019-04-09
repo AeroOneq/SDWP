@@ -64,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\DocTreeViewItem.cs" />
     <Compile Include="Windows and pages\CreateNewImageWindow.xaml.cs">
       <DependentUpon>CreateNewImageWindow.xaml</DependentUpon>
     </Compile>
@@ -304,6 +305,22 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\" />
+    <Folder Include="UserControls\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\showTheTreeItemItemsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hideTheTreeItemItemsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\treeViewContentItemIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\contextMenuDeleteItem.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\contextMenuRename.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
+
+using SDWP.Models;
 namespace SDWP
 {
     /// <summary>

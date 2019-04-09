@@ -18,6 +18,8 @@ using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 
+using SDWP.Models;
+
 namespace SDWP
 {
     /// <summary>

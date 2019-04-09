@@ -178,13 +178,312 @@
             <EventSetter Event="MouseLeave" Handler="TreeViewOptionTextBoxMouseLeave"/>
         </Style>
 
-        <HierarchicalDataTemplate x:Key="treeViewDataTemplate" ItemsSource="{Binding Items}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding Name}"
-                           FontFamily="Arial, Verdana"
-                           FontSize="12"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
+        <Style x:Key="documentTreeViewStyle" TargetType="TreeView">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource mainPageItemsGridBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5, 10, 0, 0"/>
+        </Style>
+
+        <Style x:Key="treeViewItemToggleBtnStyle" TargetType="ToggleButton">
+            <Setter Property="Width" Value="15"/>
+            <Setter Property="Height" Value="15"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CheckStates">
+                                    <VisualState x:Name="Checked">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="Background.Color"
+                                                                          Storyboard.TargetName="Border">
+                                                <EasingColorKeyFrame KeyTime="0" Value="Transparent" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unchecked" />
+                                    <VisualState x:Name="Indeterminate" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="Border"
+                                    Background="Transparent">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="treeViewInnerTextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="0">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Top"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalScrollBarVisibility="Disabled"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <ContextMenu x:Key="treeViewItemContextMenu">
+            <MenuItem Header="Добавить новый пункт"
+                      Click="OnTreeContextMenuAddNewItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/addNewItemIconStatic.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Переименовать пункт"
+                      Click="OnTreeViewRenameItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuRename.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Удалить">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
+        <Style x:Key="treeViewItemsItemStyle" TargetType="TreeViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment"
+                Value="{Binding Path=HorizontalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="{Binding Path=VerticalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="1, 0, 0, 0"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <StackPanel Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal"
+                                        Height="25"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Top">
+                                <Grid>
+                                    <ToggleButton x:Name="Expander"
+                                                  Visibility="Visible"
+                                                  Style="{StaticResource treeViewItemToggleBtnStyle}"
+                                                  IsChecked="{Binding IsExpanded, 
+                                                  RelativeSource={RelativeSource TemplatedParent}}">
+                                        <ToggleButton.Content>
+                                            <Image x:Name="expanderImage"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   Width="15"
+                                                   Height="15"
+                                                   Source="../Resources/showTheTreeItemItemsIcon.png"/>
+                                        </ToggleButton.Content>
+                                    </ToggleButton>
+                                    <ToggleButton x:Name="Hider"
+                                                  Visibility="Collapsed"
+                                                  Style="{StaticResource treeViewItemToggleBtnStyle}"
+                                                  IsChecked="{Binding IsExpanded, 
+                                                  RelativeSource={RelativeSource TemplatedParent}}">
+                                        <ToggleButton.Content>
+                                            <Image x:Name="hiderImage"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   Width="15"
+                                                   Height="15"
+                                                   Source="../Resources/hideTheTreeItemItemsIcon.png"/>
+                                        </ToggleButton.Content>
+                                    </ToggleButton>
+                                </Grid>
+                                <Border x:Name="border"
+                                        VerticalAlignment="Center"
+                                        Margin="5, 0, 0, 0"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <TextBox Text="{Binding HeaderText, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource treeViewInnerTextBoxStyle}"
+                                             IsEnabled="{Binding IsEnabledForEdditing}"
+                                             ContextMenu="{StaticResource treeViewItemContextMenu}"/>
+                                </Border>
+                            </StackPanel>
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Margin="15, 0, 0, 0"
+                                            Visibility="Collapsed"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                                          Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#E5E5E5" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="SelectedInactive">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                                          Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#E5E5E5" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                           Storyboard.TargetName="ItemsHost">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Expander"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Hider"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Expander"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Hider"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <EventSetter Event="PreviewMouseDown" Handler="TreeViewItemMouseDown"/>
+        </Style>
+
+        <Style x:Key="treeViewContentItemStyle" TargetType="TreeViewItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment"
+                Value="{Binding Path=HorizontalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="VerticalContentAlignment"
+                Value="{Binding Path=VerticalContentAlignment,
+                RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+            <Setter Property="Padding" Value="1, 0, 0, 0"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TreeViewItem">
+                        <StackPanel Orientation="Vertical"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top">
+                            <StackPanel Orientation="Horizontal"
+                                        Height="25"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Top">
+                                <ToggleButton x:Name="Contenter"
+                                              Visibility="Visible"
+                                              Style="{StaticResource treeViewItemToggleBtnStyle}"
+                                              IsChecked="{Binding IsExpanded, 
+                                              RelativeSource={RelativeSource TemplatedParent}}">
+                                    <ToggleButton.Content>
+                                        <Image x:Name="expanderImage"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   Width="15"
+                                                   Height="15"
+                                                   Source="../Resources/treeViewContentItemIcon.png"/>
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+                                <Border x:Name="border"
+                                        VerticalAlignment="Center"
+                                        Margin="5, 0, 0, 0"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <TextBox x:Name="contentTextBox"
+                                             Text="{Binding HeaderText, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource treeViewInnerTextBoxStyle}"
+                                             IsEnabled="{Binding IsEnabledForEdditing}"
+                                             ContextMenu="{StaticResource treeViewItemContextMenu}"/>
+                                </Border>
+                            </StackPanel>
+                            <ItemsPresenter x:Name="ItemsHost"
+                                            Margin="15, 0, 0, 0"
+                                            Visibility="Collapsed"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Selected">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                                          Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#E5E5E5" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="SelectedInactive">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetName="border"
+                                                                          Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)">
+                                                <EasingColorKeyFrame KeyTime="0" Value="#E5E5E5" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="ExpansionStates">
+                                    <VisualState x:Name="Expanded">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                                           Storyboard.TargetName="ItemsHost">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Collapsed"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </StackPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <EventSetter Event="PreviewMouseDown" Handler="TreeViewItemMouseDown"/>
+        </Style>
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
@@ -244,7 +543,6 @@
                                MouseDown="HideLeftDocumentsGrid"/>
                 </Grid>
 
-
                 <Grid x:Name="leftDocumentsGridContent"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
@@ -279,9 +577,7 @@
                                           VerticalScrollBarVisibility="Hidden">
                             <StackPanel x:Name="documentsListStackPanel"
                                       VerticalAlignment="Top"
-                                      HorizontalAlignment="Stretch">
-
-                            </StackPanel>
+                                      HorizontalAlignment="Stretch"/>
                         </ScrollViewer>
                     </Grid>
                 </Grid>
@@ -361,37 +657,38 @@
                          Margin="12.5, 70, 0, 0"
                          FontSize="11"
                          Text="Перейти к дереву документа:"
-                         MouseDown="GoToTreeViewMode"/>
+                         PreviewMouseDown="GoToTreeViewMode"/>
+
                 <TextBox x:Name="goToListModeTextBox"
                          Style="{StaticResource treeViewOptionTextBoxStyle}"
                          Margin="12.5, 70, 0, 0"
                          Visibility="Collapsed"
                          FontSize="11"
-                         Text="Перейти к дереву документа:"
-                         MouseDown="GoToListMode"/>
+                         Text="Перейти к листу документа:"
+                         PreviewMouseDown="GoToListMode"/>
 
                 <TextBlock Style="{StaticResource propertyNameStyle}"
                            Margin="15, 90, 0, 0"
                            FontSize="15"
                            Text="Пункты:"/>
 
-                <TreeView x:Name="documentTreeView"
-                          Margin="0, 110, 0, 60"
-                          VerticalAlignment="Stretch"
-                          HorizontalAlignment="Stretch"
-                          Visibility="Visible"
-                          ItemTemplate="{StaticResource treeViewDataTemplate}"/>
                 <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
                               Margin="0, 110, 0, 60"
                               x:Name="listModelScroll"
-                              Visibility="Collapsed">
+                              Visibility="Visible">
                     <StackPanel x:Name="itemsListStackPanel"
                                     Width="0"
                                     VerticalAlignment="Stretch"
                                     HorizontalAlignment="Left"
                                     Orientation="Vertical"/>
                 </ScrollViewer>
-
+                
+                <TreeView x:Name="documentTreeView"
+                          Margin="0, 110, 0, 60"
+                          VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
+                          Visibility="Collapsed"
+                          Style="{StaticResource documentTreeViewStyle}"/>
             </Grid>
 
             <Grid x:Name="paragraphsGrid"
