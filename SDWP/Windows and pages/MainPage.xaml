@@ -244,7 +244,7 @@
         </Style>
 
 
-        <ContextMenu x:Key="treeViewItemContextMenu">
+        <ContextMenu x:Key="treeViewItemItemContextMenu">
             <MenuItem Header="Добавить новый пункт"
                       Click="OnTreeContextMenuAddNewItem">
                 <MenuItem.Icon>
@@ -258,7 +258,24 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Удалить">
+            <MenuItem Header="Удалить"
+                      Click="OnTreeViewDeleteItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
+        <ContextMenu x:Key="treeViewContentItemContextMenu">
+            <MenuItem Header="Переименовать пункт"
+                      Click="OnTreeViewRenameItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuRename.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Удалить"
+                      Click="OnTreeViewDeleteItem">
                 <MenuItem.Icon>
                     <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
                 </MenuItem.Icon>
@@ -277,6 +294,8 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontFamily" Value="Arial, Verdana"/>
             <Setter Property="FontSize" Value="17"/>
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="ContextMenu" Value="{StaticResource treeViewItemItemContextMenu}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TreeViewItem">
@@ -327,7 +346,8 @@
                                     <TextBox Text="{Binding HeaderText, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource treeViewInnerTextBoxStyle}"
                                              IsEnabled="{Binding IsEnabledForEdditing}"
-                                             ContextMenu="{StaticResource treeViewItemContextMenu}"/>
+                                             ContextMenu="{StaticResource treeViewItemItemContextMenu}"
+                                             LostFocus="TreeViewItemTextBoxLostFocus"/>
                                 </Border>
                             </StackPanel>
                             <ItemsPresenter x:Name="ItemsHost"
@@ -404,6 +424,8 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontFamily" Value="Arial, Verdana"/>
             <Setter Property="FontSize" Value="17"/>
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="ContextMenu" Value="{StaticResource treeViewContentItemContextMenu}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TreeViewItem">
@@ -439,7 +461,8 @@
                                              Text="{Binding HeaderText, UpdateSourceTrigger=PropertyChanged}"
                                              Style="{StaticResource treeViewInnerTextBoxStyle}"
                                              IsEnabled="{Binding IsEnabledForEdditing}"
-                                             ContextMenu="{StaticResource treeViewItemContextMenu}"/>
+                                             ContextMenu="{StaticResource treeViewContentItemContextMenu}"
+                                             LostFocus="TreeViewItemTextBoxLostFocus"/>
                                 </Border>
                             </StackPanel>
                             <ItemsPresenter x:Name="ItemsHost"
@@ -628,7 +651,7 @@
                                        Margin="35, 0, 0, 0"/>
                     </Grid>
 
-                    <Image x:Name="addNewItemActiveImage"
+                    <Image x:Name="addNewItemStaticImage"
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Right"
                                    Visibility="Visible"
@@ -637,7 +660,7 @@
                                    Margin="0, 0, 0, 0"
                                    Source="../Resources/addNewItemIconStatic.png"
                                    MouseEnter="IconMouseEnter"/>
-                    <Image x:Name="addNewItemStaticImage"
+                    <Image x:Name="addNewItemActiveImage"
                                VerticalAlignment="Center"
                                Visibility="Collapsed"
                                HorizontalAlignment="Right"

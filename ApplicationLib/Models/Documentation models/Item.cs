@@ -9,7 +9,7 @@ namespace ApplicationLib.Models
         public string Name { get; set; }
 
         public List<Item> Items { get; set; }
-        public List<IParagraphElement> Paragraphs { get; set; }
+        public List<ParagraphElement> Paragraphs { get; set; }
 
         [JsonIgnore]
         public Item ParentItem { get; private set; }

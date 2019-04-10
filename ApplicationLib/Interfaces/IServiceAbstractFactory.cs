@@ -11,6 +11,7 @@ namespace ApplicationLib.Interfaces
     public interface IServiceAbstractFactory
     {
         IUserService<UserInfo> GetUserService();
-        IEmailService<UserInfo> GetEmailService(); 
+        IEmailService<UserInfo> GetEmailService();
+        ILocalDocumentationStorage GetLocalStorageService(string filePath);
     }
 }

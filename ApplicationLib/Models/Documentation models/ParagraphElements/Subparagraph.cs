@@ -13,17 +13,10 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Subparagraph : IParagraphElement, IParentableParagraph
+    public class Subparagraph : ParagraphElement
     {
         #region Properties
         public string Text { get; set; }
-        public string Hint { get; set; }
-        public string Title { get; set; }
-
-        [JsonIgnore]
-        public Item ParentItem { get; private set; }
-        [JsonIgnore]
-        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
         public Subparagraph(string text)
@@ -31,22 +24,11 @@ namespace ApplicationLib.Models
             Text = text;
         }
 
-        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
-        {
-            ParentItem = parentItem;
-            ParentList = parentList;
-        }
-
-        public void RemoveParagraphFromParentList()
-        {
-            ParentList.Remove(this);
-        }
-
-        public UserControl GetWatchView()
+        public override UserControl GetWatchView()
         {
             throw new NotImplementedException();
         }
 
-        public UserControl GetEditView() => new SubparagraphEditView(this);
+        public override UserControl GetEditView() => new SubparagraphEditView(this);
     }
 }

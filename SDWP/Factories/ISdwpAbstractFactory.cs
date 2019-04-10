@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 
 using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
 
 using FileLib.Interfaces;
 using FileLib.FileParsers;

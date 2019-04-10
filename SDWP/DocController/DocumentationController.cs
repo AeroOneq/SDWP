@@ -18,7 +18,7 @@ namespace SDWP
         public Item CurrentItem { get; set; }
         public Item CurrentContentItem { get; set; }
         public List<Item> CurrentItemsList { get; set; }
-        public List<IParagraphElement> CurrentParagraphsList { get; set; }
+        public List<ParagraphElement> CurrentParagraphsList { get; set; }
         #endregion
 
         public DocumentationController() { }

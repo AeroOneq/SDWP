@@ -19,5 +19,10 @@ namespace ApplicationLib.Services
         {
             return new UserService();
         }
+
+        public ILocalDocumentationStorage GetLocalStorageService(string filePath)
+        {
+            return new LocalDocumentationService(filePath);
+        }
     }
 }

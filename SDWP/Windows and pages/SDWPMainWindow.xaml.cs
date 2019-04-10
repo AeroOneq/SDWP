@@ -375,8 +375,19 @@ namespace SDWP
                     userGridFrame.Navigate(userDocsPage);
                     break;
                 case "2":
+                    DocumentTemplatesPage documentTemplatesPage = new DocumentTemplatesPage(UserInfo.CurrentUser)
+                    {
+                        Width = userGridFrame.Width
+                    };
+                    userGridFrame.Navigate(documentTemplatesPage);
                     break;
                 case "3":
+                    ExportDocumentationPage exportDocumentationPage = new ExportDocumentationPage(
+                        MainPage)
+                    {
+                        Width = userGridFrame.Width
+                    };
+                    userGridFrame.Navigate(exportDocumentationPage);
                     break;
                 case "4":
                     this.Close();
@@ -402,8 +413,12 @@ namespace SDWP
 
         private void SaveDocumentationGrid(object sender, EventArgs e)
         {
-            SDWPMessageBox.ShowSDWPMessageBox("JSON", JsonConvert.SerializeObject(MainPage.Documents),
-                MessageBoxButton.OK);
+            List<Document> docs = MainPage.Documents;
+            Documentation documentation = MainPage.Documentation;
+            LocalDocumentation localDocumentation = new LocalDocumentation(documentation, docs);
+            string localDocumentationJson = localDocumentation.GetJsonString();
         }
+
+
     }
 }

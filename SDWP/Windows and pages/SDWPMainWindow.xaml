@@ -314,7 +314,7 @@
                           Style="{StaticResource leftMenuOptionGridStyle}"
                           Margin="10, 150, 10, 0">
                         <TextBlock Style="{StaticResource leftMenuOptionTextBlockStyle}"
-                               Text="Моя документация"/>
+                               Text="Документация"/>
                     </Grid>
                     <!--User's shared documents option-->
                     <Grid x:Name="leftMenuUserSharedDocsOptionGrid"
@@ -322,7 +322,7 @@
                           Style="{StaticResource leftMenuOptionGridStyle}"
                           Margin="10, 200, 10, 0">
                         <TextBlock Style="{StaticResource leftMenuOptionTextBlockStyle}"
-                               Text="Документация в сети"/>
+                               Text="Шаблоны"/>
                     </Grid>
                     <!--Export documentation option-->
                     <Grid x:Name="leftMenuUserExportOptionGrid"
@@ -330,7 +330,7 @@
                           Style="{StaticResource leftMenuOptionGridStyle}"
                           Margin="10, 250, 10, 0">
                         <TextBlock Style="{StaticResource leftMenuOptionTextBlockStyle}"
-                               Text="Экспот"/>
+                               Text="Сохранить"/>
                     </Grid>
                     <!--Quit the programm option-->
                     <Grid x:Name="leftMenuUserQuitOptionGrid"

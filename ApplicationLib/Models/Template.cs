@@ -1,28 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 using AeroORMFramework;
 
 namespace ApplicationLib.Models
 {
-    public class Documentation
+    public class Template
     {
         [PrimaryKey]
-        [CanBeNull(false)]
         [AutoincrementID]
+        [CanBeNull(false)]
         public int ID { get; set; }
+        [CanBeNull(false)]
+        public int UserID { get; set; }
 
         [CanBeNull(false)]
-        public string Name { get; set; }
+        public string TemplateName { get; set; }
         [CanBeNull(false)]
-        public int AuthorID { get; set; }
+        [Json]
+        public DateTime CreationAt { get; set; }
         [CanBeNull(false)]
-        public string AuthorName { get; set; }
-        [CanBeNull(false)]
-        public DateTime CreationDate { get; set; }
-        [CanBeNull(false)]
+        [Json]
         public DateTime UpdatedAt { get; set; }
+
         [CanBeNull(false)]
-        [SetAzureSQLDataType("int")]
-        public Access Access { get; set; }
+        [Json]
+        public List<Document> Documents { get; set; }
     }
 }

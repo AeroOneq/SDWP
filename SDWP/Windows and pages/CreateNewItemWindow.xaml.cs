@@ -54,7 +54,7 @@ namespace SDWP
                 Item newItem = new Item()
                 {
                     Items = null,
-                    Paragraphs = new List<IParagraphElement>(),
+                    Paragraphs = new List<ParagraphElement>(),
                     Name = itemNameTextBox.Text
                 };
                 (newItem as IParentableItem).SetParents(CurrentItem, CurrentItemsList);
@@ -72,11 +72,13 @@ namespace SDWP
                 CurrentItemsList.Add(newItem);
             }
 
+            DialogResult = true;
             Close();
         }
 
         private void CancelCreation(object sender, RoutedEventArgs e)
         {
+            DialogResult = false;
             Close();
         }
     }

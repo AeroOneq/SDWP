@@ -40,6 +40,8 @@ namespace SDWP
             DatabaseProperties.ConnectionString);
         private bool IsProfileDataEdititing { get; set; } = false;
         private bool PasswordBoxState { get; set; } = false;
+
+        private PageHeader PageHeader { get; set; }
         #endregion
 
         #region Constructors and Utility methods
@@ -49,6 +51,9 @@ namespace SDWP
 
             InitializeInterfaces();
             UploadUserDataToUI();
+
+            PageHeader = pageHeader;
+            PageHeader.OnRefresh = UpdateCommonUserAndRefreshUI;
         }
 
         private void InitializeInterfaces()
@@ -210,10 +215,10 @@ namespace SDWP
         #region Update profile data methods
         private async void StartUpdatingProcessAsync(object sender, EventArgs e)
         {
-            SwitchOnTopLoader();
+            PageHeader.SwitchOnTopLoader();
             if (CheckIfDataChanged())
             {
-                SwitchOffTheLoader();
+                PageHeader.SwitchOffTheLoader();
                 SDWPMessageBox.ShowSDWPMessageBox("Статус обновления профиля",
                     "Данные не были изменены", MessageBoxButton.OK);
             }
@@ -247,25 +252,25 @@ namespace SDWP
                 catch (NotAppropriateUserParam ex)
                 {
                     await EmailService.ResetCode();
-                    SwitchOffTheLoader();
+                    PageHeader.SwitchOffTheLoader();
 
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
                 catch (Exception ex)
                 {
                     await EmailService.ResetCode();
-                    SwitchOffTheLoader();
+                    PageHeader.SwitchOffTheLoader();
 
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
             }
-            SwitchOffTheLoader();
+            PageHeader.SwitchOffTheLoader();
         }
             
         private void OnSuccesfullUpdate()
         {
             UpdateCommonUserAndRefreshUI();
-            Dispatcher.Invoke(() => SwitchOffTheLoader());
+            Dispatcher.Invoke(() => PageHeader.SwitchOffTheLoader());
             Dispatcher.Invoke(() => SDWPMessageBox.ShowSDWPMessageBox(
                 "Статус обновления профиля", "Профиль умпешно обновлен",
                 MessageBoxButton.OK));
@@ -281,13 +286,13 @@ namespace SDWP
         private async void UpdateRecordAfterEmailConfirmationAsync(object sender,
             EventArgs e)
         {
-            SwitchOnTopLoader();
+            PageHeader.SwitchOnTopLoader();
             UserInfo newUserInfo = CreateNewUserObject();
             if (!(EmailService.Code == null) && emailCodeTextBox.Text == EmailService.Code)
                 await UserService.UpdateRecord(newUserInfo);
             else
             {
-                SwitchOffTheLoader();
+                PageHeader.SwitchOffTheLoader();
                 SDWPMessageBox.ShowSDWPMessageBox("Ошибка подтверждения e-mail",
                     "Вы ввели неверный код", MessageBoxButton.OK);
             }
@@ -363,7 +368,6 @@ namespace SDWP
         #region Event handlers
         private void RepositionElements(object sender, SizeChangedEventArgs e)
         {
-            headerRect.Width = this.Width;
             userProfileGrid.Width = this.Width;
             pageScrollViewer.Height = this.Height;
             contentOutterGrid.Height = SystemParameters.MaximizedPrimaryScreenHeight;
@@ -453,27 +457,6 @@ namespace SDWP
             cancelTextBlock.TextDecorations = null;
         }
 
-        private void RefreshIconMouseEnter(object sender, EventArgs e)
-        {
-            refreshIconActive.Visibility = Visibility.Visible;
-            refreshIconStatic.Visibility = Visibility.Collapsed;
-        }
-        private void RefreshIconMouseLeave(object sender, EventArgs e)
-        {
-            refreshIconActive.Visibility = Visibility.Collapsed;
-            refreshIconStatic.Visibility = Visibility.Visible;
-        }
-        /// <summary>
-        /// Gets an user object from the database, refreshes the ui 
-        /// and updates the CommonObjects.User
-        /// </summary>
-        private async void RefreshUserData(object sender, EventArgs e)
-        {
-            SwitchOnTopLoader();
-            await Task.Run(() => UpdateCommonUserAndRefreshUI());
-            SwitchOffTheLoader();
-        }
-
         private void SeePasswordIconMouseDown(object sender, EventArgs e)
         {
             if (!PasswordBoxState)
@@ -509,34 +492,6 @@ namespace SDWP
         {
             if (passwordTextBox != null && passwordPasswordBox != null)
                 passwordTextBox.Text = passwordPasswordBox.Password;
-        }
-        #endregion
-
-        #region Top loader opertaions
-        private void SwitchOnTopLoader()
-        {
-            topLoaderGrid.Visibility = Visibility.Visible;
-            List<Ellipse> ellipsesList = topLoaderGrid.Children.Cast<Ellipse>().
-                ToList();
-
-            ellipsesList[2].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderThirdEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-            ellipsesList[1].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderSecondEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-            ellipsesList[0].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderFirstEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-        }
-        private void SwitchOffTheLoader()
-        {
-            List<Ellipse> ellipsesList = topLoaderGrid.Children.Cast<Ellipse>().
-                 ToList();
-
-            ellipsesList[2].BeginAnimation(FrameworkElement.MarginProperty, null);
-            ellipsesList[1].BeginAnimation(FrameworkElement.MarginProperty, null);
-            ellipsesList[0].BeginAnimation(FrameworkElement.MarginProperty, null);
         }
         #endregion
     }

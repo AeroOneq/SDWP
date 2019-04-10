@@ -88,11 +88,20 @@
     <Compile Include="Exceptions\ExceptionHandler.cs" />
     <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
+    <Compile Include="Windows and pages\DocumentTemplatesPage.xaml.cs">
+      <DependentUpon>DocumentTemplatesPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows and pages\ExportDocumentationPage.xaml.cs">
+      <DependentUpon>ExportDocumentationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows and pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\ListBoxModels\DocumentationListBoxItem.cs" />
     <Compile Include="Position.cs" />
+    <Compile Include="Windows and pages\PageHeader.xaml.cs">
+      <DependentUpon>PageHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows and pages\SDWPMainWindow.xaml.cs">
       <DependentUpon>SDWPMainWindow.xaml</DependentUpon>
     </Compile>
@@ -128,7 +137,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows and pages\DocumentTemplatesPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\ExportDocumentationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows and pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\PageHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -321,6 +342,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\contextMenuRename.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exportPageSaveIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

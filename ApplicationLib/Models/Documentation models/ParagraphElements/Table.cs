@@ -13,28 +13,15 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Table : IParagraphElement, IParentableParagraph
+    public class Table : ParagraphElement
     {
         #region Properties
         public string[][] TableCells { get; set; }
-        public string Hint { get; set; }
-        public string Title { get; set; }
-
-        [JsonIgnore]
-        public Item ParentItem { get; private set; }
-        [JsonIgnore]
-        public List<IParagraphElement> ParentList { get; private set; }
         #endregion
 
         public Table(string[][] tableCells)
         {
             TableCells = tableCells;
-        }
-
-        public void SetParents(Item parentItem, List<IParagraphElement> parentList)
-        {
-            ParentItem = parentItem;
-            ParentList = parentList;
         }
 
         public void DeleteCol(int colNum)
@@ -178,19 +165,14 @@ namespace ApplicationLib.Models
             }
         }
 
-        public UserControl GetWatchView()
+        public override UserControl GetWatchView()
         {
             throw new NotImplementedException();
         }
 
-        public UserControl GetEditView()
+        public override UserControl GetEditView()
         {
             return new TableEditView(this);
-        }
-
-        public void RemoveParagraphFromParentList()
-        {
-            ParentList.Remove(this);
         }
     }
 }

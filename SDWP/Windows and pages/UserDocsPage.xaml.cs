@@ -15,7 +15,13 @@ using System.Windows.Shapes;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
 
+using ApplicationLib.Interfaces;
+using ApplicationLib.Models;
+using ApplicationLib.Services;
+
 using SDWP.Models;
+using SDWP.Factories;
+
 namespace SDWP
 {
     /// <summary>
@@ -24,26 +30,39 @@ namespace SDWP
     public partial class UserDocsPage : Page
     {
         #region Propeties
-        private ObservableCollection<DocumentationListBoxItem> documentationsCollection =
-            new ObservableCollection<DocumentationListBoxItem>()
-            {
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" },
-                new DocumentationListBoxItem() { DocumentationTitle = "SDWPTestDocumentation" }
-            };
+        private PageHeader PageHeader { get; }
+        private string DefaultFilePath { get; set; } = @"C:\Users\Aero\Desktop\Курсач\SDWP\SDWP\SDWP\bin\Debug\Docs\";
+
+        private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
+        private ILocalDocumentationStorage LocalDocumentationService { get; set; }
+
+        private List<LocalDocumentation> LocalDocumentations { get; set; }
         #endregion
+
         public UserDocsPage()
         {
             InitializeComponent();
-            documentationsListBox.ItemsSource = documentationsCollection;
+            InitializeServices();
+
+            PageHeader = pageHeader;
+            UploadDocumentationsFromLocalSotrage();
         }
+
+        private void InitializeServices()
+        {
+            ServiceAbstractFactory = new ServiceAbstractFactory();
+            LocalDocumentationService = ServiceAbstractFactory.GetLocalStorageService(DefaultFilePath);
+        }
+
+        #region Upload documentation methods
+        private async Task UploadDocumentationsFromLocalSotrage()
+        {
+            LocalDocumentations = await LocalDocumentationService.GetLocalDocumentations();
+
+            offlineDocumentationListBox.ItemsSource = LocalDocumentations.Select(lc => lc.Documentation).ToList();
+        }
+
+        #endregion
 
         #region Event handlers
         private void UserDocsBtnMouseEnter(object sender, MouseEventArgs e)
@@ -52,59 +71,12 @@ namespace SDWP
             button.Background = new SolidColorBrush(Colors.White);
             button.Foreground = new SolidColorBrush(Colors.OrangeRed);
         }
+
         private void UserDocsBtnMouseLeave(object sender, MouseEventArgs e)
         {
             Button button = sender as Button;
             button.Background = new SolidColorBrush(Colors.OrangeRed);
             button.Foreground = new SolidColorBrush(Colors.White);
-        }
-        private void RefreshIconMouseEnter(object sender, EventArgs e)
-        {
-            refreshIconActive.Visibility = Visibility.Visible;
-            refreshIconStatic.Visibility = Visibility.Collapsed;
-        }
-        private void RefreshIconMouseLeave(object sender, EventArgs e)
-        {
-            refreshIconActive.Visibility = Visibility.Collapsed;
-            refreshIconStatic.Visibility = Visibility.Visible;
-        }
-        private async void RefreshUserDocs(object sender, EventArgs e)
-        {
-            SwitchOnTopLoader();
-            await Task.Delay(1000);
-            SwitchOffTheLoader();
-        }
-        private void UserDocsPageSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            headerRect.Width = this.Width;
-        }
-        #endregion
-
-        #region Top loader operations
-        private void SwitchOnTopLoader()
-        {
-            topLoaderGrid.Visibility = Visibility.Visible;
-            List<Ellipse> ellipsesList = topLoaderGrid.Children.Cast<Ellipse>().
-                ToList();
-
-            ellipsesList[2].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderThirdEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-            ellipsesList[1].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderSecondEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-            ellipsesList[0].BeginAnimation(FrameworkElement.MarginProperty,
-                this.Resources["topLoaderFirstEllipseAnimation"] as
-                ThicknessAnimationUsingKeyFrames);
-        }
-        private void SwitchOffTheLoader()
-        {
-            List<Ellipse> ellipsesList = topLoaderGrid.Children.Cast<Ellipse>().
-                 ToList();
-
-            ellipsesList[2].BeginAnimation(FrameworkElement.MarginProperty, null);
-            ellipsesList[1].BeginAnimation(FrameworkElement.MarginProperty, null);
-            ellipsesList[0].BeginAnimation(FrameworkElement.MarginProperty, null);
         }
         #endregion
     }

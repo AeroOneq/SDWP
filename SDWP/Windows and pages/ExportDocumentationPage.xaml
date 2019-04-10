@@ -1,0 +1,129 @@
+﻿<Page x:Class="SDWP.ExportDocumentationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:SDWP"
+      Title="ExportDocumentationPage">
+
+    <Page.Resources>
+        <Style x:Key="saveBtnStyle" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="10"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Background="#F0F0F0"
+                                BorderBrush="LightGray"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="contentPresenter"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                                            Storyboard.TargetName="border"
+                                                            To="{StaticResource mainThemeColor}"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="BorderBrush.Color"
+                                                            To="#F0F0F0"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
+    
+    <Page.Content>
+        <Grid>
+            <ScrollViewer VerticalAlignment="Top"
+                          HorizontalAlignment="Stretch">
+                <StackPanel VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            Orientation="Vertical">
+                    <local:PageHeader x:Name="pageHeader"
+                                      VerticalAlignment="Top"
+                                      HorizontalAlignment="Left"
+                                      Header="Экспорт"/>
+
+                    <StackPanel x:Name="saveDocumentationPannel"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Top"
+                                Margin="20, 0, 0, 0"
+                                HorizontalAlignment="Stretch">
+                        <Button x:Name="saveDocumentationBtn"
+                                Style="{StaticResource saveBtnStyle}"
+                                Width="150"
+                                Click="SaveDocumentation">
+                            <Button.Content>
+                                <StackPanel VerticalAlignment="Stretch"
+                                            HorizontalAlignment="Stretch"
+                                            Orientation="Horizontal">
+                                    <Image VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Source="../Resources/exportPageSaveIcon.png"
+                                           Width="30"
+                                           Height="30"/>
+                                    <TextBlock FontFamily="Arial,Verdana"
+                                               Text="Сохранить"
+                                               Foreground="Gray"
+                                               FontSize="15"
+                                               Margin="5, 0, 0, 0"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        
+                        <Button x:Name="saveDocumentationAsBtn"
+                                Style="{StaticResource saveBtnStyle}"
+                                Margin="20, 0, 0, 0"
+                                Width="180"
+                                Click="SaveDocumentationAs">
+                            <Button.Content>
+                                <StackPanel VerticalAlignment="Stretch"
+                                            HorizontalAlignment="Stretch"
+                                            Orientation="Horizontal">
+                                    <Image VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Source="../Resources/exportPageSaveIcon.png"
+                                           Width="30"
+                                           Height="30"/>
+                                    <TextBlock FontFamily="Arial,Verdana"
+                                               Text="Сохранить как"
+                                               Foreground="Gray"
+                                               FontSize="15"
+                                               Margin="5, 0, 0, 0"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+
+            </ScrollViewer>
+        </Grid>
+    </Page.Content>
+</Page>

@@ -19,7 +19,7 @@ namespace SDWP
     public partial class MainPage : Page
     {
         #region Test
-        private Documentation Documentation { get; } = new Documentation()
+        public Documentation Documentation { get; } = new Documentation()
         {
             Name = "SDWP Documentation",
             CreationDate = DateTime.Now,
@@ -41,7 +41,7 @@ namespace SDWP
                             {
                                 Name="Введение",
                                 Items = null,
-                                Paragraphs = new List<IParagraphElement>()
+                                Paragraphs = new List<ParagraphElement>()
                                 {
                                     new Subparagraph(" asdsadasdsadsadasd")
                                     {
@@ -72,7 +72,7 @@ namespace SDWP
                     {
                         Name="Основная часть",
                         Items = null,
-                        Paragraphs = new List<IParagraphElement>()
+                        Paragraphs = new List<ParagraphElement>()
                         {
                            new Subparagraph(" asdsadasdsadsadasd")
                            {
@@ -82,7 +82,7 @@ namespace SDWP
                            new ParagraphImage(new byte[0])
                            {
                                Title = "P4"
-                            },
+                           },
                         }
                     }
                 }
@@ -99,6 +99,7 @@ namespace SDWP
         private Grid ShowLeftGridImagesGrid { get; set; }
 
         private Image BackToPreviousItemStaticImage { get; set; }
+        private Image AddNewItemStaticImage { get; set; }
 
         private StackPanel DocumentsListStackPanel { get; set; }
         private StackPanel ParagraphsListPanel { get; set; }
@@ -115,22 +116,24 @@ namespace SDWP
 
         private ISdwpAbstractFactory AbstractFactory { get; }
         private IDocController DocController { get; set; }
+
+        public LocalDocumentation CurrentLocalDocumentation { get; set; }
         #endregion
 
+        public MainPage(LocalDocumentation localDocumentation)
+        {
+            InitializeComponent();
+
+            CurrentLocalDocumentation = localDocumentation;
+            AbstractFactory = new SdwpAbstractFactory();
+
+            SetPropertiesValue();
+            UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
+        }
         public MainPage()
         {
             InitializeComponent();
             AbstractFactory = new SdwpAbstractFactory();
-
-            byte[] imgByteArr;
-            using (var ms = new FileStream(@"C:\Users\Aero\Desktop\python\s1200.jpg", FileMode.Open, FileAccess.Read))
-            {
-                ms.Seek(0, SeekOrigin.Begin);
-                imgByteArr = new byte[ms.Length];
-                ms.Read(imgByteArr, 0, (int)ms.Length);
-            }
-
-            (Documents[0].Items[1].Paragraphs[1] as ParagraphImage).ImageSource = imgByteArr;
 
             SetPropertiesValue();
             UploadDocumentation(Documentation, Documents);
@@ -146,6 +149,7 @@ namespace SDWP
             ShowLeftGridImagesGrid = showLeftGridImagesGrid;
 
             BackToPreviousItemStaticImage = backToPreviousItemStaticImage;
+            AddNewItemStaticImage = addNewItemStaticImage;
 
             DocumentsListStackPanel = documentsListStackPanel;
             ParagraphsListPanel = paragraphsListPanel;
@@ -160,6 +164,13 @@ namespace SDWP
         }
 
         #region Upload new documentation
+        private void UploadLocalDocumentation(LocalDocumentation localDocumentation)
+        {
+            CurrentLocalDocumentation = localDocumentation;
+
+            UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
+        }
+
         private void UploadDocumentation(Documentation documentation, List<Document> documents)
         {
             DocController = AbstractFactory.GetDocController(documentation, documents);
@@ -181,6 +192,7 @@ namespace SDWP
         private void UploadDocumentsDataToUI(List<Document> documents)
         {
             DocumentsListStackPanel.Children.Clear();
+            SetDocumentItemParents(documents);
 
             for (int i = 0; i < documents.Count; i++)
             {
@@ -192,6 +204,38 @@ namespace SDWP
                 documentMenuOption.UpdateList += RefreshDocumentUI;
 
                 DocumentsListStackPanel.Children.Add(documentMenuOption);
+            }
+        }
+
+        private void SetDocumentItemParents(List<Document> documents)
+        {
+            foreach (Document document in documents)
+            {
+                foreach (Item item in document.Items)
+                {
+                    item.SetParents(null, document.Items);
+                    SetItemParents(item);
+                }
+            }
+        }
+
+        private void SetItemParents(Item item)
+        {
+            if (item.Items != null)
+            {
+                foreach (Item i in item.Items)
+                {
+                    i.SetParents(item, item.Items);
+                    SetItemParents(i);
+                }
+            }
+
+            if (item.Paragraphs != null)
+            {
+                foreach (ParagraphElement paragraph in item.Paragraphs)
+                {
+                    (paragraph as IParentableParagraph).SetParents(item, item.Paragraphs);
+                }
             }
         }
         #endregion
@@ -211,12 +255,69 @@ namespace SDWP
 
         private void OnTreeContextMenuAddNewItem(object sender, RoutedEventArgs e)
         {
+            DocTreeViewItem docTreeViewItem = DocumentTreeView.SelectedItem as DocTreeViewItem;
+            Item item = docTreeViewItem.Item;
 
+            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(item.Items, item);
+            if (createNewItemWindow.ShowDialog() == true)
+                RefreshItemsUI();
         }
 
-        private void TreeViewItemLostFocus(object sender, RoutedEventArgs e)
+        private void TreeViewItemTextBoxLostFocus(object sender, RoutedEventArgs e)
         {
-            (sender as DocTreeViewItem).IsEnabledForEdditing = false;
+            (sender as TextBox).IsEnabled = false;
+        }
+
+        private void OnTreeViewDeleteItem(object sender, RoutedEventArgs e)
+        {
+            DocTreeViewItem docTreeViewItem = DocumentTreeView.SelectedItem as DocTreeViewItem;
+            Item selectedItem = docTreeViewItem.Item;
+
+            selectedItem.ParentList.Remove(selectedItem);
+            RefreshItemsUI();
+        }
+
+        /// <summary>
+        /// Creates the document tree view (the second way to observe the document)
+        /// </summary>
+        private void CreateDocumentTreeView(Document document)
+        {
+            DocumentTreeView.Items.Clear();
+            foreach (Item item in document.Items)
+            {
+                DocTreeViewItem treeViewItem = CreateNewListItem(item);
+
+                UploadItemsToTreeView(item, treeViewItem);
+
+                DocumentTreeView.Items.Add(treeViewItem);
+            }
+        }
+
+        private DocTreeViewItem CreateNewListItem(Item item)
+        {
+            DocTreeViewItem treeItem = new DocTreeViewItem(item);
+
+            if (item.Paragraphs != null)
+                treeItem.Style = Resources["treeViewContentItemStyle"] as Style;
+            else
+                treeItem.Style = Resources["treeViewItemsItemStyle"] as Style;
+
+            treeItem.Margin = new Thickness(10, 0, 0, 0);
+            treeItem.MouseDoubleClick += OnTreeViewItemDoubleClick;
+
+            return treeItem;
+        }
+
+        private void OnTreeViewItemDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DocTreeViewItem treeItem = sender as DocTreeViewItem;
+            if (treeItem.Item.Paragraphs != null)
+            {
+                DocController.CurrentContentItem = treeItem.Item;
+                DocController.CurrentParagraphsList = treeItem.Item.Paragraphs;
+
+                UploadParagraphsToParagraphsListPanel(treeItem.Item.Paragraphs);
+            }
         }
         #endregion
 
@@ -227,8 +328,15 @@ namespace SDWP
         /// </summary>
         private void RefreshItemsUI()
         {
-            if (DocController.CurrentItemsList != null)
-                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
+            if (DocumentTreeView.Visibility == Visibility.Collapsed)
+            {
+                if (DocController.CurrentItemsList != null)
+                    UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
+            }
+            else
+            {
+                CreateDocumentTreeView(DocController.CurrentDocument);
+            }
         }
 
         private void RefreshParagraphsUI()
@@ -263,50 +371,6 @@ namespace SDWP
         }
 
         /// <summary>
-        /// Creates the document tree view (the second way to observe the document)
-        /// </summary>
-        private void CreateDocumentTreeView(Document document)
-        {
-            DocumentTreeView.Items.Clear();
-            foreach (Item item in document.Items)
-            {
-                DocTreeViewItem treeViewItem = CreateNewListItem(item);
-
-                UploadItemsToTreeView(item, treeViewItem);
-
-                DocumentTreeView.Items.Add(treeViewItem);
-            }
-        }
-
-        private DocTreeViewItem CreateNewListItem(Item item)
-        {
-            DocTreeViewItem treeItem = new DocTreeViewItem(item);
-
-            if (item.Paragraphs != null)
-                treeItem.Style = Resources["treeViewContentItemStyle"] as Style;
-            else
-                treeItem.Style = Resources["treeViewItemsItemStyle"] as Style;
-
-            treeItem.ContextMenu = Resources["treeViewItemContextMenu"] as ContextMenu;
-            treeItem.Margin = new Thickness(10, 0, 0, 0);
-            treeItem.MouseDoubleClick += OnTreeViewItemDoubleClick;
-
-            return treeItem;
-        }
-
-        private void OnTreeViewItemDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            DocTreeViewItem treeItem = sender as DocTreeViewItem;
-            if (treeItem.Item.Paragraphs != null)
-            {
-                DocController.CurrentContentItem = treeItem.Item;
-                DocController.CurrentParagraphsList = treeItem.Item.Paragraphs;
-
-                UploadParagraphsToParagraphsListPanel(treeItem.Item.Paragraphs);
-            }
-        }
-            
-        /// <summary>
         /// The recursive algorithm which creates the tree view for a selected doc.
         /// Firstly we upload all "item" items and then upload the content of the item
         /// </summary>
@@ -323,10 +387,7 @@ namespace SDWP
 
                     if (i.Items != null)
                     {
-                        foreach (Item ii in i.Items)
-                        {
-                            UploadItemsToTreeView(ii, treeViewItem);
-                        }
+                        UploadItemsToTreeView(i, treeViewItem);
                     }
                 }
         }
@@ -413,7 +474,7 @@ namespace SDWP
         /// <summary>
         /// Uploads all paragraphs of a current item to the paragraphs stack panel
         /// </summary>
-        private void UploadParagraphsToParagraphsListPanel(List<IParagraphElement> paragraphs)
+        private void UploadParagraphsToParagraphsListPanel(List<ParagraphElement> paragraphs)
         {
             ParagraphsListPanel.Children.Clear();
 
@@ -449,6 +510,30 @@ namespace SDWP
         #endregion
 
         #region Event handlers
+        private void GoToListMode(object sender, MouseButtonEventArgs e)
+        {
+            BackToPreviousItemStaticImage.IsEnabled = true;
+            AddNewItemStaticImage.IsEnabled = true;
+
+            DocumentTreeView.Visibility = Visibility.Collapsed;
+            ListModeScroll.Visibility = Visibility.Visible;
+
+            GoToListModeTextBox.Visibility = Visibility.Collapsed;
+            GoToTreeViewModeTextBox.Visibility = Visibility.Visible;
+        }
+
+        private void GoToTreeViewMode(object sender, MouseButtonEventArgs e)
+        {
+            BackToPreviousItemStaticImage.IsEnabled = false;
+            AddNewItemStaticImage.IsEnabled = false;
+
+            DocumentTreeView.Visibility = Visibility.Visible;
+            ListModeScroll.Visibility = Visibility.Collapsed;
+
+            GoToListModeTextBox.Visibility = Visibility.Visible;
+            GoToTreeViewModeTextBox.Visibility = Visibility.Collapsed;
+        }
+
         private void IconMouseEnter(object sender, MouseEventArgs e)
         {
             Image thisImage = sender as Image;
@@ -653,25 +738,5 @@ namespace SDWP
             }
         }
         #endregion
-
-        private void GoToListMode(object sender, MouseButtonEventArgs e)
-        {
-            backToPreviousItemStaticImage.IsEnabled = true;
-            DocumentTreeView.Visibility = Visibility.Collapsed;
-            ListModeScroll.Visibility = Visibility.Visible;
-
-            GoToListModeTextBox.Visibility = Visibility.Collapsed;
-            GoToTreeViewModeTextBox.Visibility = Visibility.Visible;
-        }
-
-        private void GoToTreeViewMode(object sender, MouseButtonEventArgs e)
-        {
-            backToPreviousItemStaticImage.IsEnabled = false;
-            DocumentTreeView.Visibility = Visibility.Visible;
-            ListModeScroll.Visibility = Visibility.Collapsed;
-
-            GoToListModeTextBox.Visibility = Visibility.Visible;
-            GoToTreeViewModeTextBox.Visibility = Visibility.Collapsed;
-        }
     }
 }

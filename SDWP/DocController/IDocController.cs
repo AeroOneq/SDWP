@@ -36,7 +36,7 @@ namespace SDWP
         /// <summary>
         /// The list of paragraphs which is now uploaded to UI
         /// </summary>
-        List<IParagraphElement> CurrentParagraphsList { get; set; }
+        List<ParagraphElement> CurrentParagraphsList { get; set; }
 
         /// <summary>
         /// Changes the state of this controller by uploading the selected doc

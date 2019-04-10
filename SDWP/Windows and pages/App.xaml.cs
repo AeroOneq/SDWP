@@ -6,12 +6,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
+using SDWP.Factories;
+using SDWP.Exceptions;
+
 namespace SDWP
 {
-    /// <summary>
-    /// Логика взаимодействия для App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        private static ISdwpAbstractFactory AbstractFactory { get; set; }
+        private static IExceptionHandler ExceptionHandler { get; set; }
+
+        App()
+        {
+            InitializeComponent();
+
+            AbstractFactory = new SdwpAbstractFactory();
+            ExceptionHandler = AbstractFactory.GetExceptionHandler(Dispatcher);
+        }
     }
 }
