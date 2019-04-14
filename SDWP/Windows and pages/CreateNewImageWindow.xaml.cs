@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -18,6 +17,7 @@ using ApplicationLib.Interfaces;
 
 using SDWP.Exceptions;
 using SDWP.Factories;
+using SDWP.Interfaces;
 
 using Microsoft.Win32;
 
@@ -127,9 +127,11 @@ namespace SDWP
                 {
                     Title = imageTitle
                 };
-                (paragraphImage as IParentableParagraph).SetParents(ContentItem, ContentItem.Paragraphs);
 
-                ContentItem.Paragraphs.Add(paragraphImage);
+                Paragraph paragraph = new Paragraph(typeof(ParagraphImage).Name, paragraphImage);
+                (paragraph as IParentableParagraph).SetParents(ContentItem, ContentItem.Paragraphs);
+
+                ContentItem.Paragraphs.Add(paragraph);
 
                 DialogResult = true;
                 Close();

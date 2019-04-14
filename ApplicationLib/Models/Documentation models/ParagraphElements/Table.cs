@@ -19,6 +19,7 @@ namespace ApplicationLib.Models
         public string[][] TableCells { get; set; }
         #endregion
 
+        public Table() { }
         public Table(string[][] tableCells)
         {
             TableCells = tableCells;
@@ -172,7 +173,7 @@ namespace ApplicationLib.Models
 
         public override UserControl GetEditView()
         {
-            return new TableEditView(this);
+            return new TableEditView(ParentParagraph);
         }
     }
 }

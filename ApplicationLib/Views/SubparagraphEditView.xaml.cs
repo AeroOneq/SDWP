@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,7 +20,8 @@ namespace ApplicationLib.Views
 {
     public partial class SubparagraphEditView : UserControl, IParagraphEditView
     {
-        public Subparagraph Subparagraph { get; }
+        private Subparagraph Subparagraph { get; }
+        private Paragraph Paragraph { get; }
 
         private readonly int maxLineSymbolsCount = 20;
         private bool DoTextChangedActions { get; set; } = true;
@@ -36,11 +36,12 @@ namespace ApplicationLib.Views
         #region Constructors
         public SubparagraphEditView() { InitializeComponent(); }
 
-        public SubparagraphEditView(Subparagraph subparagraph)
+        public SubparagraphEditView(Paragraph paragraph)
         {
             InitializeComponent();
 
-            Subparagraph = subparagraph;
+            Paragraph = paragraph;
+            Subparagraph = Paragraph.ParagraphElement as Subparagraph;
 
             DataContext = Subparagraph;
 
@@ -143,7 +144,7 @@ namespace ApplicationLib.Views
         #region IParagraphEditView methods
         public void DeleteParagraph()
         {
-            (Subparagraph as IParagraphElement).RemoveParagraphFromParentList();
+            (Paragraph as IParentableParagraph).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 

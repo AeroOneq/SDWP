@@ -579,7 +579,7 @@
                         <TextBox x:Name="documentationNameTextBox"
                                      Margin="10, 30, 15, 0"
                                      Style="{StaticResource documentationNameGridStyle}"
-                                     Text="SDWP Документация"/>
+                                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Style="{StaticResource propertyNameStyle}"
                                    Text="Дата создания: "

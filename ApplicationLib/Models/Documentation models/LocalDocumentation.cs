@@ -14,7 +14,8 @@ namespace ApplicationLib.Models
     public class LocalDocumentation
     {
         public Documentation Documentation { get; set; }
-        public List<Document> Documents { get; set; } 
+        public List<Document> Documents { get; set; }
+        public string DocumentationPath { get; set; }
 
         public LocalDocumentation(Documentation documentation, List<Document> documents)
         {

@@ -9,9 +9,10 @@ namespace ApplicationLib.Interfaces
 {
     public interface IParentableParagraph
     {
-        List<ParagraphElement> ParentList { get; }
+        List<Paragraph> ParentList { get; }
         Item ParentItem { get; }
 
-        void SetParents(Item parentItem, List<ParagraphElement> parentList);
+        void SetParents(Item parentItem, List<Paragraph> parentList);
+        void RemoveParagraphFromParentList();
     }
 }

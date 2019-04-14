@@ -10,7 +10,6 @@ using ApplicationLib.Interfaces;
 using ApplicationLib.Views;
 using Newtonsoft.Json;
 
-
 namespace ApplicationLib.Models
 {
     public class Subparagraph : ParagraphElement
@@ -19,6 +18,7 @@ namespace ApplicationLib.Models
         public string Text { get; set; }
         #endregion
 
+        public Subparagraph() { }
         public Subparagraph(string text)
         {
             Text = text;
@@ -29,6 +29,6 @@ namespace ApplicationLib.Models
             throw new NotImplementedException();
         }
 
-        public override UserControl GetEditView() => new SubparagraphEditView(this);
+        public override UserControl GetEditView() => new SubparagraphEditView(ParentParagraph);
     }
 }

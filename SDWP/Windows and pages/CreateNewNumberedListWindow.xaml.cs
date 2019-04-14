@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -71,9 +70,11 @@ namespace SDWP
                 {
                     Title = listTitle,
                 };
-                (numberedList as IParentableParagraph).SetParents(ContentItem, ContentItem.Paragraphs);
 
-                ContentItem.Paragraphs.Add(numberedList);
+                Paragraph paragraph = new Paragraph(typeof(NumberedList).Name, numberedList);
+                (paragraph as IParentableParagraph).SetParents(ContentItem, ContentItem.Paragraphs);
+
+                ContentItem.Paragraphs.Add(paragraph);
 
                 DialogResult = true;
                 Close();

@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ApplicationLib.Interfaces;
+
 using ApplicationLib.Models;
+
+using SDWP.Interfaces;
 
 namespace SDWP
 {
     public class DocumentationController : IDocController
     {
         #region Propeties
-        public Documentation Documentation { get; }
-        public List<Document> Documents { get; }
+        public Documentation Documentation { get; private set; }
+        public List<Document> Documents { get; private set; }
 
-        public Document CurrentDocument { get; set; }
-        public Item CurrentItem { get; set; }
-        public Item CurrentContentItem { get; set; }
-        public List<Item> CurrentItemsList { get; set; }
-        public List<ParagraphElement> CurrentParagraphsList { get; set; }
+        public Document CurrentDocument { get; private set; }
+        public Item CurrentItem { get; private set; }
+        public Item CurrentContentItem { get; private set; }
+        public List<Item> CurrentItemsList { get; private set; }
+        public List<Paragraph> CurrentParagraphsList { get; private set; }
         #endregion
 
         public DocumentationController() { }
-        public DocumentationController(Documentation documentation, List<Document> documents)
+
+        public void UploadLocalDocumentation(LocalDocumentation localDocumentation)
         {
-            Documentation = documentation;
-            Documents = documents;
+            Documentation = localDocumentation.Documentation;
+            Documents = localDocumentation.Documents;
         }
 
         public void UploadItem(Item selectedItem)
@@ -40,6 +43,12 @@ namespace SDWP
                 CurrentItemsList = selectedItem.Items;
                 CurrentItem = selectedItem;
             }
+        }
+
+        public void UploadParagraphs(Item selectedItem)
+        {
+            CurrentContentItem = selectedItem;
+            CurrentParagraphsList = selectedItem.Paragraphs;
         }
 
         public void UploadDocument(Document document)
@@ -57,6 +66,20 @@ namespace SDWP
         public bool CanGoToPrevItem()
         {
             return CurrentItem != null && CurrentItem.ParentList != null;
+        }
+
+        /// <summary>
+        /// Sets all references of properties ti null
+        /// </summary>
+        public void Clear()
+        {
+            Documentation = null;
+            Documents = null;
+            CurrentContentItem = null;
+            CurrentDocument = null;
+            CurrentItem = null;
+            CurrentItemsList = null;
+            CurrentParagraphsList = null;
         }
     }
 }

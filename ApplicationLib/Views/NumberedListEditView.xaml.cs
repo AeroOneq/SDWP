@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,6 +20,7 @@ namespace ApplicationLib.Views
     public partial class NumberedListEditView : UserControl, IParagraphEditView
     {
         private NumberedList NumberedList { get; }
+        private Paragraph Paragraph { get; }
         private HintControl HintControl { get; }
         private ParagraphElementSettings ParagraphSettings { get; set; }
         private ListBox NumberedListListBox { get; }
@@ -30,12 +30,14 @@ namespace ApplicationLib.Views
         #endregion
 
         #region Constructors
-        public NumberedListEditView(NumberedList numberedList)
+        public NumberedListEditView(Paragraph paragraph)
         {
             InitializeComponent();
 
+            Paragraph = paragraph;
+            NumberedList = paragraph.ParagraphElement as NumberedList;
+
             HintControl = hintControl;
-            NumberedList = numberedList;
             ParagraphSettings = paragraphsSettings;
             NumberedListListBox = numberedListListBox;
 
@@ -55,7 +57,7 @@ namespace ApplicationLib.Views
         #region IParagraphEditView
         public void DeleteParagraph()
         {
-            (NumberedList as IParagraphElement).RemoveParagraphFromParentList();
+            (Paragraph as IParentableParagraph).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 

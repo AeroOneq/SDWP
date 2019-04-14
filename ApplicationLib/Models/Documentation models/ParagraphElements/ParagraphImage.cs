@@ -19,6 +19,7 @@ namespace ApplicationLib.Models
         public byte[] ImageSource { get; set; }
         #endregion
 
+        public ParagraphImage() { }
         public ParagraphImage(byte[] imageSource)
         {
             ImageSource = imageSource;
@@ -31,7 +32,7 @@ namespace ApplicationLib.Models
 
         public override UserControl GetEditView()
         {
-            return new ImageEditView(this);
+            return new ImageEditView(ParentParagraph);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace ApplicationLib.Views
     public partial class TableEditView : UserControl, IParagraphEditView
     {
         private Table CurrentTable { get; }
+        private Paragraph Paragraph { get; }
+
         private DataGrid TableDataGrid { get; }
         private HintControl HintControl { get; }
         private ParagraphElementSettings ParagraphSettings { get; }
@@ -20,11 +22,13 @@ namespace ApplicationLib.Views
         public Action RefreshParagraphsUI { get; set; }
         #endregion
 
-        public TableEditView(Table table)
+        public TableEditView(Paragraph paragraph)
         {
             InitializeComponent();
 
-            CurrentTable = table;
+            Paragraph = paragraph;
+            CurrentTable = Paragraph.ParagraphElement as Table;
+
             TableDataGrid = tableDataGrid;
             HintControl = hintControl;
             ParagraphSettings = paragraphsSettings;
@@ -73,7 +77,7 @@ namespace ApplicationLib.Views
         #region IParagraphEditView 
         public void DeleteParagraph()
         {
-            (CurrentTable as IParagraphElement).RemoveParagraphFromParentList();
+            (Paragraph as IParentableParagraph).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 

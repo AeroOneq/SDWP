@@ -22,19 +22,22 @@ using ApplicationLib.Services;
 
 using SDWP.Exceptions;
 using SDWP.Factories;
+using SDWP.Interfaces;
 
 namespace SDWP
 {
     /// <summary>
     /// Логика взаимодействия для UserProfilePage.xaml
     /// </summary
-    public partial class UserProfilePage : Page
+    public partial class UserProfilePage : Page, IAccountPage
     {
         private IEmailService<UserInfo> EmailService { get; set; }
         private IUserService<UserInfo> UserService { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
 
         #region Properties
+        public Action CloseAccGrid { get; set; }
+
         private byte[] NewUserPhoto { get; set; } = null;
         private Connector Connector { get; } = new Connector(
             DatabaseProperties.ConnectionString);
@@ -176,7 +179,7 @@ namespace SDWP
                     255, 187, 162));
             }
         }
-#warning Decompose
+
         private void ChangeEnablePropertyOfUserDataElemenets(bool newEnableValue)
         {
             TextBox[] propertiesTextBoxes = userProfileDataGrid.Children.

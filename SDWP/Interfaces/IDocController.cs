@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 
-namespace SDWP
+namespace SDWP.Interfaces
 {
     public interface IDocController
     {
@@ -20,24 +20,25 @@ namespace SDWP
         /// </summary>
         List<Document> Documents { get; }
 
-        Document CurrentDocument { get; set; }
+        Document CurrentDocument { get; }
         /// <summary>
         /// The item, which items are now uploaded
         /// </summary>
-        Item CurrentItem { get; set; }
+        Item CurrentItem { get; }
         /// <summary>
         /// An item, which content os now uploaded
         /// </summary>
-        Item CurrentContentItem { get; set; }
+        Item CurrentContentItem { get; }
         /// <summary>
         /// The list where the CurrentItem is
         /// </summary>
-        List<Item> CurrentItemsList { get; set; }
+        List<Item> CurrentItemsList { get; }
         /// <summary>
         /// The list of paragraphs which is now uploaded to UI
         /// </summary>
-        List<ParagraphElement> CurrentParagraphsList { get; set; }
+        List<Paragraph> CurrentParagraphsList { get; }
 
+        void UploadLocalDocumentation(LocalDocumentation documentation);
         /// <summary>
         /// Changes the state of this controller by uploading the selected doc
         /// </summary>
@@ -47,6 +48,7 @@ namespace SDWP
         /// selected item
         /// </summary>
         void UploadItem(Item selectedItem);
+        void UploadParagraphs(Item selectedItem);
         /// <summary>
         /// Decides whether it is possible to go to the previous item
         /// </summary>
@@ -56,5 +58,6 @@ namespace SDWP
         /// </summary>
         /// <param name="currentItem">CURRENT (the item with which user is working now) item</param>
         void GoToPreviousItem(Item currentItem);
+        void Clear();
     }
 }

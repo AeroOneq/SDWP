@@ -14,16 +14,13 @@ namespace ApplicationLib.Services
 {
     class LocalDocumentationService : ILocalDocumentationStorage
     {
-        public string StoragePath { get; private set; }
-
-        public LocalDocumentationService(string storagePath)
+        public LocalDocumentationService()
         {
-            StoragePath = storagePath;
         }
 
-        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation)
+        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string folderPath)
         {
-            string path = Path.Combine(StoragePath, localDocumentation.Documentation.Name);
+            string path = Path.Combine(folderPath, localDocumentation.Documentation.Name);
             byte[] localDocumentationBytes = GetByteArrayFromString(localDocumentation.GetJsonString());
 
             using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
@@ -45,7 +42,7 @@ namespace ApplicationLib.Services
         /// <exception cref="FileNotFoundException"/>
         public void DeleteLocalDocumentationFile(LocalDocumentation localDocumentation)
         {
-            string path = Path.Combine(StoragePath, localDocumentation.Documentation.Name);
+            string path = Path.Combine(localDocumentation.DocumentationPath, localDocumentation.Documentation.Name + ".sdwp");
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -56,11 +53,11 @@ namespace ApplicationLib.Services
             }
         }
 
-        public async Task<List<LocalDocumentation>> GetLocalDocumentations()
+        public async Task<List<LocalDocumentation>> GetLocalDocumentations(string folderPath)
         {
             return await Task.Run(() =>
             {
-                string[] filePaths = Directory.GetFiles(StoragePath);
+                string[] filePaths = Directory.GetFiles(folderPath);
                 List<LocalDocumentation> localDocumentations = new List<LocalDocumentation>();
 
                 foreach (string filePath in filePaths)
@@ -90,6 +87,7 @@ namespace ApplicationLib.Services
                 return localDocumentations;
             });
         }
+
         private string GetStringFromByteArray(byte[] arr)
         {
             Encoding encoding = Encoding.UTF8;

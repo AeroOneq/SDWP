@@ -363,21 +363,24 @@ namespace SDWP
 #warning Find better solution
                     UserProfilePage userProfilePage = new UserProfilePage(UserInfo.CurrentUser)
                     {
-                        Width = userGridFrame.Width
+                        Width = userGridFrame.Width,
+                        CloseAccGrid = new Action(()=>HideTheUserAccGrid(null, null))
                     };
                     userGridFrame.Navigate(userProfilePage);
                     break;
                 case "1":
-                    UserDocsPage userDocsPage = new UserDocsPage()
+                    UserDocsPage userDocsPage = new UserDocsPage(MainPage)
                     {
-                        Width = userGridFrame.Width
+                        Width = userGridFrame.Width,
+                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
                     };
                     userGridFrame.Navigate(userDocsPage);
                     break;
                 case "2":
                     DocumentTemplatesPage documentTemplatesPage = new DocumentTemplatesPage(UserInfo.CurrentUser)
                     {
-                        Width = userGridFrame.Width
+                        Width = userGridFrame.Width,
+                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
                     };
                     userGridFrame.Navigate(documentTemplatesPage);
                     break;
@@ -385,7 +388,8 @@ namespace SDWP
                     ExportDocumentationPage exportDocumentationPage = new ExportDocumentationPage(
                         MainPage)
                     {
-                        Width = userGridFrame.Width
+                        Width = userGridFrame.Width,
+                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
                     };
                     userGridFrame.Navigate(exportDocumentationPage);
                     break;
@@ -413,12 +417,12 @@ namespace SDWP
 
         private void SaveDocumentationGrid(object sender, EventArgs e)
         {
-            List<Document> docs = MainPage.Documents;
-            Documentation documentation = MainPage.Documentation;
+            List<Document> docs = MainPage.DocController.Documents;
+            Documentation documentation = MainPage.DocController.Documentation;
             LocalDocumentation localDocumentation = new LocalDocumentation(documentation, docs);
             string localDocumentationJson = localDocumentation.GetJsonString();
+
+            SDWPMessageBox.ShowSDWPMessageBox("json", localDocumentationJson, MessageBoxButton.OK);
         }
-
-
     }
 }

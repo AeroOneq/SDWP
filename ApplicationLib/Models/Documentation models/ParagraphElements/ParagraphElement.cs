@@ -10,26 +10,13 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class ParagraphElement : IParagraphElement, IParentableParagraph
-    {
+    public class ParagraphElement : IParagraphElement
+    { 
         public string Hint { get; set; }
         public string Title { get; set; }
 
         [JsonIgnore]
-        public Item ParentItem { get; private set; }
-        [JsonIgnore]
-        public List<ParagraphElement> ParentList { get; private set; }
-
-        public void SetParents(Item parentItem, List<ParagraphElement> parentList)
-        {
-            ParentItem = parentItem;
-            ParentList = parentList;
-        }
-
-        public void RemoveParagraphFromParentList()
-        {
-            ParentList.Remove(this);
-        }
+        public Paragraph ParentParagraph { get; set; }
 
         public virtual UserControl GetWatchView()
         {

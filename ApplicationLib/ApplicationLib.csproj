@@ -70,7 +70,9 @@
     <Compile Include="Interfaces\IParentableItem.cs" />
     <Compile Include="Models\Documentation models\LocalDocumentation.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
+    <Compile Include="Models\Documentation models\ParagraphElements\Paragraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphElement.cs" />
+    <Compile Include="Models\Documentation models\ParagraphJsonConverter.cs" />
     <Compile Include="Models\Template.cs" />
     <Compile Include="Services\LocalDocumentationService.cs" />
     <Compile Include="Tests\NumberedListTests.cs" />

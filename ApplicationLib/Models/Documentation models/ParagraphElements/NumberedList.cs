@@ -20,10 +20,10 @@ namespace ApplicationLib.Models
         public List<NumberedListElement> ListElements { get; set; }
         #endregion
 
+        public NumberedList() { }
         public NumberedList(List<NumberedListElement> listElements)
         {
             ListElements = listElements;
-
             SetIndexes();
         }
 
@@ -101,7 +101,7 @@ namespace ApplicationLib.Models
 
         public override UserControl GetEditView()
         {
-            return new NumberedListEditView(this);
+            return new NumberedListEditView(ParentParagraph);
         }
     }
 }

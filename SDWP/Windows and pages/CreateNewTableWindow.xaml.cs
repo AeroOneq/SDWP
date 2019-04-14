@@ -19,6 +19,7 @@ using FileLib.FileParsers;
 
 using SDWP.Factories;
 using SDWP.Exceptions;
+using SDWP.Interfaces;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
@@ -148,9 +149,9 @@ namespace SDWP
 
                 for (int i = 0; i<tables.Length; i++)
                 {
-                    (tables[i] as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
                     AddNewTable(tables[i]);
                 }
+
                 DialogResult = true;
                 Close();
             }
@@ -168,7 +169,10 @@ namespace SDWP
 
         private void AddNewTable(Table table)
         {
-            CurrentItem.Paragraphs.Add(table);
+            Paragraph paragraph = new Paragraph(typeof(Table).Name, table);
+            (paragraph as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
+
+            CurrentItem.Paragraphs.Add(paragraph);
         }
 
         private void CreateEmptyTable()
@@ -184,7 +188,6 @@ namespace SDWP
                 {
                     Title = tableTitle
                 };
-                (table as IParentableParagraph).SetParents(CurrentItem, CurrentItem.Paragraphs);
 
                 AddNewTable(table);
                 DialogResult = true;

@@ -106,48 +106,42 @@
         
         <Style TargetType="ListBoxItem">
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0, 10, 0, 0"/>
+            <Setter Property="Background" Value="LightGray"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
                         <Border x:Name="border"     
                                 SnapsToDevicePixels="true"
-                                Background="LightGray"
+                                Background="{TemplateBinding Background}"
                                 CornerRadius="5"
                                 BorderThickness="1"
                                 BorderBrush="Gray">
                             <ContentPresenter/>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="MouseOver">
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="border"
-                                                            Storyboard.TargetProperty="Background.Color"
-                                                            To="#F0F0F0"
-                                                            SpeedRatio="100"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Normal">
-                                        <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="border"
-                                                            Storyboard.TargetProperty="Background.Color"
-                                                            To="LightGray"
-                                                            SpeedRatio="100"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected"
                                      Value="True">
                                 <Setter TargetName="border"
                                         Property="Background"
-                                        Value="Transparent"/>
+                                        Value="#f0f0f0"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <EventSetter Event="MouseEnter" Handler="ListBoxItemMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="ListBoxItemMouseLeave"/>
+            <EventSetter Event="PreviewMouseDown" Handler="ListBoxItemMouseDown"/>
+        </Style>
+
+        <Style x:Key="documentationOptionsTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="FontSize" Value="13"/>
         </Style>
 
         <DataTemplate x:Key="documentationListBoxDataTemplate">
@@ -167,23 +161,23 @@
                         Margin="0, 0, 0, 0">
                     <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
-                                Height="35"
+                                Height="50"
                                 Width="280"
                                 Orientation="Vertical">
-                        <StackPanel VerticalAlignment="Top"
+                        <StackPanel VerticalAlignment="Center"
                                     HorizontalAlignment="Left"
-                                    Height="35"
                                     Orientation="Horizontal"
+                                    Height="50"
                                     Width="280">
                             <Image Source="../Resources/documentationIcon.png"
-                                   VerticalAlignment="Top"
+                                   VerticalAlignment="Center"
                                    HorizontalAlignment="Left"
-                                   Height="25"
-                                   Width="25"
-                                   Margin="5, 3, 0, 0"/>
+                                   Height="20"
+                                   Width="20"
+                                   Margin="5, -12, 0, 0"/>
                             <TextBlock Text="{Binding Path = Name}"
                                        Style="{StaticResource documentationListBoxHeaderTextBlockStyle}"
-                                       Margin="10, 0, 0, 0"/>
+                                       Margin="10, -10, 0, 0"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -203,6 +197,144 @@
             <Setter Property="Padding" Value="0, 0, 10, 0"/>
             <Setter Property="ItemTemplate" Value="{StaticResource documentationListBoxDataTemplate}"/>
         </Style>
+        <Style x:Key="doucmentationTypesTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment"  Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontWeight" Value="Light"/>
+
+            <EventSetter Event="MouseEnter" Handler="DocTypesTextBlockMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="DocTypesTextBlockMouseLeave"/>
+        </Style>
+
+        <Style x:Key="filePathTextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="5, 5, 5, 5"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                BorderBrush="LightGray"
+                                CornerRadius="10"
+                                Background="White"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="documentationProperteisBtnStyle" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Width" Value="110"/>
+            <Setter Property="Height" Value="30"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                BorderBrush="{StaticResource mainThemeBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Background="White"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="#F5F5F5"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="White"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="localDocOptionBtnStyle" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                BorderBrush="Gray"
+                                Background="White"
+                                CornerRadius="10">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="#F5F5F5"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="White"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="localDocOptionBtnImageStyle" TargetType="Image">
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="localDocOptionBtnTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="{StaticResource defaultTextColorBrush}"/>
+            <Setter Property="FontWeight" Value="Light"/>
+        </Style>
     </Page.Resources>
     <Page.Content>
         <Grid x:Name="userDocsOutterGrid">
@@ -218,33 +350,154 @@
                                       HorizontalAlignment="Left"
                                       Header="Документы"/>
 
-                    <StackPanel x:Name="userDocumentationGrid"
-                                VerticalAlignment="Top"
+                    <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
-                                Background="#E1E1E1"
                                 Margin="20, 0, 0, 0"
                                 Orientation="Horizontal">
-                        <StackPanel VerticalAlignment="Top"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Vertical">
-                            <TextBlock Style="{StaticResource userDocsDataHeader}"
-                                       Text="Документация из облака"
-                                       Margin="10, 0, 0, 0"/>
-                            <ListBox x:Name="onlineDocumentationListBox"
-                                     Style="{StaticResource documentationListBoxStyle}"
-                                     Margin="0, 5, 0, 0"/>
-                        </StackPanel>
-                        <StackPanel VerticalAlignment="Top"
-                                    HorizontalAlignment="Left"
-                                    Orientation="Vertical"
-                                    Margin="10, 0, 0, 0">
-                            <TextBlock Style="{StaticResource userDocsDataHeader}"
-                                       Text="Локальная документация"
-                                       Margin="10, 0, 0, 0"/>
-                            <ListBox x:Name="offlineDocumentationListBox"
-                                     Style="{StaticResource documentationListBoxStyle}"
-                                     Margin="0, 5, 0, 0"/>
-                        </StackPanel>
+                        <TextBlock x:Name="goToLocalDocumentation"
+                                   Text="Локальная документация"
+                                   Style="{StaticResource doucmentationTypesTextBlockStyle}"
+                                   PreviewMouseDown="GoToLocalDocumentationPanel"/>
+                        <TextBlock x:Name="goToCloudDocumentation"
+                                   Text="Облачная документация"
+                                   Margin="20, 0, 0, 0"
+                                   Style="{StaticResource doucmentationTypesTextBlockStyle}"
+                                   PreviewMouseDown="GoToCloudDocumentationPanel"/>
+                    </StackPanel>
+
+                    <StackPanel VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                Orientation="Horizontal"
+                                Margin="0, 0, 20, 0">
+                        <Grid x:Name="userDocumentationGrid"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"
+                              Background="#E1E1E1"
+                              Margin="0, 20, 0, 0">
+                            <StackPanel x:Name="cloudDocStackPanel"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Vertical"
+                                        Visibility="Collapsed">
+                                <ListBox x:Name="onlineDocumentationListBox"
+                                         Style="{StaticResource documentationListBoxStyle}"
+                                         Margin="20, 5, 0, 0"/>
+                            </StackPanel>
+
+                            <StackPanel x:Name="localDocStackPanel"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Vertical"
+                                        Margin="0, 0, 0, 0"
+                                        Visibility="Visible">
+                                <ListBox x:Name="offlineDocumentationListBox"
+                                         Style="{StaticResource documentationListBoxStyle}"
+                                         Margin="20, 5, 0, 0"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="documentationPropertiesGrid">
+                            <StackPanel x:Name="localDocsPropertiesStackPanel"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Vertical">
+                                <TextBlock FontFamily="Arial, Verdana"
+                                           FontSize="15"
+                                           Foreground="OrangeRed"
+                                           Margin="20, 30, 0, 0"
+                                           Text="Путь до папки с документациями"/>
+                                <TextBox x:Name="filePathTextBox"
+                                         Style="{StaticResource filePathTextBoxStyle}"
+                                         Text=""
+                                         Margin="20, 5, 0, 0"/>
+                                <Button x:Name="selectDocumentationFolderBtn"
+                                        Style="{StaticResource documentationProperteisBtnStyle}"
+                                        Margin="0, 10, 0, 0"
+                                        Click="SelectLocalDocumentationFolder">
+                                    <TextBlock FontFamily="Arial, Verdana"
+                                               FontSize="14"
+                                               Foreground="{StaticResource mainThemeBrush}"
+                                               Text="Обзор"
+                                               VerticalAlignment="Top"
+                                               HorizontalAlignment="Left"/>
+                                </Button>
+                                <Grid HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Top"
+                                      Background="Gray"
+                                      Height="1"
+                                      Margin="20, 10, 0, 0"/>
+                                <StackPanel x:Name="localDocsOptionsPanel"
+                                            VerticalAlignment="Top"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Vertical"
+                                            Margin="20, 10, 0, 0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Style="{StaticResource localDocOptionBtnTextBlockStyle}"
+                                                   Text="Документация: "
+                                                   Foreground="Gray"
+                                                   HorizontalAlignment="Left"/>
+                                        <TextBlock x:Name="selectedLocalDocumentationNameTextBlock"
+                                                   Style="{StaticResource localDocOptionBtnTextBlockStyle}"
+                                                   Text="SADasdsadasd"
+                                                   HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Top"
+                                                HorizontalAlignment="Left"
+                                                Margin="0, 10, 0, 0">
+                                        <Button x:Name="openDocumentationBtn"
+                                                Style="{StaticResource localDocOptionBtnStyle}"
+                                                Click="UploadDocumentationToMainPage">
+                                            <Button.Content>
+                                                <StackPanel VerticalAlignment="Top"
+                                                            HorizontalAlignment="Stretch"
+                                                            Orientation="Vertical">
+                                                    <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                           Source="../Resources/openLocalDocumentationIcon.png"/>
+                                                    <TextBlock Text="Открыть"
+                                                               Margin="0, 10, 0, 0"
+                                                               Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+                                        <Button x:Name="deleteDocumentationBtn"
+                                                Style="{StaticResource localDocOptionBtnStyle}"
+                                                Margin="5, 0, 0, 0"
+                                                Click="DeleteDocumentation">
+                                            <Button.Content>
+                                                <StackPanel VerticalAlignment="Top"
+                                                            HorizontalAlignment="Stretch"
+                                                            Orientation="Vertical">
+                                                    <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                           Source="../Resources/deleteLocalDocumentationIcon.png"/>
+                                                    <TextBlock Text="Удалить"
+                                                               Margin="0, 10, 0, 0"
+                                                               Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+                                        <Button x:Name="publishDocumentationBtn"
+                                                Style="{StaticResource localDocOptionBtnStyle}"
+                                                Margin="5, 0, 0, 0">
+                                            <Button.Content>
+                                                <StackPanel VerticalAlignment="Top"
+                                                            HorizontalAlignment="Stretch"
+                                                            Orientation="Vertical">
+                                                    <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                           Source="../Resources/shareLocalDocumentationIcon.png"/>
+                                                    <TextBlock Text="Публикация"
+                                                               Margin="0, 10, 0, 0"
+                                                               Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                                </StackPanel>
+                                            </Button.Content>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel x:Name="cloudDocumentation"
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Vertical"/>
+                        </Grid>
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>

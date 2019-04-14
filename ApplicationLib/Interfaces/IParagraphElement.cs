@@ -24,6 +24,5 @@ namespace ApplicationLib.Interfaces
 
         UserControl GetWatchView();
         UserControl GetEditView();
-        void RemoveParagraphFromParentList();
     }
 }

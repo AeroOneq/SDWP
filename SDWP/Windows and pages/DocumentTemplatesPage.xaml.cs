@@ -15,17 +15,21 @@ using System.Windows.Shapes;
 
 using ApplicationLib.Models;
 
+using SDWP.Interfaces;
+
 namespace SDWP
 {
     /// <summary>
     /// Логика взаимодействия для DocumentTemplatesPage.xaml
     /// </summary>
-    public partial class DocumentTemplatesPage : Page
+    public partial class DocumentTemplatesPage : Page, IAccountPage
     {
+        #region IAccountPage
+        public Action CloseAccGrid { get; set; }
+        #endregion
+
         #region Propeties
         private UserInfo CurrentUser { get; }
-
-
         #endregion
         public DocumentTemplatesPage(UserInfo currentUser)
         {

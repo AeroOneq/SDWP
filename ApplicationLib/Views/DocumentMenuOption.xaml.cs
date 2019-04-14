@@ -47,8 +47,9 @@ namespace ApplicationLib.Views
             DocumentBtn = documentBtn;
             DocumentBtnTextBox = documentBtnTextBox;
 
-            DocumentBtnTextBox.Text = Document.Name;
             DocumentBtnTextBox.ContextMenu = ContextMenu;
+
+            DataContext = document;
         }
         #endregion
 

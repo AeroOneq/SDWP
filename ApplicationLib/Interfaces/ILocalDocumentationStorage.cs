@@ -10,10 +10,9 @@ namespace ApplicationLib.Interfaces
 {
     public interface ILocalDocumentationStorage
     {
-        string StoragePath { get; }
-        Task<List<LocalDocumentation>> GetLocalDocumentations();
+        Task<List<LocalDocumentation>> GetLocalDocumentations(string folderPath);
 
-        Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation);
+        Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string folderPath);
         void DeleteLocalDocumentationFile(LocalDocumentation localDocumentation);
     }
 }

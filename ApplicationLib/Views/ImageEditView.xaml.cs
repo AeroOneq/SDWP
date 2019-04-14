@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,6 +24,7 @@ namespace ApplicationLib.Views
     {
         #region Properties
         private ParagraphImage ParagraphImage { get; }
+        private Paragraph Paragraph { get; }
         private Image MainImage { get; set; }
         private ImageParagraphSettings ImageParagraphSettings { get; }
         private HintControl HintControl { get; set; }
@@ -34,11 +34,12 @@ namespace ApplicationLib.Views
         public Action RefreshParagraphsUI { get; set; }
         #endregion
 
-        public ImageEditView(ParagraphImage paragraphImage)
+        public ImageEditView(Paragraph paragraph)
         {
             InitializeComponent();
 
-            ParagraphImage = paragraphImage;
+            Paragraph = paragraph;
+            ParagraphImage = Paragraph.ParagraphElement as ParagraphImage;
             MainImage = mainImage;
             HintControl = hintControl;
             ImageParagraphSettings = imageParagraphsSettings;
@@ -80,7 +81,7 @@ namespace ApplicationLib.Views
         #region IParagraphEditView methods
         public void DeleteParagraph()
         {
-            (ParagraphImage as IParagraphElement).RemoveParagraphFromParentList();
+            (Paragraph as IParentableParagraph).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
 

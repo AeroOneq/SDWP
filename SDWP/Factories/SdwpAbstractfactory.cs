@@ -11,14 +11,15 @@ using FileLib.Interfaces;
 using FileLib.FileParsers;
 
 using SDWP.Exceptions;
+using SDWP.Interfaces;
 
 namespace SDWP.Factories
 {
     class SdwpAbstractFactory : ISdwpAbstractFactory
     {
-        public IDocController GetDocController(Documentation documentation, List<Document> documents)
+        public IDocController GetDocController()
         {
-            return new DocumentationController(documentation, documents);
+            return new DocumentationController();
         }
 
         public IExceptionHandler GetExceptionHandler(Dispatcher dispatcher)

@@ -12,12 +12,13 @@ using FileLib.Interfaces;
 using FileLib.FileParsers;
 
 using SDWP.Exceptions;
+using SDWP.Interfaces;
 
-namespace SDWP.Factories
+namespace SDWP.Interfaces
 {
     interface ISdwpAbstractFactory
     {
-        IDocController GetDocController(Documentation documentation, List<Document> documents);
+        IDocController GetDocController();
         IExceptionHandler GetExceptionHandler(Dispatcher dispatcher);
         IFileParser GetFileParser();
     }

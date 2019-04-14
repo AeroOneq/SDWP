@@ -8,6 +8,7 @@ using System.Windows;
 
 using SDWP.Factories;
 using SDWP.Exceptions;
+using SDWP.Interfaces;
 
 namespace SDWP
 {

@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,6 +65,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FolderDialog.cs" />
+    <Compile Include="Interfaces\IAccountPage.cs" />
     <Compile Include="Models\DocTreeViewItem.cs" />
     <Compile Include="Windows and pages\CreateNewImageWindow.xaml.cs">
       <DependentUpon>CreateNewImageWindow.xaml</DependentUpon>
@@ -78,9 +81,9 @@
       <DependentUpon>CreateNewTableWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="DocController\DocumentationController.cs" />
-    <Compile Include="DocController\IDocController.cs" />
+    <Compile Include="Interfaces\IDocController.cs" />
     <Compile Include="Exceptions\IExceptionHandler.cs" />
-    <Compile Include="Factories\ISdwpAbstractFactory.cs" />
+    <Compile Include="Interfaces\ISdwpAbstractFactory.cs" />
     <Compile Include="Factories\SdwpAbstractFactory.cs" />
     <Compile Include="Windows and pages\CreateNewItemWindow.xaml.cs">
       <DependentUpon>CreateNewItemWindow.xaml</DependentUpon>
@@ -345,6 +348,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\exportPageSaveIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\openLocalDocumentationIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\deleteLocalDocumentationIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\shareLocalDocumentationIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

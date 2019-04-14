@@ -13,83 +13,12 @@ using ApplicationLib.Views;
 
 using SDWP.Factories;
 using SDWP.Models;
+using SDWP.Interfaces;
 
 namespace SDWP
 {
     public partial class MainPage : Page
     {
-        #region Test
-        public Documentation Documentation { get; } = new Documentation()
-        {
-            Name = "SDWP Documentation",
-            CreationDate = DateTime.Now,
-            AuthorName = "Степанов Евгений"
-        };
-        public List<Document> Documents { get; } = new List<Document>()
-        {
-            new Document()
-            {
-                Name = "Техническое задание",
-                Items = new List<Item>()
-                {
-                    new Item()
-                    {
-                        Name="Супер введение",
-                        Items = new List<Item>()
-                        {
-                            new Item()
-                            {
-                                Name="Введение",
-                                Items = null,
-                                Paragraphs = new List<ParagraphElement>()
-                                {
-                                    new Subparagraph(" asdsadasdsadsadasd")
-                                    {
-                                        Hint = "HINT",
-                                        Title = "P1"
-                                    },
-                                    new Subparagraph(" asdsadasdsadsadasd")
-                                    {
-                                        Hint = "HINT",
-                                        Title = "P2"
-                                    },
-                                    new NumberedList(new List<NumberedListElement>()
-                                    {
-                                        new NumberedListElement("asdsadasdasd"),
-                                        new NumberedListElement("asdsadasdasd"),
-                                        new NumberedListElement("asdsadasdasd"),
-                                        new NumberedListElement("asdsadasdasd"),
-                                    })
-                                    {
-                                        Title = "Numbered LIST"
-                                    }
-                                }
-                            }
-                        },
-                        Paragraphs = null,
-                    },
-                    new Item()
-                    {
-                        Name="Основная часть",
-                        Items = null,
-                        Paragraphs = new List<ParagraphElement>()
-                        {
-                           new Subparagraph(" asdsadasdsadsadasd")
-                           {
-                               Hint = "HINT",
-                               Title = "P3"
-                           },
-                           new ParagraphImage(new byte[0])
-                           {
-                               Title = "P4"
-                           },
-                        }
-                    }
-                }
-            },
-        };
-        #endregion
-
         #region Properties
         private Grid LeftDocumentationGrid { get; set; }
         private Grid ItemsGrid { get; set; }
@@ -114,29 +43,23 @@ namespace SDWP
 
         private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
 
-        private ISdwpAbstractFactory AbstractFactory { get; }
-        private IDocController DocController { get; set; }
+        private ISdwpAbstractFactory AbstractFactory { get; set; }
+        public IDocController DocController { get; set; }
 
-        public LocalDocumentation CurrentLocalDocumentation { get; set; }
+        public LocalDocumentation LocalDocumentation { get; set; }
         #endregion
 
-        public MainPage(LocalDocumentation localDocumentation)
-        {
-            InitializeComponent();
-
-            CurrentLocalDocumentation = localDocumentation;
-            AbstractFactory = new SdwpAbstractFactory();
-
-            SetPropertiesValue();
-            UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
-        }
         public MainPage()
         {
             InitializeComponent();
-            AbstractFactory = new SdwpAbstractFactory();
-
+            InitializeServices();
             SetPropertiesValue();
-            UploadDocumentation(Documentation, Documents);
+        }
+
+        private void InitializeServices()
+        {
+            AbstractFactory = new SdwpAbstractFactory();
+            DocController = AbstractFactory.GetDocController();
         }
 
         private void SetPropertiesValue()
@@ -164,16 +87,31 @@ namespace SDWP
         }
 
         #region Upload new documentation
-        private void UploadLocalDocumentation(LocalDocumentation localDocumentation)
+        public void UploadLocalDocumentation(LocalDocumentation localDocumentation)
         {
-            CurrentLocalDocumentation = localDocumentation;
+            ClearMainPage();
 
+            LocalDocumentation = localDocumentation;
+
+            DocController.UploadLocalDocumentation(LocalDocumentation);
             UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
+        }
+
+        /// <summary>
+        /// Clears all documentations' stack panels and DocController
+        /// </summary>
+        private void ClearMainPage()
+        {
+            DocController.Clear();
+
+            DocumentsListStackPanel.Children.Clear();
+            ItemsListStackPanel.Children.Clear();
+            ParagraphsListPanel.Children.Clear();
         }
 
         private void UploadDocumentation(Documentation documentation, List<Document> documents)
         {
-            DocController = AbstractFactory.GetDocController(documentation, documents);
+            DataContext = documentation;
 
             UploadDocumentationDataToUI(DocController.Documentation);
             UploadDocumentsDataToUI(DocController.Documents);
@@ -232,9 +170,10 @@ namespace SDWP
 
             if (item.Paragraphs != null)
             {
-                foreach (ParagraphElement paragraph in item.Paragraphs)
+                foreach (Paragraph paragraph in item.Paragraphs)
                 {
                     (paragraph as IParentableParagraph).SetParents(item, item.Paragraphs);
+                    paragraph.ParagraphElement.ParentParagraph = paragraph;
                 }
             }
         }
@@ -313,8 +252,7 @@ namespace SDWP
             DocTreeViewItem treeItem = sender as DocTreeViewItem;
             if (treeItem.Item.Paragraphs != null)
             {
-                DocController.CurrentContentItem = treeItem.Item;
-                DocController.CurrentParagraphsList = treeItem.Item.Paragraphs;
+                DocController.UploadParagraphs(treeItem.Item);
 
                 UploadParagraphsToParagraphsListPanel(treeItem.Item.Paragraphs);
             }
@@ -474,7 +412,7 @@ namespace SDWP
         /// <summary>
         /// Uploads all paragraphs of a current item to the paragraphs stack panel
         /// </summary>
-        private void UploadParagraphsToParagraphsListPanel(List<ParagraphElement> paragraphs)
+        private void UploadParagraphsToParagraphsListPanel(List<Paragraph> paragraphs)
         {
             ParagraphsListPanel.Children.Clear();
 
@@ -483,7 +421,7 @@ namespace SDWP
                 (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
                     DocController.CurrentContentItem.Paragraphs);
 
-                UserControl paragraphView = paragraphs[i].GetEditView();
+                UserControl paragraphView = paragraphs[i].ParagraphElement.GetEditView();
                 paragraphView.Margin = new Thickness(0, 10, 0, 0);
 
                 (paragraphView as IParagraphEditView).RefreshParagraphsUI = RefreshParagraphsUI;
