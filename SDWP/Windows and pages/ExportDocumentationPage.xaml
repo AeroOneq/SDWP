@@ -1,8 +1,6 @@
 ﻿<Page x:Class="SDWP.ExportDocumentationPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SDWP"
       Title="ExportDocumentationPage">
 
@@ -12,7 +10,7 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Width" Value="200"/>
             <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Padding" Value="0"/>
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -82,14 +80,14 @@
                                     <Image VerticalAlignment="Center"
                                            HorizontalAlignment="Left"
                                            Source="../Resources/exportPageSaveIcon.png"
-                                           Width="30"
-                                           Height="30"/>
+                                           Width="20"
+                                           Height="20"/>
                                     <TextBlock FontFamily="Arial,Verdana"
                                                Text="Сохранить"
                                                Foreground="Gray"
                                                FontSize="15"
-                                               Margin="5, 0, 0, 0"
-                                               VerticalAlignment="Top"
+                                               Margin="10, 0, 0, 0"
+                                               VerticalAlignment="Center"
                                                HorizontalAlignment="Left"/>
                                 </StackPanel>
                             </Button.Content>
@@ -101,20 +99,20 @@
                                 Width="180"
                                 Click="SaveDocumentationAs">
                             <Button.Content>
-                                <StackPanel VerticalAlignment="Stretch"
+                                <StackPanel VerticalAlignment="Center"
                                             HorizontalAlignment="Stretch"
                                             Orientation="Horizontal">
                                     <Image VerticalAlignment="Center"
                                            HorizontalAlignment="Left"
-                                           Source="../Resources/exportPageSaveIcon.png"
-                                           Width="30"
-                                           Height="30"/>
+                                           Source="../Resources/exportPageSaveAsIcon.png"
+                                           Width="20"
+                                           Height="20"/>
                                     <TextBlock FontFamily="Arial,Verdana"
                                                Text="Сохранить как"
                                                Foreground="Gray"
                                                FontSize="15"
-                                               Margin="5, 0, 0, 0"
-                                               VerticalAlignment="Top"
+                                               Margin="10, 0, 0, 0"
+                                               VerticalAlignment="Center"
                                                HorizontalAlignment="Left"/>
                                 </StackPanel>
                             </Button.Content>

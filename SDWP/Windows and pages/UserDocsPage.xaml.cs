@@ -90,7 +90,6 @@ namespace SDWP
             LocalDocumentations = await LocalDocumentationService.GetLocalDocumentations(folderPath);
             offlineDocumentationListBox.ItemsSource = LocalDocumentations.Select(lc => lc.Documentation).ToList();
         }
-
         #endregion
 
         #region Event handlers
@@ -112,6 +111,12 @@ namespace SDWP
         private void UploadDocumentationToMainPage(object sender, RoutedEventArgs e)
         {
             Documentation selectedDocumentation = offlineDocumentationListBox.SelectedItem as Documentation;
+            if (selectedDocumentation == null)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
+                return;
+            }
+
             LocalDocumentation localDocumentation = LocalDocumentations.Find(ld => ld.  Documentation == selectedDocumentation);
             localDocumentation.DocumentationPath = Path.Combine(CurrentFilePath, localDocumentation.Documentation.Name + ".sdwp");
 
@@ -165,6 +170,12 @@ namespace SDWP
         private async void DeleteDocumentation(object sender, RoutedEventArgs e)
         {
             Documentation selectedDocumentation = LocalDocumentationListBox.SelectedItem as Documentation;
+            if (selectedDocumentation == null)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
+                return;     
+            }
+
             string deletionDocPath = Path.Combine(CurrentFilePath, selectedDocumentation.Name + ".sdwp");
 
             FileInfo fileInfo = new FileInfo(deletionDocPath);

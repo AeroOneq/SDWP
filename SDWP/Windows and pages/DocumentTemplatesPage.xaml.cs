@@ -30,6 +30,8 @@ namespace SDWP
 
         #region Propeties
         private UserInfo CurrentUser { get; }
+
+        private TextBlock SelectedTemplateTextBlock { get; set; }
         #endregion
         public DocumentTemplatesPage(UserInfo currentUser)
         {
@@ -39,7 +41,26 @@ namespace SDWP
         }
 
         #region Event handlers
+        private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem selectedItem = sender as ListBoxItem;
+            selectedItem.IsSelected = true;
+            SelectedTemplateTextBlock.Text = (selectedItem.DataContext as Documentation).Name;
+        }
 
+        private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as ListBoxItem).Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+        }
+
+        private void ListBoxItemMouseLeave(object sender, MouseEventArgs e)
+        {
+            ListBoxItem listBoxItem = sender as ListBoxItem;
+            if (!listBoxItem.IsSelected)
+            {
+                listBoxItem.Background = new SolidColorBrush(Colors.LightGray);
+            }
+        }
         #endregion
     }
 }

@@ -14,16 +14,13 @@ namespace ApplicationLib.Services
 {
     class LocalDocumentationService : ILocalDocumentationStorage
     {
-        public LocalDocumentationService()
-        {
-        }
+        public LocalDocumentationService() { }
 
-        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string folderPath)
+        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string documentationPath)
         {
-            string path = Path.Combine(folderPath, localDocumentation.Documentation.Name);
             byte[] localDocumentationBytes = GetByteArrayFromString(localDocumentation.GetJsonString());
 
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(documentationPath, FileMode.Create, FileAccess.Write))
             {
                 fs.Seek(0, SeekOrigin.Begin);
                 await fs.WriteAsync(localDocumentationBytes, 0, localDocumentationBytes.Length);
@@ -57,7 +54,7 @@ namespace ApplicationLib.Services
         {
             return await Task.Run(() =>
             {
-                string[] filePaths = Directory.GetFiles(folderPath);
+                string[] filePaths = Directory.GetFiles(folderPath, "*.sdwp");
                 List<LocalDocumentation> localDocumentations = new List<LocalDocumentation>();
 
                 foreach (string filePath in filePaths)

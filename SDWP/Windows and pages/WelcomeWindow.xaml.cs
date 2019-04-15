@@ -42,7 +42,6 @@ namespace SDWP
         public MainWindow()
         {
             InitializeComponent();
-
             InitializeInterfaces();
 
             loginTextBox.Focus();

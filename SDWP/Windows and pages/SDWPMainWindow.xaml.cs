@@ -38,21 +38,40 @@ namespace SDWP
         private UserAccountGrids UserAccountGrids { get; set; }
         private UserAccLeftMenuGrids UserAccLeftMenuGrids { get; set; }
         private MainPage MainPage { get; }
+
+        private UserDocsPage UserDocsPage { get; set; }
+        private ExportDocumentationPage ExportDocumentationPage { get; set; }
+        private UserProfilePage UserProfilePage { get; set; }
+        private DocumentTemplatesPage DocumentTemplatesPage { get; set; }
         #endregion
 
-        #region Constructors and initializing methods
+        #region Constructors
         public SDWPMainWindow(UserInfo user)
         {
             InitializeComponent();
-
-            Top = 0;
-            Left = 0;
-
             InitializePositionObjects();
+            InitializeInitialPosition();
+
             Position.PositionObj.UpdateMainWindow(this);
 
             mainPageFrame.Content = MainPage = new MainPage();
         }
+        #endregion
+
+        #region Initializing methods
+        /// <summary>
+        /// Initialize the initial position of this window (top and left margin)
+        /// </summary>
+        private void InitializeInitialPosition()
+        {
+            Top = 0;
+            Left = 0;
+        }
+
+        /// <summary>
+        /// Initializes the objects which are then used in Position class to resize elements when the
+        /// window is being resized
+        /// </summary>
         private void InitializePositionObjects()
         {
             MainGrids = new MainGrids
@@ -96,6 +115,24 @@ namespace SDWP
 
         #region Top Grids operations
         /// <summary>
+        /// When the mouse in the suitable area of this window this method shows the top options grid,
+        /// when the mouse leaves the area where top options grid is this method hides the top option grid
+        /// </summary>
+        private void SDWPMainWindowMouseMove(object sender, MouseEventArgs e)
+        {
+            Point cursorCoordinates = e.GetPosition(this);
+
+            if (cursorCoordinates.Y < 5 && cursorCoordinates.X < 500 && topOptionsGrid.Height == 0)
+            {
+                ShowTopGrids();
+            }
+            else if (cursorCoordinates.Y > 100 && topOptionsGrid.Height == 100)
+            {
+                HideTopGrids();
+            }
+        }
+
+        /// <summary>
         /// Changes the colors and font weight of the elements in one of 
         /// the options element
         /// </summary>
@@ -111,6 +148,7 @@ namespace SDWP
             iconsList[0].Visibility = Visibility.Collapsed;
             iconsList[1].Visibility = Visibility.Visible;
         }
+
         /// <summary>
         /// Changes everything which was changed in the 
         /// previous method to its original values
@@ -128,6 +166,7 @@ namespace SDWP
             iconsList[0].Visibility = Visibility.Visible;
             iconsList[1].Visibility = Visibility.Collapsed;
         }
+
         /// <summary>
         /// Changes the background of the hide options grid
         /// </summary>
@@ -136,6 +175,7 @@ namespace SDWP
             Grid grid = sender as Grid;
             grid.Background = new SolidColorBrush(Color.FromRgb(230, 230, 230));
         }
+
         /// <summary>
         /// Chenges the background of the hide options grid to its original value
         /// </summary>
@@ -145,6 +185,9 @@ namespace SDWP
             grid.Background = new SolidColorBrush(Color.FromRgb(211, 211, 211));
         }
 
+        /// <summary>
+        /// Hides the top option grid when the mouse leaves the top option grid
+        /// </summary>
         private void HideTopGrids()
         {
             topOptionsGrid.BeginAnimation(HeightProperty,
@@ -153,6 +196,9 @@ namespace SDWP
                 CreateDocumentFrameUpAnimation());
         }
 
+        /// <summary>
+        /// Shows top option grids when the mouse is in a suitable position (under the documents panel)
+        /// </summary>
         private void ShowTopGrids()
         {
             topOptionsGrid.BeginAnimation(HeightProperty,
@@ -161,6 +207,10 @@ namespace SDWP
                 CreateDocumentFrameDownAnimation());
         }
 
+        /// <summary>
+        /// Creates ans returns the animation which is used to hide the top options grid
+        /// This animation animates the height of the grid
+        /// </summary>
         private DoubleAnimation CreateUpTopGridAnimation()
         {
             DoubleAnimation optionsGridHeightAnimation = new DoubleAnimation
@@ -172,12 +222,19 @@ namespace SDWP
                 SpeedRatio = 0.5,
                 FillBehavior = FillBehavior.Stop
             };
+
             optionsGridHeightAnimation.Completed += (send, events) =>
             {
                 topOptionsGrid.Height = 0;
             };
+
             return optionsGridHeightAnimation;
         }
+
+        /// <summary>
+        /// Creates and returns an animation which is used to show the top options grid
+        /// This animation animates the height of the grid
+        /// </summary>
         private DoubleAnimation CreateDownTopGridAnimation()
         {
             DoubleAnimation optionsGridHeightAnimation = new DoubleAnimation
@@ -196,34 +253,10 @@ namespace SDWP
             return optionsGridHeightAnimation;
         }
 
-        private ThicknessAnimation CreateUpHideTopGridAnimation()
-        {
-            ThicknessAnimation hideOptionsGridAnimation = new ThicknessAnimation
-            {
-                From = new Thickness(0, 100, 0, 0),
-                To = new Thickness(0, 0, 0, 0),
-                Duration = TimeSpan.FromMilliseconds(300),
-                DecelerationRatio = 1,
-                SpeedRatio = 0.5,
-                FillBehavior = FillBehavior.Stop
-            };
-            return hideOptionsGridAnimation;
-        }
-        private ThicknessAnimation CreateDownHideTopGridAnimation()
-        {
-            ThicknessAnimation hideOptionsGridAnimation = new ThicknessAnimation
-            {
-                From = new Thickness(0, 0, 0, 0),
-                To = new Thickness(0, 100, 0, 0),
-                Duration = TimeSpan.FromMilliseconds(300),
-                DecelerationRatio = 1,
-                SpeedRatio = 0.5,
-                FillBehavior = FillBehavior.Stop
-            };
-
-            return hideOptionsGridAnimation;
-        }
-
+        /// <summary>
+        /// Creates and returns an animation which is used to lower the document frame when the
+        /// top option grid is being shown
+        /// </summary>
         private ThicknessAnimation CreateDocumentFrameDownAnimation()
         {
             ThicknessAnimation lowerTheDocumentFrameAnimation = new ThicknessAnimation
@@ -240,6 +273,11 @@ namespace SDWP
             };
             return lowerTheDocumentFrameAnimation;
         }
+
+        /// <summary>
+        /// Creates and returns an animation which is used to up rise the document frame when
+        /// the top options grid is being hidden
+        /// </summary>
         private ThicknessAnimation CreateDocumentFrameUpAnimation()
         {
             ThicknessAnimation upperTheDocumentFrameAnimation = new ThicknessAnimation
@@ -259,10 +297,13 @@ namespace SDWP
         #endregion
 
         #region User main grid operations
+        /// <summary>
+        /// After a click on an option "Account" in a top options grid shows the User main grid
+        /// where all account functionality is
+        /// </summary>
         private void ShowTheUserMainGrid(object sender, MouseButtonEventArgs e)
         {
             userAccMainGrid.Width = 0;
-            ClearFrameHistory(userGridFrame);
 
             Position.PositionObj.InitializeUserAccountGrids(UserAccountGrids);
             Position.PositionObj.InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids);
@@ -271,9 +312,12 @@ namespace SDWP
             userAccMainGrid.BeginAnimation(WidthProperty,
                 CreateShowMainUserGridAnimation());
         }
+
+        /// <summary>
+        /// Clears the history of a frame, where all pages which in User main grid are displayed
+        /// </summary>
         private void ClearFrameHistory(Frame frame)
         {
-#warning Find a better solution
             frame.Navigate(new Page());
 
             if (!frame.CanGoBack && !frame.CanGoForward)
@@ -283,6 +327,10 @@ namespace SDWP
                 entry = frame.RemoveBackEntry();
             frame.Navigate(new PageFunction<string>() { RemoveFromJournal = true });
         }
+
+        /// <summary>
+        /// Creates and returns an animation which is used to show user main grid
+        /// </summary>
         private DoubleAnimation CreateShowMainUserGridAnimation()
         {
             DoubleAnimation showTheGridAnimation = new DoubleAnimation
@@ -300,6 +348,10 @@ namespace SDWP
             };
             return showTheGridAnimation;
         }
+
+        /// <summary>
+        /// Creates and returns an animation which is used to show user main grid
+        /// </summary>
         private DoubleAnimation CreateHideMainGridAnimation()
         {
             DoubleAnimation hideTheGridAnimation = new DoubleAnimation
@@ -318,16 +370,19 @@ namespace SDWP
             };
             return hideTheGridAnimation;
         }
+
         private void CloseAccGridActiveIconMouseLeave(object sender, MouseEventArgs e)
         {
             closeAccGridStaticIcon.Visibility = Visibility.Visible;
             closeAccGridActiveIcon.Visibility = Visibility.Collapsed;
         }
+
         private void HideTheUserAccGrid(object sender, EventArgs e)
         {
             userAccMainGrid.BeginAnimation(WidthProperty,
                 CreateHideMainGridAnimation());
         }
+
         private void CloseAccGridStaticIconMouseEnter(object sender, EventArgs e)
         {
             closeAccGridStaticIcon.Visibility = Visibility.Collapsed;
@@ -343,6 +398,7 @@ namespace SDWP
             TextBlock optionGridText = optionGrid.Children[0] as TextBlock;
             optionGridText.FontWeight = FontWeights.Bold;
         }
+
         private void LeftMenuOptionGridMouseLeave(object sender, EventArgs e)
         {
             Grid optionGrid = sender as Grid;
@@ -350,79 +406,97 @@ namespace SDWP
             TextBlock optionGridText = optionGrid.Children[0] as TextBlock;
             optionGridText.FontWeight = FontWeights.Normal;
         }
+
         private void LeftMenuOptionGridMouseDown(object sender, EventArgs e)
         {
             Grid clickedOptionGrid = sender as Grid;
-            SwitchTheMainGrid(clickedOptionGrid);
+            SwitchTheMainGrid(clickedOptionGrid.Uid);
         }
-        private void SwitchTheMainGrid(Grid clickedOptionGrid)
+
+        /// <summary>
+        /// When the save option is pressed this method opens Export documentation page 
+        /// in a user main grid
+        /// </summary>
+        private void SaveDocumentation(object sender, EventArgs e)
         {
-            switch (clickedOptionGrid.Uid)
+            ShowTheUserMainGrid(null, null);
+            //3 = export documentation page
+            SwitchTheMainGrid("3");
+        }
+
+        /// <summary>
+        /// Uploads the page which realtes to the clicked header in user main grid to 
+        /// userGridFrame
+        /// </summary>
+        private void SwitchTheMainGrid(string clickedGridUid)
+        {
+            ClearFrameHistory(userGridFrame);
+            switch (clickedGridUid)
             {
                 case "0":
-#warning Find better solution
-                    UserProfilePage userProfilePage = new UserProfilePage(UserInfo.CurrentUser)
+                    if (UserProfilePage == null)
                     {
-                        Width = userGridFrame.Width,
-                        CloseAccGrid = new Action(()=>HideTheUserAccGrid(null, null))
-                    };
-                    userGridFrame.Navigate(userProfilePage);
+                        UserProfilePage = new UserProfilePage(UserInfo.CurrentUser)
+                        {
+                            Width = userGridFrame.Width,
+                            CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
+                        };
+                    }
+                    userGridFrame.Navigate(UserProfilePage);
                     break;
+
                 case "1":
-                    UserDocsPage userDocsPage = new UserDocsPage(MainPage)
+                    if (UserDocsPage == null)
                     {
-                        Width = userGridFrame.Width,
-                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
-                    };
-                    userGridFrame.Navigate(userDocsPage);
+                        UserDocsPage = new UserDocsPage(MainPage)
+                        {
+                            Width = userGridFrame.Width,
+                            CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
+                        };
+                    }
+                    userGridFrame.Navigate(UserDocsPage);
                     break;
+
                 case "2":
-                    DocumentTemplatesPage documentTemplatesPage = new DocumentTemplatesPage(UserInfo.CurrentUser)
+                    if (DocumentTemplatesPage == null)
                     {
-                        Width = userGridFrame.Width,
-                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
-                    };
-                    userGridFrame.Navigate(documentTemplatesPage);
+                        DocumentTemplatesPage = new DocumentTemplatesPage(UserInfo.CurrentUser)
+                        {
+                            Width = userGridFrame.Width,
+                            CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
+                        };
+                    }
+                    userGridFrame.Navigate(DocumentTemplatesPage);
                     break;
+
                 case "3":
-                    ExportDocumentationPage exportDocumentationPage = new ExportDocumentationPage(
-                        MainPage)
+                    if (ExportDocumentationPage == null)
                     {
-                        Width = userGridFrame.Width,
-                        CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
-                    };
-                    userGridFrame.Navigate(exportDocumentationPage);
+                        ExportDocumentationPage = new ExportDocumentationPage(MainPage)
+                        {
+                            Width = userGridFrame.Width,
+                            CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
+                        };
+                    }
+                    userGridFrame.Navigate(ExportDocumentationPage);
                     break;
+
                 case "4":
-                    this.Close();
-                    (new MainWindow()).Show();
+                    QuitTheProgram();
                     break;
             }
         }
         #endregion
 
-        private void SDWPMainWindowMouseMove(object sender, MouseEventArgs e)
+
+        private void QuitTheProgram()
         {
-            Point cursorCoordinates = e.GetPosition(this);
-
-            if (cursorCoordinates.Y < 5 && cursorCoordinates.X < 500 && topOptionsGrid.Height == 0)
+            if (SDWPMessageBox.ShowSDWPMessageBox("Подтверждение", "Вы уверены, что хотите выйти?", MessageBoxButton.OKCancel)
+                == MessageBoxResult.OK)
             {
-                ShowTopGrids();
+                Close();
+                (new MainWindow()).Show();
             }
-            else if (cursorCoordinates.Y > 100 && topOptionsGrid.Height == 100)
-            {
-                HideTopGrids();
-            }
-        }
-
-        private void SaveDocumentationGrid(object sender, EventArgs e)
-        {
-            List<Document> docs = MainPage.DocController.Documents;
-            Documentation documentation = MainPage.DocController.Documentation;
-            LocalDocumentation localDocumentation = new LocalDocumentation(documentation, docs);
-            string localDocumentationJson = localDocumentation.GetJsonString();
-
-            SDWPMessageBox.ShowSDWPMessageBox("json", localDocumentationJson, MessageBoxButton.OK);
         }
     }
 }

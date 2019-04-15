@@ -236,6 +236,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style x:Key="documentationProperteisBtnStyle" TargetType="Button">
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>

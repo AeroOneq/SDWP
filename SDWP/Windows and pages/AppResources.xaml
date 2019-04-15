@@ -1,0 +1,215 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SDWP">
+    <!--Fonts for text-->
+    <FontFamily x:Key="mainFontFamily">Arial</FontFamily>
+
+    <SolidColorBrush x:Key="mainThemeBrush" Color="OrangeRed"/>
+    <Color x:Key="mainThemeColor">OrangeRed</Color>
+    <SolidColorBrush x:Key="subparagraphBorderBrush" Color="LightGray"/>
+    <SolidColorBrush x:Key="defaultTextColorBrush" Color="Black"/>
+
+    <SolidColorBrush x:Key="paragraphsTopOptionBrush" Color="#808080"/>
+    <Color x:Key="paragraphsTopOptionColor">#808080</Color>
+
+    <!--Menu option background brushes and colors-->
+    <SolidColorBrush x:Key="documentsLeftGridBackgroundBrush" Color="#E6E6E6"/>
+    <Color x:Key="documentsLeftGridBackgroundColor">#E6E6E6</Color>
+    <SolidColorBrush x:Key="mainPageItemsGridBackgroundBrush" Color="#F0F0F0"/>
+    <Color x:Key="mainPageItemsGridBackgroundColor">#F0F0F0</Color>
+    <SolidColorBrush x:Key="mainPageParagraphsGridBackgroundBrush" Color="White"/>
+    <Color x:Key="mainPageParagraphsGridBackgroundColor">#FFFFFF</Color>
+
+    <SolidColorBrush x:Key="mainWindowTopOptionsGridBavkgroundBrush" Color="White"/>
+    <SolidColorBrush x:Key="propertyNameForeground" Color="Gray"/>
+    <SolidColorBrush x:Key="devisionRectangleFill" Color="Gray"/>
+
+    <!--Create new objects (Documents, items etc) windows styles-->
+    <Style x:Key="createNewObjectWindowsBtnStyle" TargetType="Button">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="90"/>
+        <Setter Property="FontFamily" Value="Arial, Verdana"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="OrangeRed"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="BorderBrush" Value="OrangeRed"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0, 0, 20, 0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border"
+                                CornerRadius="5"
+                                BorderBrush="{StaticResource mainThemeBrush}"
+                                BorderThickness="1"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush x:Name="tbForeground" Color="White"/>
+                        </TextBlock.Foreground>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                            Storyboard.TargetName="border"
+                                                            To="White"
+                                                            SpeedRatio="100"/>
+                                        <ColorAnimation Storyboard.TargetName="tbForeground"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="{StaticResource mainThemeColor}"
+                                                            SpeedRatio="100"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetProperty="Background.Color"
+                                                            Storyboard.TargetName="border"
+                                                            To="{StaticResource mainThemeColor}"
+                                                            SpeedRatio="100"/>
+                                        <ColorAnimation Storyboard.TargetName="tbForeground"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="White"
+                                                            SpeedRatio="100"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="createNewObjectWindowsPropertyHeadStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Arial, Verdana"/>
+        <Setter Property="Foreground" Value="Gray"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style x:Key="createNewObjectWindowsPropertyValueStyle" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Arial, Verdana"/>
+        <Setter Property="Foreground" Value="{StaticResource defaultTextColorBrush}"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Padding" Value="5, 3, 5, 3"/>
+        <Setter Property="CaretBrush" Value="Gray"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border x:Name="border"
+                                BorderThickness="1"
+                                BorderBrush="{StaticResource mainThemeBrush}"
+                                CornerRadius="10"
+                                Background="{TemplateBinding Background}">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          Margin="{TemplateBinding Padding}"/>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="BorderBrush.Color"
+                                                            SpeedRatio="100"
+                                                            To="#FF8C00"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState Name="Normal">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="BorderBrush.Color"
+                                                            SpeedRatio="100"
+                                                            To="{StaticResource mainThemeColor}"/>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="createNewObjectWindowsRadioBtnStyle" TargetType="RadioButton">
+        <Setter Property="FontFamily" Value="Arial, Verdana"/>
+        <Setter Property="Foreground" Value="{StaticResource defaultTextColorBrush}"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="BorderBrush" Value="{StaticResource mainThemeBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{StaticResource mainThemeBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <BulletDecorator Background="Transparent">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="15"
+                                  Height="15">
+                                <Ellipse x:Name="Border"
+                                         StrokeThickness="1"
+                                         Stroke="{StaticResource mainThemeBrush}"
+                                         Fill="Transparent"/>
+                                <Ellipse x:Name="CheckMark"
+                                             Margin="4"
+                                             Fill="{StaticResource mainThemeBrush}"
+                                             Visibility="Collapsed"/>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup Name="CommonStates">
+                                <VisualState Name="MouseOver">
+                                    <Storyboard>
+                                        <ColorAnimation Storyboard.TargetName="Border"
+                                                            Storyboard.TargetProperty="Stroke.Color"
+                                                            SpeedRatio="100"
+                                                            To="#FF8C00"/>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState Name="Normal"/>
+                            </VisualStateGroup>
+                            <VisualStateGroup Name="CheckStates">
+                                <VisualState Name="Checked">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Visible}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState Name="Unchecked">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark"
+                                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
+                                            <DiscreteObjectKeyFrame KeyTime="0"
+                                                                        Value="{x:Static Visibility.Collapsed}"/>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Indeterminate" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <ContentPresenter Margin="4,0,0,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Left"
+                                              RecognizesAccessKey="True" />
+                    </BulletDecorator>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

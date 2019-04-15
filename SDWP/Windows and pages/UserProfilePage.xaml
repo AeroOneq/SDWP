@@ -5,9 +5,9 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:SDWP"
-      mc:Ignorable="d" 
+      VerticalAlignment="Stretch"
+      HorizontalAlignment="Stretch"
       Background="#E1E1E1"
-      d:DesignHeight="450" d:DesignWidth="800"
       SizeChanged="RepositionElements"
       Title="UserProfilePage">
     <Page.Resources>

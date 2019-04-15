@@ -7,20 +7,210 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
 
+    <Page.Resources>
+        <Style x:Key="templateOptionsTextBlockStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+
+        <Style TargetType="ListBoxItem">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0, 10, 0, 0"/>
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="border"     
+                                SnapsToDevicePixels="true"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="5"
+                                BorderThickness="1"
+                                BorderBrush="Gray">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#f0f0f0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <EventSetter Event="MouseEnter" Handler="ListBoxItemMouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="ListBoxItemMouseLeave"/>
+            <EventSetter Event="PreviewMouseDown" Handler="ListBoxItemMouseDown"/>
+        </Style>
+
+        <DataTemplate x:Key="templatesListBoxDataTemplate">
+            <Grid VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Margin="0, 0, 0, 0"
+                  Width="280">
+                <Border x:Name="border"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="280"
+                        Height="50"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        Padding="5"
+                        BorderBrush="Gray"
+                        Margin="0, 0, 0, 0">
+                    <StackPanel VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Height="50"
+                                Width="280"
+                                Orientation="Vertical">
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal"
+                                    Height="50"
+                                    Width="280">
+                            <Image Source="../Resources/documentationIcon.png"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Height="20"
+                                   Width="20"
+                                   Margin="5, -12, 0, 0"/>
+                            <TextBlock Text="{Binding Path = Name}"
+                                       Style="{StaticResource templateOptionsTextBlockStyle}"
+                                       Margin="10, -10, 0, 0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="templatesListBoxStyle" TargetType="ListBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="#E1E1E1"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Height" Value="350"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="BorderThickness" Value="0, 0, 1, 0"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="Padding" Value="0, 0, 10, 0"/>
+            <Setter Property="ItemTemplate" Value="{StaticResource templatesListBoxDataTemplate}"/>
+        </Style>
+
+        <Style x:Key="filePathTextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="5, 5, 5, 5"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                BorderBrush="LightGray"
+                                CornerRadius="10"
+                                Background="White"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="templatesProperteisBtnStyle" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Width" Value="110"/>
+            <Setter Property="Height" Value="30"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                BorderBrush="{StaticResource mainThemeBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Background="White"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="#F5F5F5"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                            Storyboard.TargetProperty="Background.Color"
+                                                            To="White"
+                                                            SpeedRatio="100"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
     <Page.Content>
-        <Grid>
-            <ScrollViewer VerticalAlignment="Top"
-                          HorizontalAlignment="Left"
-                          VerticalContentAlignment="Top"
-                          HorizontalContentAlignment="Left">
-              
-            </ScrollViewer>
+        <StackPanel VerticalAlignment="Top"
+                    HorizontalAlignment="Stretch"
+                    Orientation="Vertical"
+                    Margin="0, 0, 0, 0">
+            <local:PageHeader Header="Шаблоны"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Left"/>
+
+            <TextBlock Style="{StaticResource templateOptionsTextBlockStyle}"
+                       Text="Путь до папки с шаблонами"
+                       Margin="20, 0, 0, 0"/>
+
             <StackPanel Orientation="Horizontal"
-                        VerticalAlignment="Stretch"
-                        HorizontalAlignment="Stretch"
-                        Background="Red"
-                        Margin="0, 130, 0, 0">
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Margin="0, 5, 0, 0">
+                <TextBox x:Name="filePathTextBox"
+                         Margin="20, 0, 0, 0"
+                         Style="{StaticResource filePathTextBoxStyle}"/>
+                <Button x:Name="selectDocumentationFolderBtn"
+                        Style="{StaticResource templatesProperteisBtnStyle}"
+                        Margin="10, 0, 0, 0"
+                        VerticalAlignment="Center">
+                    <TextBlock FontFamily="Arial, Verdana"
+                               FontSize="14"
+                               Foreground="{StaticResource mainThemeBrush}"
+                               Text="Обзор"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left"/>
+                </Button>
             </StackPanel>
-        </Grid>
+
+            <ListBox x:Name="templatesListBox"
+                     Margin="0, 40, 0, 0"
+                     Style="{StaticResource templatesListBoxStyle}"/>
+        </StackPanel>
     </Page.Content>
 </Page>

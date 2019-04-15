@@ -24,5 +24,20 @@ namespace SDWP
             AbstractFactory = new SdwpAbstractFactory();
             ExceptionHandler = AbstractFactory.GetExceptionHandler(Dispatcher);
         }
+
+        [STAThread]
+        static void Main()
+        {
+            try
+            {
+                App app = new App();
+                MainWindow mainWindow = new MainWindow();
+                app.Run(mainWindow);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
     }
 }

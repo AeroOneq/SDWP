@@ -223,9 +223,7 @@
     <Resource Include="Views\Resources\uploadNewImageActive.png" />
     <Resource Include="Views\Resources\uploadNewImageStatic.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

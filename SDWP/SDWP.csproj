@@ -61,10 +61,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Windows and pages\App.xaml">
+    <Page Include="Windows and pages\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="FolderDialog.cs" />
     <Compile Include="Interfaces\IAccountPage.cs" />
     <Compile Include="Models\DocTreeViewItem.cs" />
@@ -120,6 +120,10 @@
       <DependentUpon>UserProfilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
+    <Page Include="Windows and pages\AppResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows and pages\CreateNewImageWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -328,8 +332,7 @@
     <Resource Include="Resources\addNewItemIconStatic.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Tests\" />
-    <Folder Include="UserControls\" />
+    <Resource Include="Resources\exportPageSaveAsIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\showTheTreeItemItemsIcon.png" />

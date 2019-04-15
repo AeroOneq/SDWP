@@ -56,6 +56,7 @@ namespace SDWP
             SetPropertiesValue();
         }
 
+        #region Initialize page methods
         private void InitializeServices()
         {
             AbstractFactory = new SdwpAbstractFactory();
@@ -85,6 +86,7 @@ namespace SDWP
             DocumentTreeView = documentTreeView;
             ListModeScroll = listModelScroll;
         }
+        #endregion
 
         #region Upload new documentation
         public void UploadLocalDocumentation(LocalDocumentation localDocumentation)
@@ -448,6 +450,36 @@ namespace SDWP
         #endregion
 
         #region Event handlers
+        private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
+        {
+            MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 0,
+                new Action(() =>
+                {
+                    AddNewParagraphElementGrid.Visibility = Visibility.Visible;
+                    ParagraphElementsGrid.Visibility = Visibility.Collapsed;
+                }));
+        }
+
+        /// <summary>
+        /// Starts the process of creation a new item in the current item
+        /// </summary>
+        private void CreateNewItem(object sender, MouseButtonEventArgs e)
+        {
+            if (DocController.CurrentItemsList != null)
+            {
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(
+                    DocController.CurrentItemsList, DocController.CurrentItem);
+                createNewItemWindow.ShowDialog();
+
+                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
+            }
+            else
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите документ либо пункт",
+                    MessageBoxButton.OK);
+            }
+        }
+
         private void GoToListMode(object sender, MouseButtonEventArgs e)
         {
             BackToPreviousItemStaticImage.IsEnabled = true;
@@ -462,6 +494,8 @@ namespace SDWP
 
         private void GoToTreeViewMode(object sender, MouseButtonEventArgs e)
         {
+            CreateDocumentTreeView(DocController.CurrentDocument);
+
             BackToPreviousItemStaticImage.IsEnabled = false;
             AddNewItemStaticImage.IsEnabled = false;
 
@@ -531,17 +565,6 @@ namespace SDWP
             TextBox textBox = sender as TextBox;
             textBox.TextDecorations.Clear();
         }
-        #endregion
-
-        private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
-        {
-            MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 0,
-                new Action(() =>
-                {
-                    AddNewParagraphElementGrid.Visibility = Visibility.Visible;
-                    ParagraphElementsGrid.Visibility = Visibility.Collapsed;
-                }));
-        }
 
         /// <summary>
         /// If the text of a search text box is a default text (like a placeholder)
@@ -599,25 +622,7 @@ namespace SDWP
             }
         }
 
-        /// <summary>
-        /// Starts the process of creation a new item in the current item
-        /// </summary>
-        private void CreateNewItem(object sender, MouseButtonEventArgs e)
-        {
-            if (DocController.CurrentItemsList != null)
-            {
-                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(
-                    DocController.CurrentItemsList, DocController.CurrentItem);
-                createNewItemWindow.ShowDialog();
-
-                UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
-            }
-            else
-            {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите документ либо пункт",
-                    MessageBoxButton.OK);
-            }
-        }
+        #endregion
 
         #region Add new paragraphs (IParagraphElement) methods
         private void AddNewSubparagraph(object sender, MouseEventArgs e)
