@@ -12,15 +12,18 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Services
 {
-    class LocalDocumentationService : ILocalDocumentationStorage
+    class LocalDocumentationService : ILocalDocumentationService
     {
+        public string StoragePath { get; set; }
+        public int ErrorsCount { get; private set; }
+
         public LocalDocumentationService() { }
 
-        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string documentationPath)
+        public async Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation)
         {
             byte[] localDocumentationBytes = GetByteArrayFromString(localDocumentation.GetJsonString());
 
-            using (var fs = new FileStream(documentationPath, FileMode.Create, FileAccess.Write))
+            using (var fs = new FileStream(localDocumentation.DocumentationPath, FileMode.Create, FileAccess.Write))
             {
                 fs.Seek(0, SeekOrigin.Begin);
                 await fs.WriteAsync(localDocumentationBytes, 0, localDocumentationBytes.Length);
@@ -50,12 +53,13 @@ namespace ApplicationLib.Services
             }
         }
 
-        public async Task<List<LocalDocumentation>> GetLocalDocumentations(string folderPath)
+        public async Task<IEnumerable<LocalDocumentation>> GetLocalDocumentations()
         {
             return await Task.Run(() =>
             {
-                string[] filePaths = Directory.GetFiles(folderPath, "*.sdwp");
+                string[] filePaths = Directory.GetFiles(StoragePath, "*.sdwp");
                 List<LocalDocumentation> localDocumentations = new List<LocalDocumentation>();
+                ErrorsCount = 0;
 
                 foreach (string filePath in filePaths)
                 {
@@ -75,9 +79,9 @@ namespace ApplicationLib.Services
 
                         localDocumentations.Add(localDocumentation);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-#warning Create count failed attempts count here
+                        ErrorsCount++;
                     }
                 }
 

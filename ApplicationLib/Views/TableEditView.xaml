@@ -122,7 +122,7 @@
 
             <Border CornerRadius="0, 5, 5, 0"
                     Margin="5, 0, 0, 0"
-                    BorderBrush="{DynamicResource mainThemeBrush}"
+                    BorderBrush="{StaticResource mainThemeBrush}"
                     BorderThickness="1"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Stretch"
@@ -171,7 +171,7 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Удалить строку"
-                                  Click="DeleteRow">
+                                    Click="DeleteRow">
                                     <MenuItem.Icon>
                                         <Image Source="Resources/deleteTableRowIcon.png"/>
                                     </MenuItem.Icon>
@@ -184,7 +184,7 @@
                                     <Trigger Property="IsSelected"
                                              Value="True">
                                         <Setter Property="BorderBrush"
-                                                Value="{DynamicResource mainThemeBrush}"/>
+                                                Value="{StaticResource mainThemeBrush}"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>

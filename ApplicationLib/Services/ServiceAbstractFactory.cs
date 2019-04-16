@@ -20,9 +20,14 @@ namespace ApplicationLib.Services
             return new UserService();
         }
 
-        public ILocalDocumentationStorage GetLocalStorageService()
+        public ILocalDocumentationService GetLocalDocumentationService()
         {
             return new LocalDocumentationService();
+        }
+
+        public ILocalTemplateService GetLocalTemplateService()
+        {
+            return new LocalTemplatesSevice();
         }
     }
 }

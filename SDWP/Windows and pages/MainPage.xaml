@@ -222,6 +222,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
         <Style x:Key="treeViewInnerTextBoxStyle" TargetType="TextBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>

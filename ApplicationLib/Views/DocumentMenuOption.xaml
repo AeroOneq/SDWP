@@ -94,7 +94,7 @@
                          Cursor="Arrow"
                          Background="Transparent"
                          VerticalContentAlignment="Center"
-                         Foreground="{DynamicResource defaultTextColorBrush}"
+                         Foreground="{StaticResource defaultTextColorBrush}"
                          PreviewKeyDown="OnDocumentBtnKeyDown"
                          LostFocus="OnDocumentBtnTextBoxLostFocus"
                          PreviewMouseLeftButtonDown="OnDocumentBtnTextBoxClick"

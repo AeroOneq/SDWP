@@ -68,6 +68,9 @@
     <Compile Include="FolderDialog.cs" />
     <Compile Include="Interfaces\IAccountPage.cs" />
     <Compile Include="Models\DocTreeViewItem.cs" />
+    <Compile Include="Models\TemplateTreeViewItem.cs" />
+    <Compile Include="Models\TemplateTreeViewItemItem.cs" />
+    <Compile Include="Models\TemplateTreeViewParagraphItem.cs" />
     <Compile Include="Windows and pages\CreateNewImageWindow.xaml.cs">
       <DependentUpon>CreateNewImageWindow.xaml</DependentUpon>
     </Compile>
@@ -91,6 +94,9 @@
     <Compile Include="Exceptions\ExceptionHandler.cs" />
     <Compile Include="Main page animations\MainPageAnimations.cs" />
     <Compile Include="MainGrids.cs" />
+    <Compile Include="Windows and pages\CreateTemplateTreeViewParagraphWindow.xaml.cs">
+      <DependentUpon>CreateTemplateTreeViewParagraphWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows and pages\DocumentTemplatesPage.xaml.cs">
       <DependentUpon>DocumentTemplatesPage.xaml</DependentUpon>
     </Compile>
@@ -141,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows and pages\CreateNewItemWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\CreateTemplateTreeViewParagraphWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -360,6 +370,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\shareLocalDocumentationIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\templateTreeViewImageIcon.png" />
+    <Resource Include="Resources\templateTreeViewNumberedListIcon.png" />
+    <Resource Include="Resources\templateTreeViewSubparagraphIcon.png" />
+    <Resource Include="Resources\templateTreeViewTableIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

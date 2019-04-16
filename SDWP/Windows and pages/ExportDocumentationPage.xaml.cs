@@ -37,7 +37,7 @@ namespace SDWP
 
         #region Properties
         private MainPage MainPage { get; }
-        private ILocalDocumentationStorage LocalDocumentationStorage { get; set; }
+        private ILocalDocumentationService LocalDocumentationService { get; set; }
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
         private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
@@ -58,7 +58,7 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
 
-            LocalDocumentationStorage = ServiceAbstractFactory.GetLocalStorageService();
+            LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
@@ -111,7 +111,7 @@ namespace SDWP
         {
             try
             {
-                await LocalDocumentationStorage.CreateLocalDocumentationFile(localDocumentation, localDocumentation.DocumentationPath);
+                await LocalDocumentationService.CreateLocalDocumentationFile(localDocumentation);
                 SDWPMessageBox.ShowSDWPMessageBox("Статус сохранения", "Документация успешно сохранена", MessageBoxButton.OK);
             }
             catch (IOException ex)

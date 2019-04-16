@@ -28,16 +28,9 @@ namespace SDWP
         [STAThread]
         static void Main()
         {
-            try
-            {
-                App app = new App();
-                MainWindow mainWindow = new MainWindow();
-                app.Run(mainWindow);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
+            App app = new App();
+            MainWindow mainWindow = new MainWindow();
+            app.Run(mainWindow);
         }
     }
 }

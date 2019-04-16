@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 using AeroORMFramework;
 
+using ApplicationLib.Interfaces;
+
+using Newtonsoft.Json;
+
 namespace ApplicationLib.Models
 {
-    public class Template
+    public class Template : ISerializable
     {
         [PrimaryKey]
         [AutoincrementID]
@@ -20,14 +24,17 @@ namespace ApplicationLib.Models
         [CanBeNull(false)]
         public string TemplateName { get; set; }
         [CanBeNull(false)]
-        [Json]
         public DateTime CreationAt { get; set; }
         [CanBeNull(false)]
-        [Json]
         public DateTime UpdatedAt { get; set; }
 
         [CanBeNull(false)]
         [Json]
-        public List<Document> Documents { get; set; }
+        public List<Item> Items { get; set; }
+
+        public string GetJsonString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

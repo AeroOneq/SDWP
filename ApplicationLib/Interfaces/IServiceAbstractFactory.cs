@@ -12,6 +12,7 @@ namespace ApplicationLib.Interfaces
     {
         IUserService<UserInfo> GetUserService();
         IEmailService<UserInfo> GetEmailService();
-        ILocalDocumentationStorage GetLocalStorageService();
+        ILocalDocumentationService GetLocalDocumentationService();
+        ILocalTemplateService GetLocalTemplateService();
     }
 }

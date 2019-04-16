@@ -8,11 +8,10 @@ using ApplicationLib.Models;
 
 namespace ApplicationLib.Interfaces
 {
-    public interface ILocalDocumentationStorage
+    public interface ILocalDocumentationService : ILocalStorage
     {
-        Task<List<LocalDocumentation>> GetLocalDocumentations(string folderPath);
-
-        Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation, string folderPath);
+        Task<IEnumerable<LocalDocumentation>> GetLocalDocumentations();
+        Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation);
         void DeleteLocalDocumentationFile(LocalDocumentation localDocumentation);
     }
 }

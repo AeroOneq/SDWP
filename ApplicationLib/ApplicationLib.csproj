@@ -62,19 +62,23 @@
   <ItemGroup>
     <Compile Include="Database\Email.cs" />
     <Compile Include="Database\UsersDB.cs" />
+    <Compile Include="Interfaces\ISerializable.cs" />
     <Compile Include="Interfaces\ILocalDocumentationStorage.cs" />
     <Compile Include="Interfaces\IImageSettings.cs" />
+    <Compile Include="Interfaces\ILocalStorage.cs" />
     <Compile Include="Interfaces\IParagraphEditView.cs" />
     <Compile Include="Interfaces\IParagraphSettings.cs" />
     <Compile Include="Interfaces\IParentableParagraph.cs" />
     <Compile Include="Interfaces\IParentableItem.cs" />
+    <Compile Include="Interfaces\ILocalTemplateStorage.cs" />
     <Compile Include="Models\Documentation models\LocalDocumentation.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Paragraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphElement.cs" />
     <Compile Include="Models\Documentation models\ParagraphJsonConverter.cs" />
-    <Compile Include="Models\Template.cs" />
+    <Compile Include="Models\Documentation models\Template.cs" />
     <Compile Include="Services\LocalDocumentationService.cs" />
+    <Compile Include="Services\LocalTemplatesService.cs" />
     <Compile Include="Tests\NumberedListTests.cs" />
     <Compile Include="Tests\TableTest.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">

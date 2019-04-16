@@ -102,7 +102,7 @@
                              Margin="30, 0, 0, 0"
                              Background="Transparent"
                              VerticalContentAlignment="Center"
-                             Foreground="{DynamicResource defaultTextColorBrush}"
+                             Foreground="{StaticResource defaultTextColorBrush}"
                              PreviewKeyDown="OnItemBtnKeyDown"
                              LostFocus="OnItemBtnTextBoxLostFocus"
                              PreviewMouseLeftButtonDown="OnItemBtnTextBoxClick"

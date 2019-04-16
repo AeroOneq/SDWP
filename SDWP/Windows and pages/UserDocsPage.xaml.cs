@@ -41,7 +41,7 @@ namespace SDWP
         private string CurrentFilePath { get; set; }
 
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
-        private ILocalDocumentationStorage LocalDocumentationService { get; set; }
+        private ILocalDocumentationService LocalDocumentationService { get; set; }
 
         private List<LocalDocumentation> LocalDocumentations { get; set; }
         private MainPage MainPage { get; }
@@ -81,13 +81,13 @@ namespace SDWP
         private void InitializeServices()
         {
             ServiceAbstractFactory = new ServiceAbstractFactory();
-            LocalDocumentationService = ServiceAbstractFactory.GetLocalStorageService();
+            LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
         }
 
         #region Upload documentation methods
-        private async Task UploadDocumentationsFromLocalSotrage(string folderPath)
+        private async Task UploadDocumentationsFromLocalSotrage()
         {
-            LocalDocumentations = await LocalDocumentationService.GetLocalDocumentations(folderPath);
+            LocalDocumentations = (await LocalDocumentationService.GetLocalDocumentations()).ToList();
             offlineDocumentationListBox.ItemsSource = LocalDocumentations.Select(lc => lc.Documentation).ToList();
         }
         #endregion
@@ -163,7 +163,8 @@ namespace SDWP
             FilePathTextBox.Text = CurrentFilePath = folderPath;
             if (folderPath != null)
             {
-                await UploadDocumentationsFromLocalSotrage(folderPath);
+                LocalDocumentationService.StoragePath = folderPath;
+                await UploadDocumentationsFromLocalSotrage();
             }
         }
 
@@ -176,11 +177,10 @@ namespace SDWP
                 return;     
             }
 
-            string deletionDocPath = Path.Combine(CurrentFilePath, selectedDocumentation.Name + ".sdwp");
+            LocalDocumentationService.DeleteLocalDocumentationFile(LocalDocumentations.Find((
+                ld => ld.Documentation == selectedDocumentation)));
 
-            FileInfo fileInfo = new FileInfo(deletionDocPath);
-            fileInfo.Delete();
-            await UploadDocumentationsFromLocalSotrage(CurrentFilePath);
+            await UploadDocumentationsFromLocalSotrage();
         }
 
         private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
