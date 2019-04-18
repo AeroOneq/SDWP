@@ -70,6 +70,7 @@ namespace SDWP
             mainGrids.MainGrid.Width = MainWindow.Width;
             mainGrids.MainGrid.Height = MainWindow.Height;
         }
+
         public void InitializeUserAccountGrids(UserAccountGrids userAccountGrids)
         {
             userAccountGrids.UserAccGrid.Width = (double)3 / 4 * MainWindow.Width;
@@ -83,6 +84,7 @@ namespace SDWP
             userAccountGrids.ContentFrame.Margin = new Thickness(
                 userAccountGrids.LeftMenuGrid.Width, 0, 0, 0);
         }
+
         public void InitializeUserAccLeftMenuGrids(UserAccLeftMenuGrids leftMenuGrids)
         {
             leftMenuGrids.HeaderBottomLineRect.Width = (double)3 / 4 * MainWindow.Width - 78;
@@ -94,6 +96,7 @@ namespace SDWP
                 optionGrid.Width = leftMenuGrids.OptionsGrid.Width;
             }
         }
+
         #region User Grid pages resize methods
         public void InitializeUserAccGridPagesParams(Frame parentFrame)
         {

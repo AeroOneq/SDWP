@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
+using ApplicationLib.Interfaces;
 using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
@@ -11,7 +8,7 @@ namespace ApplicationLib.Models
     /// <summary>
     /// Class for storing data in the offline storages
     /// </summary>
-    public class LocalDocumentation
+    public class LocalDocumentation : ISerializable
     {
         public Documentation Documentation { get; set; }
         public List<Document> Documents { get; set; }

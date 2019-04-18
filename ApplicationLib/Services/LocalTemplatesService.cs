@@ -18,7 +18,19 @@ namespace ApplicationLib.Services
         public int ErrorsCount { get; private set; }
         public static string TemplateExtension { get; } = ".tsdwp";
 
-        public async Task CreateTemplateFile(Template template)
+        public async Task RewriteTemplateFile(LocalTemplate localTemplate)
+        {
+            byte[] templateBytes = GetStringBytes(localTemplate.GetJsonString());
+            string templatePath = StoragePath + "\\" + localTemplate.FileName;
+
+            using (var fs = new FileStream(templatePath, FileMode.Truncate, FileAccess.Write))
+            {
+                fs.Seek(0, SeekOrigin.Begin);
+                await fs.WriteAsync(templateBytes, 0, templateBytes.Length);
+            }
+        }
+
+        public async Task CreateTemplateFile(LocalTemplate template)
         {
             byte[] templateBytes = GetStringBytes(template.GetJsonString());
             string templatePath = GetTemplatePath(template);
@@ -29,10 +41,10 @@ namespace ApplicationLib.Services
                 await fs.WriteAsync(templateBytes, 0, templateBytes.Length);
             }
         }
-
-        private string GetTemplatePath(Template template)
+        
+        private string GetTemplatePath(LocalTemplate localTemplate)
         {
-            string templatePath = Path.Combine(StoragePath, template.TemplateName);
+            string templatePath = Path.Combine(StoragePath, localTemplate.Template.TemplateName);
 
             if (File.Exists(templatePath + TemplateExtension))
             {
@@ -42,10 +54,13 @@ namespace ApplicationLib.Services
                 {
                     addNum++;
                 }
+
+                localTemplate.FileName = localTemplate.Template.TemplateName + " " + addNum.ToString() + TemplateExtension;
                 templatePath += " " + addNum.ToString() + TemplateExtension;
             }
             else
             {
+                localTemplate.FileName = localTemplate.Template.TemplateName + TemplateExtension;
                 templatePath += TemplateExtension;
             }
 
@@ -58,9 +73,9 @@ namespace ApplicationLib.Services
             return encoding.GetBytes(str);
         }
 
-        public void DeleteTemplateFile(Template template)
+        public void DeleteTemplateFile(LocalTemplate template)
         {
-            string templatePath = Path.Combine(StoragePath, template.TemplateName + TemplateExtension);
+            string templatePath = Path.Combine(StoragePath, template.FileName);
             if (File.Exists(templatePath))
             {
                 File.Delete(templatePath);
@@ -70,13 +85,13 @@ namespace ApplicationLib.Services
             throw new FileNotFoundException("Файл шаблона не найден");
         }
 
-        public async Task<IEnumerable<Template>> GetLocalTemplates()
+        public async Task<IEnumerable<LocalTemplate>> GetLocalTemplates()
         {
             return await Task.Run(() =>
             {
                 ErrorsCount = 0;
                 string[] filePaths = Directory.GetFiles(StoragePath);
-                List<Template> templates = new List<Template>();
+                List<LocalTemplate> templates = new List<LocalTemplate>();
 
                 foreach (string filePath in filePaths)
                 {
@@ -92,7 +107,9 @@ namespace ApplicationLib.Services
                         }
 
                         string templateJsonString = GetStringFromBytes(fileBytes);
-                        Template template = JsonConvert.DeserializeObject<Template>(templateJsonString);
+                        LocalTemplate template = JsonConvert.DeserializeObject<LocalTemplate>(templateJsonString);
+                        template.FileName = filePath.Substring(filePath.LastIndexOf('\\') + 1);
+
                         templates.Add(template);
                     }
                     catch (Exception)

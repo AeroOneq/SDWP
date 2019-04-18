@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
-    public class Template : ISerializable
+    public class Template
     {
         [PrimaryKey]
         [AutoincrementID]

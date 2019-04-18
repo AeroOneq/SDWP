@@ -463,6 +463,7 @@ namespace SDWP
                         DocumentTemplatesPage = new DocumentTemplatesPage(UserInfo.CurrentUser)
                         {
                             Width = userGridFrame.Width,
+                            Height = userGridFrame.Height,
                             CloseAccGrid = new Action(() => HideTheUserAccGrid(null, null))
                         };
                     }
@@ -486,6 +487,8 @@ namespace SDWP
                     break;
             }
         }
+
+
         #endregion
 
 

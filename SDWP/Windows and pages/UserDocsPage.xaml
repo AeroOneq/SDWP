@@ -1,4 +1,5 @@
 ﻿<Page x:Class="SDWP.UserDocsPage"
+      x:Name="userDocsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -342,7 +343,9 @@
         <Grid x:Name="userDocsOutterGrid">
             <ScrollViewer VerticalAlignment="Top"
                           VerticalScrollBarVisibility="Hidden"
-                          HorizontalScrollBarVisibility="Auto">
+                          HorizontalScrollBarVisibility="Auto"
+                          Width="{Binding ElementName=userDocsPage, Path=ActualWidth}"
+                          Height="{Binding ElementName=userDocsPage, Path=ActualHeight}">
                 <StackPanel VerticalAlignment="Top"
                             HorizontalAlignment="Stretch"
                             Orientation="Vertical">
@@ -350,11 +353,13 @@
                     <local:PageHeader x:Name="pageHeader"
                                       VerticalAlignment="Top"
                                       HorizontalAlignment="Left"
+                                      Width="{Binding ElementName=userDocsPage, Path=ActualWidth}"
+                                      Height="86"
                                       Header="Документы"/>
 
                     <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
-                                Margin="20, 0, 0, 0"
+                                Margin="20, 25, 0, 0"
                                 Orientation="Horizontal">
                         <TextBlock x:Name="goToLocalDocumentation"
                                    Text="Локальная документация"

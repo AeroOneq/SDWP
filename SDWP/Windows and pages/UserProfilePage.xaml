@@ -192,9 +192,10 @@
               Visibility="Visible"
               Background="#E1E1E1"> 
             <ScrollViewer x:Name="pageScrollViewer" 
-                          VerticalScrollBarVisibility="Hidden">
-                <Grid x:Name="contentOutterGrid"
-                      Height="1000">
+                          VerticalScrollBarVisibility="Visible"
+                          Width="{Binding ElementName =userProfilePage, Path=ActualWidth}"
+                          Height="{Binding ElementName=userProfilePage, Path=ActualHeight}">
+                <Grid x:Name="contentOutterGrid">
                     <TextBlock x:Name="userGridMainGridHeader"
                                FontFamily="Arial, Verdana"
                                FontSize="40"

@@ -268,7 +268,7 @@
                        VerticalAlignment="Top"
                        HorizontalAlignment="Left"
                        MouseEnter="CloseAccGridStaticIconMouseEnter"
-                       Margin="10, 30, 0, 0"
+                       Margin="10, 20, 0, 0"
                        Source="../Resources/closeAccGridStatic.png"
                        Width="48"
                        Height="48"
@@ -278,7 +278,7 @@
                        MouseLeave="CloseAccGridActiveIconMouseLeave"
                        MouseDown="HideTheUserAccGrid"
                        HorizontalAlignment="Left"
-                       Margin="10, 30, 0, 0"
+                       Margin="10, 20, 0, 0"
                        Source="../Resources/closeAccGridActive.png"
                        Width="48"
                        Height="48"
@@ -289,7 +289,7 @@
                            Foreground="OrangeRed"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
-                           Margin="78, 40, 0, 0"/>
+                           Margin="78, 30, 0, 0"/>
                 <Rectangle x:Name="headerBottomLineRect"
                            VerticalAlignment="Top"
                            HorizontalAlignment="Left"
@@ -347,8 +347,6 @@
                    Visibility="Visible"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Left"
-                   Width="100"
-                   Height="100"
                    NavigationUIVisibility="Hidden"
                    Background="#E1E1E1">
             </Frame>

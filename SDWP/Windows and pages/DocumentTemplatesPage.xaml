@@ -1,4 +1,5 @@
 ﻿<Page x:Class="SDWP.DocumentTemplatesPage"
+      x:Name="documentTemplatesPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -32,12 +33,50 @@
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected"
-                                     Value="True">
-                                <Setter TargetName="border"
-                                        Property="Background"
-                                        Value="#f0f0f0"/>
-                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="False" />
+                                    <Condition Property="IsSelected" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="False" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="LightGray"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -79,7 +118,7 @@
                                    Height="20"
                                    Width="20"
                                    Margin="5, -12, 0, 0"/>
-                            <TextBlock Text="{Binding Path = TemplateName, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBlock Text="{Binding Path = FileName, UpdateSourceTrigger=PropertyChanged}"
                                        Style="{StaticResource templateOptionsTextBlockStyle}"
                                        Margin="10, -10, 0, 0"/>
                         </StackPanel>
@@ -93,7 +132,7 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Background" Value="#E1E1E1"/>
             <Setter Property="Width" Value="300"/>
-            <Setter Property="Height" Value="350"/>
+            <Setter Property="Height" Value="400"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
             <Setter Property="BorderThickness" Value="0, 0, 1, 0"/>
@@ -230,7 +269,23 @@
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
-        
+
+        <ContextMenu x:Key="treeViewParagraphItemContextMenu">
+            <MenuItem Header="Переименовать пункт"
+                      Click="OnTreeViewRenameItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuRename.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator/>
+            <MenuItem Header="Удалить"
+                      Click="OnTreeViewDeleteItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
         <ContextMenu x:Key="treeViewContextMenu">
             <MenuItem Header="Добавить новый пункт"
                       Click="AddNewItemToRoot">
@@ -527,100 +582,175 @@
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="Width" Value="300"/>
-            <Setter Property="Height" Value="400"/>
+            <Setter Property="Height" Value="350"/>
             <Setter Property="Background" Value="{StaticResource mainPageItemsGridBackgroundBrush}"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="ContextMenu" Value="{StaticResource treeViewContextMenu}"/>
-            <Setter Property="Padding" Value="5, 10, 0, 0"/>
+            <Setter Property="Padding" Value="10, 10, 0, 0"/>
+        </Style>
+
+        <Style x:Key="hintTextBoxStyle" TargetType="TextBox">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontFamily" Value="Arial, Verdana"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="5, 2, 5, 2"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border"
+                                BorderThickness="1"
+                                BorderBrush="LightGray"
+                                CornerRadius="10"
+                                VerticalAlignment="Top"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                HorizontalAlignment="Left"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Left"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Page.Resources>
     
     <Page.Content>
-        <StackPanel VerticalAlignment="Top"
-                    HorizontalAlignment="Stretch"
-                    Orientation="Vertical"
-                    Margin="0, 0, 0, 0">
-            <local:PageHeader Header="Шаблоны"
-                              VerticalAlignment="Top"
-                              HorizontalAlignment="Left"/>
-
+        <ScrollViewer VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
+                      Width="{Binding ElementName=documentTemplatesPage, Path=ActualWidth}"
+                      Height="{Binding ElementName=documentTemplatesPage, Path=ActualHeight}">
             <StackPanel VerticalAlignment="Top"
-                                HorizontalAlignment="Left"
-                                Margin="20, 0, 0, 0"
-                                Orientation="Horizontal">
-                <TextBlock x:Name="goToLocalDocumentation"
-                           Text="Локальный шаблоны"
-                           Style="{StaticResource templateTypesTextBlockStyle}"
-                           PreviewMouseDown="GoToLocalTemplatesMode"/>
-                <TextBlock x:Name="goToCloudDocumentation"
-                           Text="Облачные шаблоны"
-                           Margin="20, 0, 0, 0"
-                           Style="{StaticResource templateTypesTextBlockStyle}"
-                           PreviewMouseDown="GoToCloudTemplatesMode"/>
-            </StackPanel>
+                        HorizontalAlignment="Stretch"
+                        Orientation="Vertical"
+                        Margin="0, 0, 0, 0">
+                <local:PageHeader x:Name="pageHeader"
+                                  Header="Шаблоны"
+                                  IsRefreshEnabled="True"
+                                  VerticalAlignment="Top"
+                                  Width="{Binding ElementName=documentTemplatesPage, Path=ActualWidth}"
+                                  Height="86"
+                                  HorizontalAlignment="Left"/>
 
-            <StackPanel x:Name="optionBtnsStackPanel"
-                        Orientation="Horizontal"
-                        Margin="20, 10, 0, 0"
-                        VerticalAlignment="Top" 
-                        HorizontalAlignment="Left">
-                <Button x:Name="createNewTemplateBtn"
-                        Style="{StaticResource templatesProperteisBtnStyle}"
-                        Margin="0, 0, 0, 0"
-                        Click="CreateNewTemplate">
-                    <TextBlock FontFamily="Arial, Verdana"
-                               FontSize="14"
-                               Foreground="{StaticResource mainThemeBrush}"
-                               Text="Создать"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left"/>
-                </Button>
-                <Button x:Name="deleteSelectedTemplateBtn"
-                        Style="{StaticResource templatesProperteisBtnStyle}"
-                        Margin="10, 0, 0, 0">
-                    <TextBlock FontFamily="Arial, Verdana"
-                               FontSize="14"
-                               Foreground="{StaticResource mainThemeBrush}"
-                               Text="Удалить"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left"/>
-                </Button>
-            </StackPanel>
+                <StackPanel VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Margin="20, 25, 0, 0"
+                            Orientation="Horizontal">
+                    <TextBlock x:Name="goToLocalDocumentation"
+                               Text="Локальный шаблоны"
+                               Style="{StaticResource templateTypesTextBlockStyle}"
+                               PreviewMouseDown="GoToLocalTemplatesMode"/>
+                    <TextBlock x:Name="goToCloudDocumentation"
+                               Text="Облачные шаблоны"
+                               Margin="20, 0, 0, 0"
+                               Style="{StaticResource templateTypesTextBlockStyle}"
+                               PreviewMouseDown="GoToCloudTemplatesMode"/>
+                </StackPanel>
 
-            <StackPanel VerticalAlignment="Top"
-                        HorizontalAlignment="Left"
-                        Margin="20, 0, 0, 0"
-                        Orientation="Horizontal">
-                <Grid Margin="0, 20, 0, 0">
-                    <StackPanel x:Name="localTemplatesStackPanel"
-                                VerticalAlignment="Top"
+                <StackPanel x:Name="optionBtnsStackPanel"
+                            Orientation="Horizontal"
+                            Margin="20, 10, 0, 0"
+                            VerticalAlignment="Top" 
+                            HorizontalAlignment="Left">
+                    <Button x:Name="createNewTemplateBtn"
+                            Style="{StaticResource templatesProperteisBtnStyle}"
+                            Margin="0, 0, 0, 0"
+                            Click="CreateNewTemplate">
+                        <TextBlock FontFamily="Arial, Verdana"
+                                   FontSize="14"
+                                   Foreground="{StaticResource mainThemeBrush}"
+                                   Text="Создать"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"/>
+                    </Button>
+                    <Button x:Name="deleteSelectedTemplateBtn"
+                            Style="{StaticResource templatesProperteisBtnStyle}"
+                            Margin="10, 0, 0, 0"
+                            Click="DeleteTemplate">
+                        <TextBlock FontFamily="Arial, Verdana"
+                                   FontSize="14"
+                                   Foreground="{StaticResource mainThemeBrush}"
+                                   Text="Удалить"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"/>
+                    </Button>
+                    <Button x:Name="saveAllTemplatesBtn"
+                            Style="{StaticResource templatesProperteisBtnStyle}"
+                            Margin="10, 0, 0, 0"
+                            Width="150"
+                            Click="SaveAllTemplatesBtn">
+                        <TextBlock FontFamily="Arial, Verdana"
+                                   FontSize="14"
+                                   Foreground="{StaticResource mainThemeBrush}"
+                                   Text="Сохранить всё"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"/>
+                    </Button>
+                    <Button x:Name="saveCurrentTemplateBtn"
+                            Style="{StaticResource templatesProperteisBtnStyle}"
+                            Margin="10, 0, 0, 0"
+                            Width="200"
+                            Click="SaveCurrentTemplate">
+                        <TextBlock FontFamily="Arial, Verdana"
+                                   FontSize="14"
+                                   Foreground="{StaticResource mainThemeBrush}"
+                                   Text="Сохранить текущий шаблон"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"/>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Margin="20, 20, 0, 0"
+                            Orientation="Horizontal">
+                    <Grid Margin="0, 00, 0, 0">
+                        <StackPanel x:Name="localTemplatesStackPanel"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal"
+                                    Margin="0, 0, 0, 0">
+                            <ListBox x:Name="localTemplatesListBox"
+                                     Margin="0, 0, 0, 0"
+                                     ItemTemplate="{StaticResource templatesListBoxDataTemplate}"
+                                     Style="{StaticResource templatesListBoxStyle}"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="cloudTemplatesStackPanel"
+                                    VerticalAlignment="Top"
+                                    HorizontalAlignment="Left"
+                                    Visibility="Collapsed"
+                                    Orientation="Horizontal"
+                                    Margin="20, 0, 0, 0">
+                            <ListBox x:Name="cloudTemplatesListBox"
+                                     Margin="0, 0, 0, 0"
+                                     Style="{StaticResource templatesListBoxStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
-                                Orientation="Horizontal"
-                                Margin="0, 0, 0, 0">
-                        <ListBox x:Name="localTemplatesListBox"
-                                 Margin="0, 0, 0, 0"
-                                 ItemTemplate="{StaticResource templatesListBoxDataTemplate}"
-                                 Style="{StaticResource templatesListBoxStyle}"/>
+                                Orientation="Vertical">
+                        <TextBox x:Name="hintTextBox"
+                                 Style="{StaticResource hintTextBoxStyle}"
+                                 Margin="10, 0, 0, 10"
+                                 TextChanged="HintTextBoxTextChanged"/>
+                        <TreeView x:Name="templateTreeView"
+                                  Margin="10, 0, 0, 0"
+                                  Style="{StaticResource templateTreeViewStyle}"/>
                     </StackPanel>
+                </StackPanel>
 
-                    <StackPanel x:Name="cloudTemplatesStackPanel"
-                                VerticalAlignment="Top"
-                                HorizontalAlignment="Left"
-                                Visibility="Collapsed"
-                                Orientation="Horizontal"
-                                Margin="20, 0, 0, 0">
-                        <ListBox x:Name="cloudTemplatesListBox"
-                                 Margin="0, 0, 0, 0"
-                                 Style="{StaticResource templatesListBoxStyle}"/>
-                    </StackPanel>
-                </Grid>
-
-                <TreeView x:Name="templateTreeView"
-                          Margin="0, 20, 0, 0"
-                          Style="{StaticResource templateTreeViewStyle}"/>
             </StackPanel>
-
-        </StackPanel>
+        </ScrollViewer>
+       
     </Page.Content>
 </Page>

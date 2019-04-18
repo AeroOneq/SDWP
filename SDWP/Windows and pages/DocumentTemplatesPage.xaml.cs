@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
@@ -20,6 +15,7 @@ using SDWP.Interfaces;
 using SDWP.Exceptions;
 using SDWP.Factories;
 using SDWP.Models;
+using System.IO;
 
 namespace SDWP
 {
@@ -49,14 +45,20 @@ namespace SDWP
         private StackPanel CloudTemplatesStackPanel { get; set; }
         private ListBox LocalTemplatesListBox { get; set; }
         private TreeView TemplateTreeView { get; set; }
+        private PageHeader PageHeader { get; set; }
+        private TextBox HintTextBox { get; set; }
         #endregion
+
+        #region Constructors and initializing methods
         public DocumentTemplatesPage(UserInfo currentUser)
         {
             InitializeComponent();
             InitializeProperties();
             InitializeServices();
-
             UploadTemplatesFromLocalStorage();
+
+            PageHeader.OnRefresh = new Action(async () => await UploadTemplatesFromLocalStorage());
+
             CurrentUser = currentUser;
         }
 
@@ -76,79 +78,23 @@ namespace SDWP
             CloudTemplatesStackPanel = cloudTemplatesStackPanel;
             LocalTemplatesListBox = localTemplatesListBox;
             TemplateTreeView = templateTreeView;
+            PageHeader = pageHeader;
+            HintTextBox = hintTextBox;
         }
 
         private async Task UploadTemplatesFromLocalStorage()
         {
-            List<Template> templates = (await LocalTemplateService.GetLocalTemplates()).ToList();
+            List<LocalTemplate> templates = (await LocalTemplateService.GetLocalTemplates()).ToList();
             LocalTemplatesListBox.ItemsSource = templates;
-        }
-
-        #region List box
-        private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ListBoxItem selectedItem = sender as ListBoxItem;
-            selectedItem.IsSelected = true;
-
-            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as Template);
-            //SelectedTemplateTextBlock.Text = (selectedItem.DataContext as Documentation).Name;
-        }
-
-        private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
-        {
-            (sender as ListBoxItem).Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-        }
-
-        private void ListBoxItemMouseLeave(object sender, MouseEventArgs e)
-        {
-            ListBoxItem listBoxItem = sender as ListBoxItem;
-            if (!listBoxItem.IsSelected)
-            {
-                listBoxItem.Background = new SolidColorBrush(Colors.LightGray);
-            }
-        }
-
-        private void TemplateTypesTextBlockMouseEnter(object sender, MouseEventArgs e)
-        {
-            (sender as TextBlock).TextDecorations.Add(TextDecorations.Underline);
-        }
-
-        private void TemplateTypesTextBlockMouseLeave(object sender, MouseEventArgs e)
-        {
-            (sender as TextBlock).TextDecorations.Clear();
-        }
-
-        private void GoToLocalTemplatesMode(object sender, MouseButtonEventArgs e)
-        {
-            LocalTemplatesStackPanel.Visibility = Visibility.Visible;
-            CloudTemplatesStackPanel.Visibility = Visibility.Collapsed;
-        }
-
-        private void GoToCloudTemplatesMode(object sender, MouseButtonEventArgs e)
-        {
-            LocalTemplatesStackPanel.Visibility = Visibility.Collapsed;
-            CloudTemplatesStackPanel.Visibility = Visibility.Visible;
         }
         #endregion
 
-        private async void CreateNewTemplate(object sender, RoutedEventArgs e)
-        {
-            Template template = new Template()
-            {
-                Items = new List<Item>(),
-                TemplateName = "Новый шаблон"
-            };
-
-            await LocalTemplateService.CreateTemplateFile(template);
-            await UploadTemplatesFromLocalStorage();
-        }
-
         #region Parent setting
-        private void SetTemplateItemsParents(Template template)
+        private void SetTemplateItemsParents(LocalTemplate localTemplate)
         {
-            if (template.Items != null)
+            if (localTemplate.Template.Items != null)
             {
-                foreach (Item item in template.Items)
+                foreach (Item item in localTemplate.Template.Items)
                 {
                     SetItemParents(item);
                 }
@@ -177,13 +123,52 @@ namespace SDWP
         }
         #endregion
 
+        #region Templates list boxes events
+        private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem selectedItem = sender as ListBoxItem;
+            selectedItem.IsSelected = true;
+
+            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
+            //SelectedTemplateTextBlock.Text = (selectedItem.DataContext as Documentation).Name;
+        }
+
+        private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as ListBoxItem).Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+        }
+
+        private void ListBoxItemMouseLeave(object sender, MouseEventArgs e)
+        {
+            ListBoxItem listBoxItem = sender as ListBoxItem;
+            if (!listBoxItem.IsSelected)
+            {
+                listBoxItem.Background = new SolidColorBrush(Colors.LightGray);
+            }
+        }
+
+        private void TemplateTypesTextBlockMouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as TextBlock).TextDecorations.Add(TextDecorations.Underline);
+        }
+
+        private void TemplateTypesTextBlockMouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as TextBlock).TextDecorations.Clear();
+        }
+        #endregion
+
         #region Template tree view
-        private void CreateTemplateTreeView(Template template)
+        /// <summary>
+        /// Buids a tree view with a given template file, also sets parents to all tree nodes (items or paragraphs)
+        /// </summary>
+        /// <param name="localTemplate"></param>
+        private void CreateTemplateTreeView(LocalTemplate localTemplate)
         {
             TemplateTreeView.Items.Clear();
-            SetTemplateItemsParents(template);
+            SetTemplateItemsParents(localTemplate);
 
-            foreach (Item item in template.Items)
+            foreach (Item item in localTemplate.Template.Items)
             {
                 TemplateTreeViewItem treeViewItem = CreateTemplateTreeViewItem(item);
 
@@ -202,6 +187,11 @@ namespace SDWP
             }
         }
 
+        /// <summary>
+        /// Recursive algorithm which upload items and paragraphs to the tree view root item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="rootItem"></param>
         private void UploadItemsToTreeView(Item item, TemplateTreeViewItem rootItem)
         {
             if (item.Items != null)
@@ -221,17 +211,19 @@ namespace SDWP
                         foreach (Paragraph paragraph in i.Paragraphs)
                         {
                             TemplateTreeViewItem treeItem = CreateTemplateTreeViewItem(paragraph);
-                            rootItem.Items.Add(treeItem);
+                            treeViewItem.Items.Add(treeItem);
                         }
                     }
                 }
         }
+
         private TemplateTreeViewItem CreateTemplateTreeViewItem(Paragraph paragraph)
         {
             TemplateTreeViewItem templateTreeViewItem = new TemplateTreeViewParagraphItem(paragraph)
             {
                 Style = Resources["treeViewContentItemStyle"] as Style,
-                Margin = new Thickness(10, 0, 0, 0)
+                ContextMenu = Resources["treeViewParagraphItemContextMenu"] as ContextMenu,
+                Margin = new Thickness(10, 0, 0, 0),
             };
 
             return templateTreeViewItem;
@@ -252,13 +244,25 @@ namespace SDWP
 
             return templateTreeViewItem;
         }
-        #endregion
 
         private void TreeViewItemMouseDown(object sender, RoutedEventArgs e)
         {
-            (sender as TreeViewItem).IsSelected = true;
+            TreeViewItem selectedItem = sender as TreeViewItem;
+            selectedItem.IsSelected = true;
+
+            if (selectedItem is TemplateTreeViewParagraphItem)
+            {
+                HintTextBox.Text = (selectedItem as TemplateTreeViewParagraphItem).Paragraph.ParagraphElement.Hint;
+            }
+            else
+            {
+                HintTextBox.Text = string.Empty;
+            }
         }
 
+        /// <summary>
+        /// Enables the edditing of a name of a selected tree view item
+        /// </summary>
         private void OnTreeViewRenameItem(object sender, RoutedEventArgs e)
         {
             (TemplateTreeView.SelectedItem as TemplateTreeViewItem).IsEnabledForEdditing = true;
@@ -273,7 +277,7 @@ namespace SDWP
 
             if (createNewItemWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as Template);
+                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
             }
         }
 
@@ -284,7 +288,7 @@ namespace SDWP
 
             if (createWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as Template);
+                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
             }
         }
 
@@ -307,17 +311,154 @@ namespace SDWP
                 paragraph.ParentList.Remove(paragraph);
             }
 
-            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as Template);
+            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
         }
 
         private void AddNewItemToRoot(object sender, RoutedEventArgs e)
         {
-            Template currentTemplate = LocalTemplatesListBox.SelectedItem as Template;
-            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(currentTemplate.Items, null);
+            LocalTemplate currentLocalTemplate = LocalTemplatesListBox.SelectedItem as LocalTemplate;
+            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(currentLocalTemplate.Template.Items, null);
 
             if (createNewItemWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(currentTemplate);
+                CreateTemplateTreeView(currentLocalTemplate);
+            }
+        }
+        #endregion
+
+        #region Template buttons (4 top buttons) methods
+        /// <summary>
+        /// Saves all templates to the local templates folder
+        /// </summary>
+        private async void SaveAllTemplatesBtn(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PageHeader.SwitchOnTopLoader();
+
+                IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>;
+                foreach (LocalTemplate template in templates)
+                {
+                    await LocalTemplateService.RewriteTemplateFile(template);
+                }
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
+        }
+        /// <summary>
+        /// Saves current template to a file in a local templates folder
+        /// </summary>
+        private async void SaveCurrentTemplate(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PageHeader.SwitchOnTopLoader();
+
+                LocalTemplate template = LocalTemplatesListBox.SelectedItem as LocalTemplate;
+                await LocalTemplateService.RewriteTemplateFile(template);
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
+        }
+        /// <summary>
+        /// Deletes the template from the list box, deletes the template file from
+        /// the template directory and also clears the tree view 
+        /// </summary>
+        private void DeleteTemplate(object sender, RoutedEventArgs e)
+        {
+            if (LocalTemplatesListBox.SelectedItem is LocalTemplate selectedTemplate)
+            {
+                try
+                {
+                    LocalTemplateService.DeleteTemplateFile(selectedTemplate);
+
+                    List<LocalTemplate> listBoxItemsSource = LocalTemplatesListBox.ItemsSource as List<LocalTemplate>;
+                    listBoxItemsSource.Remove(selectedTemplate);
+                    LocalTemplatesListBox.ItemsSource = null;
+                    LocalTemplatesListBox.ItemsSource = listBoxItemsSource;
+
+                    TemplateTreeView.Items.Clear();
+                }
+                catch (IOException ex)
+                {
+                    ExceptionHandler.HandleWithMessageBox(ex);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionHandler.HandleWithMessageBox(ex);
+                }
+            }
+        }
+        /// <summary>
+        /// Creates a new template in a list box and also creates a file of this template in a template folder
+        /// </summary>
+        private async void CreateNewTemplate(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LocalTemplate template = new LocalTemplate(new Template()
+                {
+                    Items = new List<Item>(),
+                    TemplateName = "Новый шаблон"
+                });
+
+                await LocalTemplateService.CreateTemplateFile(template);
+
+                List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>).ToList();
+                templates.Add(template);
+
+                LocalTemplatesListBox.ItemsSource = templates;
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+        #endregion
+
+        private void GoToLocalTemplatesMode(object sender, MouseButtonEventArgs e)
+        {
+            LocalTemplatesStackPanel.Visibility = Visibility.Visible;
+            CloudTemplatesStackPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void GoToCloudTemplatesMode(object sender, MouseButtonEventArgs e)
+        {
+            LocalTemplatesStackPanel.Visibility = Visibility.Collapsed;
+            CloudTemplatesStackPanel.Visibility = Visibility.Visible;
+        }
+
+        private void HintTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            TreeViewItem selectedTreeViewItem = TemplateTreeView.SelectedItem as TreeViewItem;
+            if (selectedTreeViewItem is TemplateTreeViewParagraphItem)
+            {
+                Paragraph paragraph = (selectedTreeViewItem as TemplateTreeViewParagraphItem).Paragraph;
+                paragraph.ParagraphElement.Hint = (sender as TextBox).Text;
             }
         }
     }

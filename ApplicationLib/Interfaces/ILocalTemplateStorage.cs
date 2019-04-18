@@ -10,9 +10,10 @@ namespace ApplicationLib.Interfaces
 {
     public interface ILocalTemplateService: ILocalStorage
     {
-        Task<IEnumerable<Template>> GetLocalTemplates();
+        Task<IEnumerable<LocalTemplate>> GetLocalTemplates();
 
-        Task CreateTemplateFile(Template template);
-        void DeleteTemplateFile(Template template);
+        Task CreateTemplateFile(LocalTemplate template);
+        void DeleteTemplateFile(LocalTemplate template);
+        Task RewriteTemplateFile(LocalTemplate template);
     }
 }
