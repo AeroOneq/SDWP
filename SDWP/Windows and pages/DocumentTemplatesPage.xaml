@@ -87,7 +87,7 @@
             <EventSetter Event="PreviewMouseDown" Handler="ListBoxItemMouseDown"/>
         </Style>
 
-        <DataTemplate x:Key="templatesListBoxDataTemplate">
+        <DataTemplate x:Key="localTemplateListBoxDataTemplate">
             <Grid VerticalAlignment="Center"
                   HorizontalAlignment="Center"
                   Margin="0, 0, 0, 0"
@@ -127,6 +127,46 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Key="cloudTemplateListBoxDataTemplate">
+            <Grid VerticalAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Margin="0, 0, 0, 0"
+                  Width="280">
+                <Border x:Name="border"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="280"
+                        Height="50"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        Padding="5"
+                        BorderBrush="Gray"
+                        Margin="0, 0, 0, 0">
+                    <StackPanel VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Height="50"
+                                Width="280"
+                                Orientation="Vertical">
+                        <StackPanel VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Horizontal"
+                                    Height="50"
+                                    Width="280">
+                            <Image Source="../Resources/documentationIcon.png"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Height="20"
+                                   Width="20"
+                                   Margin="5, -12, 0, 0"/>
+                            <TextBlock Text="{Binding Path = TemplateName, UpdateSourceTrigger=PropertyChanged}"
+                                       Style="{StaticResource templateOptionsTextBlockStyle}"
+                                       Margin="10, -10, 0, 0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
         <Style x:Key="templatesListBoxStyle" TargetType="ListBox">
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -139,7 +179,6 @@
             <Setter Property="BorderBrush" Value="Gray"/>
             <Setter Property="Padding" Value="0, 0, 10, 0"/>
             <Setter Property="SelectionMode" Value="Single"/>
-            <Setter Property="ItemTemplate" Value="{StaticResource templatesListBoxDataTemplate}"/>
         </Style>
 
         <Style x:Key="filePathTextBoxStyle" TargetType="TextBox">
@@ -685,7 +724,7 @@
                     <Button x:Name="saveAllTemplatesBtn"
                             Style="{StaticResource templatesProperteisBtnStyle}"
                             Margin="10, 0, 0, 0"
-                            Width="150"
+                            Width="150" 
                             Click="SaveAllTemplatesBtn">
                         <TextBlock FontFamily="Arial, Verdana"
                                    FontSize="14"
@@ -720,7 +759,7 @@
                                     Margin="0, 0, 0, 0">
                             <ListBox x:Name="localTemplatesListBox"
                                      Margin="0, 0, 0, 0"
-                                     ItemTemplate="{StaticResource templatesListBoxDataTemplate}"
+                                     ItemTemplate="{StaticResource localTemplateListBoxDataTemplate}"
                                      Style="{StaticResource templatesListBoxStyle}"/>
                         </StackPanel>
 
@@ -729,16 +768,24 @@
                                     HorizontalAlignment="Left"
                                     Visibility="Collapsed"
                                     Orientation="Horizontal"
-                                    Margin="20, 0, 0, 0">
+                                    Margin="0, 0, 0, 0">
                             <ListBox x:Name="cloudTemplatesListBox"
                                      Margin="0, 0, 0, 0"
-                                     Style="{StaticResource templatesListBoxStyle}"/>
+                                     Style="{StaticResource templatesListBoxStyle}"
+                                     ItemTemplate="{StaticResource cloudTemplateListBoxDataTemplate}"/>
                         </StackPanel>
                     </Grid>
 
                     <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
                                 Orientation="Vertical">
+                        <TextBlock Text="Текст подсказки"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="10, 0, 0, 0"
+                                   FontFamily="Arial, Verdana"
+                                   Foreground="Gray"
+                                   FontSize="13"/>
                         <TextBox x:Name="hintTextBox"
                                  Style="{StaticResource hintTextBoxStyle}"
                                  Margin="10, 0, 0, 10"

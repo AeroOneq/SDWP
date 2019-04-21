@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
+using System.IO;
 
 namespace SDWP
 {
@@ -48,7 +49,11 @@ namespace SDWP
                     ParagraphElement = new Table()
                     {
                         Title = paragraphNameTextBox.Text,
-                        TableCells = new string[0][]
+                        TableCells = new string[2][]
+                        {
+                            new string[2] {string.Empty, string.Empty},
+                            new string[2] {string.Empty, string.Empty},
+                        }
                     },
                     Type = "Table"
                 };
@@ -78,7 +83,7 @@ namespace SDWP
                     ParagraphElement = new ParagraphImage()
                     {
                         Title = paragraphNameTextBox.Text,
-                        ImageSource = new byte[0]
+                        ImageSource = GetResourceImageBytes("pack://application:,,,/Resources/defaultParagraphImageImage.png")
                     },
                     Type = "ParagraphImage"
                 };
@@ -104,6 +109,23 @@ namespace SDWP
 
             DialogResult = true;
             Close();
+        }
+
+        private byte[] GetResourceImageBytes(string uri)
+        {
+            byte[] imageBytes;
+            Uri imageUri = new Uri(uri);
+            BitmapImage bitmapImage = new BitmapImage(imageUri);
+
+            using (var ms = new MemoryStream())
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+                encoder.Save(ms);
+                imageBytes = ms.ToArray();
+            }
+
+            return imageBytes;
         }
 
         private void CancelCreation(object sender, RoutedEventArgs e)

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using SDWP.Interfaces;
+
 namespace SDWP.Exceptions
 {
     public class ExceptionHandler : IExceptionHandler

@@ -1,5 +1,4 @@
-﻿using ApplicationLib.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,9 +6,12 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
+using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
+
 namespace ApplicationLib.Database
 {
-    public class Email
+    public class EmailDB : IEmailDatabase<UserInfo>
     {
         private Random Random { get; set; } = new Random();
         public string Code { get; private set; }

@@ -414,17 +414,6 @@ namespace SDWP
         }
 
         /// <summary>
-        /// When the save option is pressed this method opens Export documentation page 
-        /// in a user main grid
-        /// </summary>
-        private void SaveDocumentation(object sender, EventArgs e)
-        {
-            ShowTheUserMainGrid(null, null);
-            //3 = export documentation page
-            SwitchTheMainGrid("3");
-        }
-
-        /// <summary>
         /// Uploads the page which realtes to the clicked header in user main grid to 
         /// userGridFrame
         /// </summary>
@@ -487,8 +476,29 @@ namespace SDWP
                     break;
             }
         }
+        #endregion
 
+        #region Top option grid options methods
+        /// <summary>
+        /// When the save option is pressed this method opens Export documentation page 
+        /// in a user main grid
+        /// </summary>
+        private void SaveDocumentation(object sender, EventArgs e)
+        {
+            ShowTheUserMainGrid(null, null);
+            //3 = export documentation page
+            SwitchTheMainGrid("3");
+        }
 
+        /// <summary>
+        /// Opens the user doc page in the user main grid when the "delete documentation" option is pressed
+        /// </summary>
+        private void OpenUserDocsPage(object sender, RoutedEventArgs e)
+        {
+            ShowTheUserMainGrid(null, null);
+            //1 = user's documentations page
+            SwitchTheMainGrid("1");
+        }
         #endregion
 
 
@@ -501,5 +511,7 @@ namespace SDWP
                 (new MainWindow()).Show();
             }
         }
+
+
     }
 }

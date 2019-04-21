@@ -1,0 +1,59 @@
+﻿<Window x:Class="SDWP.CreateNewDocumentationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SDWP"
+        Title="Создать новую документацию"
+        Height="200" 
+        Width="400"
+        MinHeight="200"
+        MinWidth="400"
+        MaxHeight="200"
+        MaxWidth="400">
+
+    <Window.Content>
+        <Grid VerticalAlignment="Top"
+              HorizontalAlignment="Left"
+              Background="White"
+              Width="400"
+              Height="200">
+            <StackPanel x:Name="mainContentStackPanel"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Margin="0, 0, 0, 44"
+                        Background="Transparent">
+                <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
+                           Text="Введите имя документации: "
+                           Margin="20, 10, 0, 0"/>
+                <TextBox x:Name="documentationNameTextBox"
+                         Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
+                         Margin="20, 10, 0, 0"/>
+
+            </StackPanel>
+            <Grid VerticalAlignment="Bottom"
+                  HorizontalAlignment="Stretch"
+                  Height="44"
+                  Margin="0, 0, 0, 38"
+                  Background="#E1E1E1">
+                <StackPanel x:Name="buttonsGrid"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Right"
+                            Height="44"
+                            Orientation="Horizontal"
+                            Background="#E1E1E1">
+
+                    <Button x:Name="createNewDocumentBtn"
+                            Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                            Content="Создать"
+                            Click="CreateNewDocumentation"/>
+                    <Button x:Name="cancelBtn"
+                            Style="{StaticResource createNewObjectWindowsBtnStyle}"
+                            Content="Отмена"
+                            Click="CancelCreation"/>
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Window.Content>
+</Window>

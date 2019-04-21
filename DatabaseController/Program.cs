@@ -19,10 +19,10 @@ namespace DatabaseController
             cSFileParser.GetMethodsTable("C:\\Users\\Aero\\Desktop\\Курсач\\SDWP\\SDWP\\ApplicationLib\\bin\\Debug\\ApplicationLib.dll");*/
 
 
-            /*Connector connector = new Connector(DatabaseProperties.ConnectionString);
-            connector.DeleteTable<UserInfo>();
-            connector.AddTable<UserInfo>();
-            UserInfo userInfo = new UserInfo
+            Connector connector = new Connector(DatabaseProperties.ConnectionString);
+            //connector.DeleteTable<UserInfo>();
+            connector.AddTable<Documentation>();
+            /*UserInfo userInfo = new UserInfo
             {
                 ID = 0,
                 Login = "Aero",
@@ -32,10 +32,10 @@ namespace DatabaseController
                 BirthDate = DateTime.Now,
                 Email = "stepanov-ev@yandex.ru"
             };
-            connector.Insert(userInfo);
+            connector.Insert(userInfo);*/
             Console.WriteLine("Success");
 
-            Console.ReadKey();*/
+            Console.ReadKey();
         }
     }
 }

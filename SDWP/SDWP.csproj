@@ -71,6 +71,12 @@
     <Compile Include="Models\TemplateTreeViewItem.cs" />
     <Compile Include="Models\TemplateTreeViewItemItem.cs" />
     <Compile Include="Models\TemplateTreeViewParagraphItem.cs" />
+    <Compile Include="Windows and pages\CreateNewDocumentationWindow.xaml.cs">
+      <DependentUpon>CreateNewDocumentationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows and pages\CreateNewDocumentWindow.xaml.cs">
+      <DependentUpon>CreateNewDocumentWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows and pages\CreateNewImageWindow.xaml.cs">
       <DependentUpon>CreateNewImageWindow.xaml</DependentUpon>
     </Compile>
@@ -85,7 +91,7 @@
     </Compile>
     <Compile Include="DocController\DocumentationController.cs" />
     <Compile Include="Interfaces\IDocController.cs" />
-    <Compile Include="Exceptions\IExceptionHandler.cs" />
+    <Compile Include="Interfaces\IExceptionHandler.cs" />
     <Compile Include="Interfaces\ISdwpAbstractFactory.cs" />
     <Compile Include="Factories\SdwpAbstractFactory.cs" />
     <Compile Include="Windows and pages\CreateNewItemWindow.xaml.cs">
@@ -127,6 +133,14 @@
     </Compile>
     <Compile Include="Welcome page animations\WelcomePageBottomGridAnimation.cs" />
     <Page Include="Windows and pages\AppResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\CreateNewDocumentationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows and pages\CreateNewDocumentWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -376,6 +390,9 @@
     <Resource Include="Resources\templateTreeViewNumberedListIcon.png" />
     <Resource Include="Resources\templateTreeViewSubparagraphIcon.png" />
     <Resource Include="Resources\templateTreeViewTableIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\defaultParagraphImageImage.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

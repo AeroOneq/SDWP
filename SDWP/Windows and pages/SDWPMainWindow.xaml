@@ -147,6 +147,7 @@
                   HorizontalAlignment="Left"
                   MouseEnter="OptionGridMouseEnter"
                   MouseLeave="OptionGridMouseLeave"
+                  MouseDown="OpenUserDocsPage"
                   Margin="202, 0, 0, 0">
                 <Image x:Name="deleteIconStatic"
                        VerticalAlignment="Center"

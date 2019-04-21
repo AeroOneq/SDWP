@@ -14,10 +14,12 @@ using System.Windows.Navigation;
 using System.Windows.Media.Animation;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Data.SqlClient;
 
 using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 using ApplicationLib.Services;
+using ApplicationLib.Database;
 
 using SDWP.Models;
 using SDWP.Factories;
@@ -36,14 +38,22 @@ namespace SDWP
         public Action CloseAccGrid { get; set; }
         #endregion
 
+        #region Services and factories
+        private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
+        private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
+
+        private IExceptionHandler ExceptionHandler { get; set; }
+        private ICloudDocumentationService CloudDocumentationService { get; set; }
+        private ILocalDocumentationService LocalDocumentationService { get; set; }
+        #endregion
+
         #region Propeties
         private PageHeader PageHeader { get; }
         private string CurrentFilePath { get; set; }
 
-        private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
-        private ILocalDocumentationService LocalDocumentationService { get; set; }
-
         private List<LocalDocumentation> LocalDocumentations { get; set; }
+        private List<Documentation> CloudDocumentation { get; set; }
+
         private MainPage MainPage { get; }
         private StackPanel LocalDocsPanel { get; set; }
         private StackPanel CloudDocsPanel { get; set; }
@@ -80,15 +90,48 @@ namespace SDWP
 
         private void InitializeServices()
         {
+            SdwpAbstractFactory = new SdwpAbstractFactory();
             ServiceAbstractFactory = new ServiceAbstractFactory();
+
+            ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
+            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService(DatabaseProperties.ConnectionString);
             LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
         }
 
         #region Upload documentation methods
         private async Task UploadDocumentationsFromLocalSotrage()
         {
-            LocalDocumentations = (await LocalDocumentationService.GetLocalDocumentations()).ToList();
-            offlineDocumentationListBox.ItemsSource = LocalDocumentations.Select(lc => lc.Documentation).ToList();
+            try
+            {
+                LocalDocumentations = (await LocalDocumentationService.GetLocalDocumentations()).ToList();
+                LocalDocumentationListBox.ItemsSource = LocalDocumentations.Select(lc => lc.Documentation).ToList();
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+
+        private async Task UploadDocumentationsFromCloudSotrage()
+        {
+            try
+            {
+                CloudDocumentation = (await CloudDocumentationService.GetDocumentations("AuthorID", UserInfo.CurrentUser.ID))
+                    .ToList();
+                CloudDocumentationListBox.ItemsSource = CloudDocumentation;
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
         #endregion
 
@@ -106,22 +149,19 @@ namespace SDWP
             button.Background = new SolidColorBrush(Colors.OrangeRed);
             button.Foreground = new SolidColorBrush(Colors.White);
         }
-        #endregion
 
-        private void UploadDocumentationToMainPage(object sender, RoutedEventArgs e)
+        private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
-            Documentation selectedDocumentation = offlineDocumentationListBox.SelectedItem as Documentation;
-            if (selectedDocumentation == null)
+            (sender as ListBoxItem).Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
+        }
+
+        private void ListBoxItemMouseLeave(object sender, MouseEventArgs e)
+        {
+            ListBoxItem listBoxItem = sender as ListBoxItem;
+            if (!listBoxItem.IsSelected)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
-                return;
+                listBoxItem.Background = new SolidColorBrush(Colors.LightGray);
             }
-
-            LocalDocumentation localDocumentation = LocalDocumentations.Find(ld => ld.  Documentation == selectedDocumentation);
-            localDocumentation.DocumentationPath = Path.Combine(CurrentFilePath, localDocumentation.Documentation.Name + ".sdwp");
-
-            MainPage.UploadLocalDocumentation(localDocumentation);
-            CloseAccGrid(); 
         }
 
         private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
@@ -141,26 +181,50 @@ namespace SDWP
             (sender as TextBlock).TextDecorations.Clear();
         }
 
-        private void GoToLocalDocumentationPanel(object sender, RoutedEventArgs e)
+        private async void GoToLocalDocumentationPanel(object sender, RoutedEventArgs e)
         {
             GoToLocalDocsTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
             GoToCloudDocsTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+
             LocalDocsPanel.Visibility = Visibility.Visible;
             CloudDocsPanel.Visibility = Visibility.Collapsed;
+
+            if (LocalDocumentationService.StoragePath != null)
+                await UploadDocumentationsFromLocalSotrage();
         }
 
-        private void GoToCloudDocumentationPanel(object sender, RoutedEventArgs e)
+        private async void GoToCloudDocumentationPanel(object sender, RoutedEventArgs e)
         {
             GoToLocalDocsTextBlock.Foreground = new SolidColorBrush(Colors.Black);
             GoToCloudDocsTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+
             LocalDocsPanel.Visibility = Visibility.Collapsed;
             CloudDocsPanel.Visibility = Visibility.Visible;
+
+            await UploadDocumentationsFromCloudSotrage();
+        }
+        #endregion
+
+        private void UploadLocalDocumentationToMainPage(object sender, RoutedEventArgs e)
+        {
+            if (!(LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation))
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
+                return;
+            }
+
+            LocalDocumentation localDocumentation = LocalDocumentations.Find(ld => ld.  Documentation == selectedDocumentation);
+            localDocumentation.DocumentationPath = Path.Combine(CurrentFilePath, localDocumentation.Documentation.Name + ".sdwp");
+
+            MainPage.UploadLocalDocumentation(localDocumentation);
+            CloseAccGrid(); 
         }
 
         private async void SelectLocalDocumentationFolder(object sender, RoutedEventArgs e)
         {
             string folderPath = FolderDialog.ShowDialog();
             FilePathTextBox.Text = CurrentFilePath = folderPath;
+
             if (folderPath != null)
             {
                 LocalDocumentationService.StoragePath = folderPath;
@@ -170,11 +234,10 @@ namespace SDWP
 
         private async void DeleteDocumentation(object sender, RoutedEventArgs e)
         {
-            Documentation selectedDocumentation = LocalDocumentationListBox.SelectedItem as Documentation;
-            if (selectedDocumentation == null)
+            if (!(LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation))
             {
                 SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
-                return;     
+                return;
             }
 
             LocalDocumentationService.DeleteLocalDocumentationFile(LocalDocumentations.Find((
@@ -183,17 +246,20 @@ namespace SDWP
             await UploadDocumentationsFromLocalSotrage();
         }
 
-        private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
-        {
-            (sender as ListBoxItem).Background = new SolidColorBrush(Color.FromRgb(240, 240, 240));
-        }
 
-        private void ListBoxItemMouseLeave(object sender, MouseEventArgs e)
+        private async void CreateNewDocumentation(object sender, RoutedEventArgs e)
         {
-            ListBoxItem listBoxItem = sender as ListBoxItem;
-            if (!listBoxItem.IsSelected)
+            if (LocalDocumentationService.StoragePath == null)
             {
-                listBoxItem.Background = new SolidColorBrush(Colors.LightGray);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте папку с документами", MessageBoxButton.OK);
+                return;
+            }
+
+            CreateNewDocumentationWindow createNewDocumentationWindow = new CreateNewDocumentationWindow(LocalDocumentationService);
+
+            if (createNewDocumentationWindow.ShowDialog() == true)
+            {
+                await UploadDocumentationsFromLocalSotrage();
             }
         }
     }

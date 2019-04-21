@@ -40,8 +40,9 @@ namespace SDWP
         private TextBox GoToListModeTextBox { get; set; }
         private TreeView DocumentTreeView { get; set; }
         private ScrollViewer ListModeScroll { get; set; }
+        private TextBox ParagraphSearchTextBox { get; set; }
 
-        private string ParagraphSearchTextBoxDefaultTetx { get; } = "Введите запрос...";
+        private string ParagraphSearchTextBoxDefaultText { get; } = "Введите запрос...";
 
         private ISdwpAbstractFactory AbstractFactory { get; set; }
         public IDocController DocController { get; set; }
@@ -52,8 +53,8 @@ namespace SDWP
         public MainPage()
         {
             InitializeComponent();
+            InitializeProperties();
             InitializeServices();
-            SetPropertiesValue();
         }
 
         #region Initialize page methods
@@ -63,7 +64,7 @@ namespace SDWP
             DocController = AbstractFactory.GetDocController();
         }
 
-        private void SetPropertiesValue()
+        private void InitializeProperties()
         {
             LeftDocumentationGrid = leftDocumentsGrid;
             ItemsGrid = itemsGrid;
@@ -80,6 +81,7 @@ namespace SDWP
             ItemsListStackPanel = itemsListStackPanel;
             ParagraphElementsGrid = paragraphElementsGrid;
             AddNewParagraphElementGrid = addNewParagraphElementGrid;
+            ParagraphSearchTextBox = paragraphsSearchTextBox;
 
             GoToTreeViewModeTextBox = goToTreeViewModeTextBox;
             GoToListModeTextBox = goToListModeTextBox;
@@ -204,6 +206,22 @@ namespace SDWP
                 RefreshItemsUI();
         }
 
+        private void OnTreeContextMenuAddNewItemToRoot(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                List<Item> currentItemsList = DocController.CurrentDocument.Items;
+
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(currentItemsList, null);
+                if (createNewItemWindow.ShowDialog() == true)
+                    RefreshItemsUI();
+            }
+            catch (NullReferenceException)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите документ", MessageBoxButton.OK);
+            }
+        }
+
         private void TreeViewItemTextBoxLostFocus(object sender, RoutedEventArgs e)
         {
             (sender as TextBox).IsEnabled = false;
@@ -223,14 +241,17 @@ namespace SDWP
         /// </summary>
         private void CreateDocumentTreeView(Document document)
         {
-            DocumentTreeView.Items.Clear();
-            foreach (Item item in document.Items)
+            if (document != null)
             {
-                DocTreeViewItem treeViewItem = CreateNewListItem(item);
+                DocumentTreeView.Items.Clear();
+                foreach (Item item in document.Items)
+                {
+                    DocTreeViewItem treeViewItem = CreateNewListItem(item);
 
-                UploadItemsToTreeView(item, treeViewItem);
+                    UploadItemsToTreeView(item, treeViewItem);
 
-                DocumentTreeView.Items.Add(treeViewItem);
+                    DocumentTreeView.Items.Add(treeViewItem);
+                }
             }
         }
 
@@ -482,6 +503,8 @@ namespace SDWP
 
         private void GoToListMode(object sender, MouseButtonEventArgs e)
         {
+            RefreshItemsUI();
+
             BackToPreviousItemStaticImage.IsEnabled = true;
             AddNewItemStaticImage.IsEnabled = true;
 
@@ -573,7 +596,7 @@ namespace SDWP
         private void ParagraphSearchTextBoxGotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            if (textBox.Text == ParagraphSearchTextBoxDefaultTetx)
+            if (textBox.Text == ParagraphSearchTextBoxDefaultText)
                 textBox.Text = string.Empty;
         }
 
@@ -585,7 +608,7 @@ namespace SDWP
         {
             TextBox textBox = sender as TextBox;
             if (textBox.Text == string.Empty)
-                textBox.Text = ParagraphSearchTextBoxDefaultTetx;
+                textBox.Text = ParagraphSearchTextBoxDefaultText;
         }
 
         /// <summary>
@@ -593,7 +616,27 @@ namespace SDWP
         /// </summary>
         private void ParagraphSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-#warning place a search logic here
+            if (ParagraphSearchTextBox == null || DocController.CurrentParagraphsList == null)
+                return;
+
+            string searchText = ParagraphSearchTextBox.Text;
+
+            if (string.IsNullOrEmpty(searchText) || searchText == ParagraphSearchTextBoxDefaultText)
+            {
+                UploadParagraphsToParagraphsListPanel(DocController.CurrentParagraphsList);
+                return;
+            }
+
+            List<Paragraph> suitableParagraphs = new List<Paragraph>();
+            List<Paragraph> currentParagraphs = DocController.CurrentParagraphsList;
+
+            foreach (Paragraph paragraph in currentParagraphs)
+            {
+                if (paragraph.ParagraphElement.Title.IndexOf(searchText) > -1)
+                    suitableParagraphs.Add(paragraph);
+            }
+
+            UploadParagraphsToParagraphsListPanel(suitableParagraphs);
         }
 
         /// <summary>
@@ -621,7 +664,6 @@ namespace SDWP
                 DocController.GoToPreviousItem(DocController.CurrentItem);
             }
         }
-
         #endregion
 
         #region Add new paragraphs (IParagraphElement) methods
@@ -681,5 +723,25 @@ namespace SDWP
             }
         }
         #endregion
+
+        private void CreateNewDocument(object sender, MouseButtonEventArgs e)
+        {
+            List<Document> currentDocumentList = DocController.Documents;
+            Documentation documentation = DocController.Documentation;
+
+            if (currentDocumentList == null || documentation == null)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройти документацию", MessageBoxButton.OK);
+                return;
+            }
+
+            CreateNewDocumentWindow createNewDocumentWindow = new CreateNewDocumentWindow(currentDocumentList,
+                documentation);
+
+            if (createNewDocumentWindow.ShowDialog() == true)
+            {
+                RefreshDocumentUI();
+            }
+        }
     }
 }

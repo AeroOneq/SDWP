@@ -11,7 +11,7 @@ namespace ApplicationLib.Services
 {
     public class EmailService : IEmailService<UserInfo>
     {
-        private Email Email { get; } = new Email();
+        private EmailDB Email { get; } = new EmailDB();
         public string Code => Email.Code;
 
         public async Task SendCodeEmail(UserInfo user) =>

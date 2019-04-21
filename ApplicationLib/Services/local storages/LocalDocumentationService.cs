@@ -16,6 +16,7 @@ namespace ApplicationLib.Services
     {
         public string StoragePath { get; set; }
         public int ErrorsCount { get; private set; }
+        public string Extension => ".sdwp";
 
         public LocalDocumentationService() { }
 
@@ -42,7 +43,7 @@ namespace ApplicationLib.Services
         /// <exception cref="FileNotFoundException"/>
         public void DeleteLocalDocumentationFile(LocalDocumentation localDocumentation)
         {
-            string path = Path.Combine(localDocumentation.DocumentationPath, localDocumentation.Documentation.Name + ".sdwp");
+            string path = Path.Combine(localDocumentation.DocumentationPath);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -76,6 +77,7 @@ namespace ApplicationLib.Services
                         string localDocJsonString = GetStringFromByteArray(fileBytes);
                         LocalDocumentation localDocumentation = JsonConvert.DeserializeObject
                             <LocalDocumentation>(localDocJsonString);
+                        localDocumentation.DocumentationPath = filePath;
 
                         localDocumentations.Add(localDocumentation);
                     }

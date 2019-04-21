@@ -10,6 +10,8 @@ namespace ApplicationLib.Interfaces
 {
     public interface ILocalDocumentationService : ILocalStorage
     {
+        string Extension { get; }
+
         Task<IEnumerable<LocalDocumentation>> GetLocalDocumentations();
         Task CreateLocalDocumentationFile(LocalDocumentation localDocumentation);
         void DeleteLocalDocumentationFile(LocalDocumentation localDocumentation);

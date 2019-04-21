@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 
@@ -14,5 +15,8 @@ namespace ApplicationLib.Interfaces
         IEmailService<UserInfo> GetEmailService();
         ILocalDocumentationService GetLocalDocumentationService();
         ILocalTemplateService GetLocalTemplateService();
+        ICloudDocumentationService GetCloudDocumentationService(string connectionString);
+        ICloudDocumentsService GetCloudDocumentsService(string connectionString);
+        ICloudTemplateService GetCloudTemplateService(string connectionString);
     }
 }

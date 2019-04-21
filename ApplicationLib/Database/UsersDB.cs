@@ -9,7 +9,7 @@ using ApplicationLib.Interfaces;
 
 namespace ApplicationLib.Database
 {
-    public class UsersDB
+    public class UsersDB : IUserDatabase<UserInfo>
     {
         #region Services
         private IEmailService<UserInfo> EmailService { get; }

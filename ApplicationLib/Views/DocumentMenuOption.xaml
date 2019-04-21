@@ -89,6 +89,7 @@
                          IsReadOnly="True"
                          Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnlyCaretVisible="False"
+                         Margin="25, 0, 0, 0"
                          Cursor="Arrow"
                          Background="Transparent"
                          VerticalContentAlignment="Center"

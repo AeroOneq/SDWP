@@ -10,6 +10,7 @@ using System.Windows.Media;
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
+using ApplicationLib.Database;
 
 using SDWP.Interfaces;
 using SDWP.Exceptions;
@@ -33,6 +34,7 @@ namespace SDWP
         private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
 
         private ILocalTemplateService LocalTemplateService { get; set; }
+        private ICloudTemplateService CloudTemplateService { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
         #endregion
 
@@ -44,9 +46,12 @@ namespace SDWP
         private StackPanel LocalTemplatesStackPanel { get; set; }
         private StackPanel CloudTemplatesStackPanel { get; set; }
         private ListBox LocalTemplatesListBox { get; set; }
+        private ListBox CloudTemplatesListBox { get; set; }
         private TreeView TemplateTreeView { get; set; }
         private PageHeader PageHeader { get; set; }
         private TextBox HintTextBox { get; set; }
+        private TextBlock LocalTemplatesTextBlock { get; set; }
+        private TextBlock CloudTemplatesTextBlock { get; set; }
         #endregion
 
         #region Constructors and initializing methods
@@ -55,9 +60,6 @@ namespace SDWP
             InitializeComponent();
             InitializeProperties();
             InitializeServices();
-            UploadTemplatesFromLocalStorage();
-
-            PageHeader.OnRefresh = new Action(async () => await UploadTemplatesFromLocalStorage());
 
             CurrentUser = currentUser;
         }
@@ -70,6 +72,7 @@ namespace SDWP
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
             LocalTemplateService = ServiceAbstractFactory.GetLocalTemplateService();
             LocalTemplateService.StoragePath = DefaultStoragePath;
+            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService(DatabaseProperties.ConnectionString);
         }
 
         private void InitializeProperties()
@@ -77,24 +80,35 @@ namespace SDWP
             LocalTemplatesStackPanel = localTemplatesStackPanel;
             CloudTemplatesStackPanel = cloudTemplatesStackPanel;
             LocalTemplatesListBox = localTemplatesListBox;
+            CloudTemplatesListBox = cloudTemplatesListBox;
             TemplateTreeView = templateTreeView;
             PageHeader = pageHeader;
             HintTextBox = hintTextBox;
+            LocalTemplatesTextBlock = goToLocalDocumentation;
+            CloudTemplatesTextBlock = goToCloudDocumentation;
         }
+        #endregion
 
+        #region Templates uploading
         private async Task UploadTemplatesFromLocalStorage()
         {
-            List<LocalTemplate> templates = (await LocalTemplateService.GetLocalTemplates()).ToList();
-            LocalTemplatesListBox.ItemsSource = templates;
+            List<LocalTemplate> localTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
+            LocalTemplatesListBox.ItemsSource = localTemplates;
+        }
+
+        private async Task UploadTemplatesFromColoudStorage()
+        {
+            List<Template> templates = (await CloudTemplateService.GetTemplates("UserID", UserInfo.CurrentUser.ID)).ToList();
+            cloudTemplatesListBox.ItemsSource = templates;
         }
         #endregion
 
         #region Parent setting
-        private void SetTemplateItemsParents(LocalTemplate localTemplate)
+        private void SetTemplateItemsParents(Template template)
         {
-            if (localTemplate.Template.Items != null)
+            if (template.Items != null)
             {
-                foreach (Item item in localTemplate.Template.Items)
+                foreach (Item item in template.Items)
                 {
                     SetItemParents(item);
                 }
@@ -124,14 +138,6 @@ namespace SDWP
         #endregion
 
         #region Templates list boxes events
-        private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ListBoxItem selectedItem = sender as ListBoxItem;
-            selectedItem.IsSelected = true;
-
-            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
-            //SelectedTemplateTextBlock.Text = (selectedItem.DataContext as Documentation).Name;
-        }
 
         private void ListBoxItemMouseEnter(object sender, MouseEventArgs e)
         {
@@ -156,6 +162,14 @@ namespace SDWP
         {
             (sender as TextBlock).TextDecorations.Clear();
         }
+
+        private void ListBoxItemMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem selectedItem = sender as ListBoxItem;
+            selectedItem.IsSelected = true;
+
+            CreateTemplateTreeView(GetSelectedTemplate());
+        }
         #endregion
 
         #region Template tree view
@@ -163,12 +177,12 @@ namespace SDWP
         /// Buids a tree view with a given template file, also sets parents to all tree nodes (items or paragraphs)
         /// </summary>
         /// <param name="localTemplate"></param>
-        private void CreateTemplateTreeView(LocalTemplate localTemplate)
+        private void CreateTemplateTreeView(Template template)
         {
             TemplateTreeView.Items.Clear();
-            SetTemplateItemsParents(localTemplate);
+            SetTemplateItemsParents(template);
 
-            foreach (Item item in localTemplate.Template.Items)
+            foreach (Item item in template.Items)
             {
                 TemplateTreeViewItem treeViewItem = CreateTemplateTreeViewItem(item);
 
@@ -277,8 +291,16 @@ namespace SDWP
 
             if (createNewItemWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
+                RefreshTemplateTreeView();
             }
+        }
+
+        private void RefreshTemplateTreeView()
+        {
+            if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
+                CreateTemplateTreeView((LocalTemplatesListBox.SelectedItem as LocalTemplate).Template);
+            else
+                CreateTemplateTreeView(CloudTemplatesListBox.SelectedItem as Template);
         }
 
         private void AddNewParagraph(object sender, RoutedEventArgs e)
@@ -288,7 +310,7 @@ namespace SDWP
 
             if (createWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
+                RefreshTemplateTreeView();
             }
         }
 
@@ -311,18 +333,30 @@ namespace SDWP
                 paragraph.ParentList.Remove(paragraph);
             }
 
-            CreateTemplateTreeView(LocalTemplatesListBox.SelectedItem as LocalTemplate);
+            RefreshTemplateTreeView();
         }
 
         private void AddNewItemToRoot(object sender, RoutedEventArgs e)
         {
-            LocalTemplate currentLocalTemplate = LocalTemplatesListBox.SelectedItem as LocalTemplate;
-            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(currentLocalTemplate.Template.Items, null);
+            Template selectedTemplate = GetSelectedTemplate();
+            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedTemplate.Items, null);
 
             if (createNewItemWindow.ShowDialog() == true)
             {
-                CreateTemplateTreeView(currentLocalTemplate);
+                RefreshTemplateTreeView();
             }
+        }
+
+        /// <summary>
+        /// Gets a selected template from a LocalTempaltesListBox if the current mode is local mode
+        /// or from a CloudTemplatesListBox if the current mode is cloud mode
+        /// </summary>
+        private Template GetSelectedTemplate()
+        {
+            if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
+                return (LocalTemplatesListBox.SelectedItem as LocalTemplate).Template;
+            else
+                return CloudTemplatesListBox.SelectedItem as Template;
         }
         #endregion
 
@@ -336,10 +370,21 @@ namespace SDWP
             {
                 PageHeader.SwitchOnTopLoader();
 
-                IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>;
-                foreach (LocalTemplate template in templates)
+                if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
                 {
-                    await LocalTemplateService.RewriteTemplateFile(template);
+                    IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>;
+                    foreach (LocalTemplate template in templates)
+                    {
+                        await LocalTemplateService.RewriteTemplateFile(template);
+                    }
+                }
+                else
+                {
+                    IEnumerable<Template> templates = CloudTemplatesListBox.ItemsSource as IEnumerable<Template>;
+                    foreach (Template template in templates)
+                    {
+                        await CloudTemplateService.UpdateTemplate(template);
+                    }
                 }
             }
             catch (IOException ex)
@@ -364,8 +409,16 @@ namespace SDWP
             {
                 PageHeader.SwitchOnTopLoader();
 
-                LocalTemplate template = LocalTemplatesListBox.SelectedItem as LocalTemplate;
-                await LocalTemplateService.RewriteTemplateFile(template);
+                if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
+                {
+                    LocalTemplate template = LocalTemplatesListBox.SelectedItem as LocalTemplate;
+                    await LocalTemplateService.RewriteTemplateFile(template);
+                }
+                else
+                {
+                    Template template = CloudTemplatesListBox.SelectedItem as Template;
+                    await CloudTemplateService.UpdateTemplate(template);
+                }
             }
             catch (IOException ex)
             {
@@ -386,27 +439,42 @@ namespace SDWP
         /// </summary>
         private void DeleteTemplate(object sender, RoutedEventArgs e)
         {
-            if (LocalTemplatesListBox.SelectedItem is LocalTemplate selectedTemplate)
+            try
             {
-                try
+                if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
                 {
-                    LocalTemplateService.DeleteTemplateFile(selectedTemplate);
+                    if (LocalTemplatesListBox.SelectedItem is LocalTemplate selectedTemplate)
+                    {
+                        LocalTemplateService.DeleteTemplateFile(selectedTemplate);
 
-                    List<LocalTemplate> listBoxItemsSource = LocalTemplatesListBox.ItemsSource as List<LocalTemplate>;
-                    listBoxItemsSource.Remove(selectedTemplate);
-                    LocalTemplatesListBox.ItemsSource = null;
-                    LocalTemplatesListBox.ItemsSource = listBoxItemsSource;
+                        List<LocalTemplate> listBoxItemsSource = LocalTemplatesListBox.ItemsSource as List<LocalTemplate>;
+                        listBoxItemsSource.Remove(selectedTemplate);
+                        LocalTemplatesListBox.ItemsSource = null;
+                        LocalTemplatesListBox.ItemsSource = listBoxItemsSource;
+                    }
+                }
+                else
+                {
+                    if (CloudTemplatesListBox.SelectedItem is Template selectedTemplate)
+                    {
+                        CloudTemplateService.DeleteTemplate(selectedTemplate);
 
-                    TemplateTreeView.Items.Clear();
+                        List<Template> templates = CloudTemplatesListBox.ItemsSource as List<Template>;
+                        templates.Remove(selectedTemplate);
+                        CloudTemplatesListBox.ItemsSource = null;
+                        CloudTemplatesListBox.ItemsSource = templates;
+                    }
                 }
-                catch (IOException ex)
-                {
-                    ExceptionHandler.HandleWithMessageBox(ex);
-                }
-                catch (Exception ex)
-                {
-                    ExceptionHandler.HandleWithMessageBox(ex);
-                }
+
+                TemplateTreeView.Items.Clear();
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
         /// <summary>
@@ -416,18 +484,44 @@ namespace SDWP
         {
             try
             {
-                LocalTemplate template = new LocalTemplate(new Template()
+                if (LocalTemplatesStackPanel.Visibility == Visibility.Visible)
                 {
-                    Items = new List<Item>(),
-                    TemplateName = "Новый шаблон"
-                });
+                    LocalTemplate template = new LocalTemplate(new Template()
+                    {
+                        Items = new List<Item>(),
+                        TemplateName = "Новый шаблон",
+                        CreationAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        UserID = UserInfo.CurrentUser.ID
+                    });
 
-                await LocalTemplateService.CreateTemplateFile(template);
+                    await LocalTemplateService.CreateTemplateFile(template);
 
-                List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>).ToList();
-                templates.Add(template);
+                    List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>).ToList();
+                    templates.Add(template);
 
-                LocalTemplatesListBox.ItemsSource = templates;
+                    LocalTemplatesListBox.ItemsSource = null;
+                    LocalTemplatesListBox.ItemsSource = templates;
+                }
+                else
+                {
+                    Template template = new Template()
+                    {
+                        Items = new List<Item>(),
+                        TemplateName = "Новый шаблон",
+                        CreationAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        UserID = UserInfo.CurrentUser.ID
+                    };
+
+                    await CloudTemplateService.InsertTemplate(template);
+
+                    List<Template> templates = CloudTemplatesListBox.ItemsSource as List<Template>;
+                    templates.Add(template);
+
+                    CloudTemplatesListBox.ItemsSource = null;
+                    CloudTemplatesListBox.ItemsSource = templates;
+                }
             }
             catch (IOException ex)
             {
@@ -440,16 +534,26 @@ namespace SDWP
         }
         #endregion
 
-        private void GoToLocalTemplatesMode(object sender, MouseButtonEventArgs e)
+        private async void GoToLocalTemplatesMode(object sender, MouseButtonEventArgs e)
         {
             LocalTemplatesStackPanel.Visibility = Visibility.Visible;
             CloudTemplatesStackPanel.Visibility = Visibility.Collapsed;
+
+            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+
+            await UploadTemplatesFromLocalStorage();
         }
 
-        private void GoToCloudTemplatesMode(object sender, MouseButtonEventArgs e)
+        private async void GoToCloudTemplatesMode(object sender, MouseButtonEventArgs e)
         {
             LocalTemplatesStackPanel.Visibility = Visibility.Collapsed;
             CloudTemplatesStackPanel.Visibility = Visibility.Visible;
+
+            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+
+            await UploadTemplatesFromColoudStorage();
         }
 
         private void HintTextBoxTextChanged(object sender, TextChangedEventArgs e)

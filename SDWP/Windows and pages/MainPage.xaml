@@ -178,15 +178,6 @@
             <EventSetter Event="MouseLeave" Handler="TreeViewOptionTextBoxMouseLeave"/>
         </Style>
 
-        <Style x:Key="documentTreeViewStyle" TargetType="TreeView">
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Background" Value="{StaticResource mainPageItemsGridBackgroundBrush}"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="5, 10, 0, 0"/>
-        </Style>
-
         <Style x:Key="treeViewItemToggleBtnStyle" TargetType="ToggleButton">
             <Setter Property="Width" Value="15"/>
             <Setter Property="Height" Value="15"/>
@@ -283,7 +274,27 @@
             </MenuItem>
         </ContextMenu>
 
-        <Style x:Key="treeViewItemsItemStyle" TargetType="TreeViewItem">
+        <ContextMenu x:Key="treeViewContextMenu">
+            <MenuItem Header="Добавить новый пункт"
+                      Click="OnTreeContextMenuAddNewItemToRoot">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/addNewItemIconStatic.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
+
+        <Style x:Key="documentTreeViewStyle" TargetType="TreeView">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource mainPageItemsGridBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="5, 10, 0, 0"/>
+            <Setter Property="ContextMenu" Value="{StaticResource treeViewContextMenu}"/>
+        </Style>
+
+                <Style x:Key="treeViewItemsItemStyle" TargetType="TreeViewItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalContentAlignment"
                 Value="{Binding Path=HorizontalContentAlignment,
@@ -508,6 +519,13 @@
 
             <EventSetter Event="PreviewMouseDown" Handler="TreeViewItemMouseDown"/>
         </Style>
+
+        <Style x:Key="leftDocGridImgStyle" TargetType="Image">
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
     </Page.Resources>
 
     <Grid VerticalAlignment="Stretch"
@@ -515,6 +533,7 @@
           Background="Wheat">
         <Grid VerticalAlignment="Stretch"
               HorizontalAlignment="Stretch">
+            <!--Left documentation grid-->
             <Grid x:Name="leftDocumentsGrid"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Left"
@@ -524,49 +543,51 @@
                 <Grid x:Name="showLeftGridImagesGrid"
                           Visibility="Collapsed">
                     <Image x:Name="showLeftGridImageStatic"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left"
-                               Visibility="Visible"
-                               Width="30"
-                               Height="30"
-                               Margin="15, 15, 0, 0"
-                               Source="../Resources/forwardArrowIconStatic.png"
-                               MouseEnter="IconMouseEnter"/>
+                           Visibility="Visible"
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Margin="15, 15, 0, 0"
+                           Source="../Resources/forwardArrowIconStatic.png"
+                           MouseEnter="IconMouseEnter"/>
                     <Image x:Name="showLeftGridImageActive"
-                               VerticalAlignment="Top"
-                               Visibility="Collapsed"
-                               HorizontalAlignment="Left"
-                               Width="30"
-                               Height="30"
-                               Margin="15, 15, 0, 0"
-                               Source="../Resources/forwardArrowIconActive.png"
-                               MouseLeave="IconMouseLeave"
-                               MouseDown="ShowLeftDocumentsGrid"/>
+                           Visibility="Collapsed"
+                           Margin="15, 15, 0, 0"
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Source="../Resources/forwardArrowIconActive.png"
+                           MouseLeave="IconMouseLeave"
+                           MouseDown="ShowLeftDocumentsGrid"/>
                 </Grid>
 
                 <Grid x:Name="hideLeftGridImagesGrid"
                           Visibility="Visible">
                     <Image x:Name="hideLeftGridImageStatic"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left"
-                               Visibility="Visible"
-                               Width="30"
-                               Height="30"
-                               Margin="15, 15, 0, 0"
-                               Source="../Resources/closeAccGridStatic.png"
-                               MouseEnter="IconMouseEnter"/>
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Visibility="Visible"
+                           Margin="15, 15, 0, 0"
+                           Source="../Resources/closeAccGridStatic.png"
+                           MouseEnter="IconMouseEnter"/>
                     <Image x:Name="hideLeftGridImageActive"
-                               VerticalAlignment="Top"
-                               Visibility="Collapsed"
-                               HorizontalAlignment="Left"
-                               Width="30"
-                               Height="30"
-                               Margin="15, 15, 0, 0"
-                               Source="../Resources/closeAccGridActive.png"
-                               MouseLeave="IconMouseLeave"
-                               MouseDown="HideLeftDocumentsGrid"/>
+                           Visibility="Collapsed"
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Margin="15, 15, 0, 0"
+                           Source="../Resources/closeAccGridActive.png"
+                           MouseLeave="IconMouseLeave"
+                           MouseDown="HideLeftDocumentsGrid"/>
                 </Grid>
 
+                <Grid x:Name="addNewDocumentGrid"
+                      Margin="210, 15, 0, 0"
+                      Visibility="Visible">
+                    <Image x:Name="createNewDocStatic"
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Source="../Resources/addNewItemIconStatic.png"
+                           MouseEnter="IconMouseEnter"/>
+                    <Image x:Name="createNewDocActive"
+                           Style="{StaticResource leftDocGridImgStyle}"
+                           Source="../Resources/addNewItemIconActive.png"
+                           MouseLeave="IconMouseLeave"
+                           MouseDown="CreateNewDocument"/>
+                </Grid>
+                
                 <Grid x:Name="leftDocumentsGridContent"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
@@ -600,8 +621,8 @@
                                           Margin="0, 150, 0, 0"
                                           VerticalScrollBarVisibility="Hidden">
                             <StackPanel x:Name="documentsListStackPanel"
-                                      VerticalAlignment="Top"
-                                      HorizontalAlignment="Stretch"/>
+                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Stretch"/>
                         </ScrollViewer>
                     </Grid>
                 </Grid>

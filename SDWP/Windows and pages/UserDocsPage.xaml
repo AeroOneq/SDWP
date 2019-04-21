@@ -416,17 +416,37 @@
                                          Style="{StaticResource filePathTextBoxStyle}"
                                          Text=""
                                          Margin="20, 5, 0, 0"/>
-                                <Button x:Name="selectDocumentationFolderBtn"
-                                        Style="{StaticResource documentationProperteisBtnStyle}"
-                                        Margin="0, 10, 0, 0"
-                                        Click="SelectLocalDocumentationFolder">
-                                    <TextBlock FontFamily="Arial, Verdana"
-                                               FontSize="14"
-                                               Foreground="{StaticResource mainThemeBrush}"
-                                               Text="Обзор"
-                                               VerticalAlignment="Top"
-                                               HorizontalAlignment="Left"/>
-                                </Button>
+                                
+                                <StackPanel VerticalAlignment="Top"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Horizontal"
+                                            Margin="20, 0, 0, 0">
+                                    <Button x:Name="createDocumentationBtn"
+                                            Style="{StaticResource documentationProperteisBtnStyle}"
+                                            Margin="0, 10, 0, 0"
+                                            Click="CreateNewDocumentation">
+                                        <TextBlock FontFamily="Arial, Verdana"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource mainThemeBrush}"
+                                                   Text="Создать"
+                                                   VerticalAlignment="Top"
+                                                   HorizontalAlignment="Left"/>
+                                    </Button>
+
+                                    <Button x:Name="selectDocumentationFolderBtn"
+                                            Style="{StaticResource documentationProperteisBtnStyle}"
+                                            Margin="100, 10, 0, 0"
+                                            Click="SelectLocalDocumentationFolder">
+                                        <TextBlock FontFamily="Arial, Verdana"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource mainThemeBrush}"
+                                                   Text="Обзор"
+                                                   VerticalAlignment="Top"
+                                                   HorizontalAlignment="Left"/>
+                                    </Button>
+                                </StackPanel>
+ 
+
                                 <Grid HorizontalAlignment="Stretch"
                                       VerticalAlignment="Top"
                                       Background="Gray"
@@ -453,7 +473,7 @@
                                                 Margin="0, 10, 0, 0">
                                         <Button x:Name="openDocumentationBtn"
                                                 Style="{StaticResource localDocOptionBtnStyle}"
-                                                Click="UploadDocumentationToMainPage">
+                                                Click="UploadLocalDocumentationToMainPage">
                                             <Button.Content>
                                                 <StackPanel VerticalAlignment="Top"
                                                             HorizontalAlignment="Stretch"
