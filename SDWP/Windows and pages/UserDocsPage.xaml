@@ -104,7 +104,7 @@
             <GradientStop Color="Orange" Offset="0.3"/>
             <GradientStop Color="Orange" Offset="0.7"/>
         </LinearGradientBrush>
-        
+
         <Style TargetType="ListBoxItem">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="0, 10, 0, 0"/>
@@ -121,12 +121,50 @@
                             <ContentPresenter/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected"
-                                     Value="True">
-                                <Setter TargetName="border"
-                                        Property="Background"
-                                        Value="#f0f0f0"/>
-                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="False" />
+                                    <Condition Property="IsSelected" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="False" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="LightGray"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                    <Condition Property="IsSelected" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <MultiTrigger.Setters>
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#f0f0f0"/>
+                                </MultiTrigger.Setters>
+                            </MultiTrigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
@@ -402,10 +440,13 @@
                                          Margin="20, 5, 0, 0"/>
                             </StackPanel>
                         </Grid>
+                        
                         <Grid x:Name="documentationPropertiesGrid">
-                            <StackPanel x:Name="localDocsPropertiesStackPanel"
+                            <!--Local documentation grid-->
+                            <StackPanel x:Name="localDocumentationPropertiesStackPanel"
                                         VerticalAlignment="Top"
                                         HorizontalAlignment="Left"
+                                        Visibility="Visible"
                                         Orientation="Vertical">
                                 <TextBlock FontFamily="Arial, Verdana"
                                            FontSize="15"
@@ -424,7 +465,7 @@
                                     <Button x:Name="createDocumentationBtn"
                                             Style="{StaticResource documentationProperteisBtnStyle}"
                                             Margin="0, 10, 0, 0"
-                                            Click="CreateNewDocumentation">
+                                            Click="CreateLocalDocumentation">
                                         <TextBlock FontFamily="Arial, Verdana"
                                                    FontSize="14"
                                                    Foreground="{StaticResource mainThemeBrush}"
@@ -445,7 +486,6 @@
                                                    HorizontalAlignment="Left"/>
                                     </Button>
                                 </StackPanel>
- 
 
                                 <Grid HorizontalAlignment="Stretch"
                                       VerticalAlignment="Top"
@@ -471,7 +511,7 @@
                                                 VerticalAlignment="Top"
                                                 HorizontalAlignment="Left"
                                                 Margin="0, 10, 0, 0">
-                                        <Button x:Name="openDocumentationBtn"
+                                        <Button x:Name="openLocalDocumentationBtn"
                                                 Style="{StaticResource localDocOptionBtnStyle}"
                                                 Click="UploadLocalDocumentationToMainPage">
                                             <Button.Content>
@@ -486,10 +526,10 @@
                                                 </StackPanel>
                                             </Button.Content>
                                         </Button>
-                                        <Button x:Name="deleteDocumentationBtn"
+                                        <Button x:Name="deleteLocalDocumentationBtn"
                                                 Style="{StaticResource localDocOptionBtnStyle}"
                                                 Margin="5, 0, 0, 0"
-                                                Click="DeleteDocumentation">
+                                                Click="DeleteLocalDocumentation">
                                             <Button.Content>
                                                 <StackPanel VerticalAlignment="Top"
                                                             HorizontalAlignment="Stretch"
@@ -502,9 +542,11 @@
                                                 </StackPanel>
                                             </Button.Content>
                                         </Button>
+                                        
                                         <Button x:Name="publishDocumentationBtn"
                                                 Style="{StaticResource localDocOptionBtnStyle}"
-                                                Margin="5, 0, 0, 0">
+                                                Margin="5, 0, 0, 0"
+                                                Click="PublishLocalDocumentation">
                                             <Button.Content>
                                                 <StackPanel VerticalAlignment="Top"
                                                             HorizontalAlignment="Stretch"
@@ -520,10 +562,92 @@
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel x:Name="cloudDocumentation"
+                            
+                            <!--Cloud documentation stack pannel -->
+                            <StackPanel x:Name="cloudDocumentationPropertiesStackPanel"
                                         VerticalAlignment="Top"
                                         HorizontalAlignment="Left"
-                                        Orientation="Vertical"/>
+                                        Orientation="Vertical"
+                                        Visibility="Visible"
+                                        Margin="20, 15, 0, 0">
+                                <StackPanel VerticalAlignment="Top"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Horizontal"
+                                            Margin="0, 20, 0, 0">
+                                    <Button x:Name="createCloudDocumentationBtn"
+                                            Style="{StaticResource localDocOptionBtnStyle}"
+                                            Click="CreateCloudDocumentation">
+                                        <Button.Content>
+                                            <StackPanel VerticalAlignment="Top"
+                                                        HorizontalAlignment="Stretch"
+                                                        Orientation="Vertical">
+                                                <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                       Source="../Resources/createNewCloudDocIcon.png"/>
+                                                <TextBlock Text="Создать"
+                                                           Margin="0, 10, 0, 0"
+                                                           Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+
+                                    <Button x:Name="openCloudDocumentationBtn"
+                                            Style="{StaticResource localDocOptionBtnStyle}"
+                                            Margin="5, 0, 0, 0"
+                                            Click="UploadCloudDocumentationToMainPage">
+                                        <Button.Content>
+                                            <StackPanel VerticalAlignment="Top"
+                                                        HorizontalAlignment="Stretch"
+                                                        Orientation="Vertical">
+                                                <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                       Source="../Resources/openLocalDocumentationIcon.png"/>
+                                                <TextBlock Text="Открыть"
+                                                           Margin="0, 10, 0, 0"
+                                                           Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+
+                                    <Button x:Name="deleteCloudDocumentationBtn"
+                                            Style="{StaticResource localDocOptionBtnStyle}"
+                                            Margin="5, 0, 0, 0"
+                                            Click="DeleteCloudDocumentation">
+                                        <Button.Content>
+                                            <StackPanel VerticalAlignment="Top"
+                                                        HorizontalAlignment="Stretch"
+                                                        Orientation="Vertical">
+                                                <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                       Source="../Resources/deleteLocalDocumentationIcon.png"/>
+                                                <TextBlock Text="Удалить"
+                                                           Margin="0, 10, 0, 0"
+                                                           Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                                
+                                <StackPanel VerticalAlignment="Top"
+                                            HorizontalAlignment="Left"
+                                            Orientation="Horizontal"
+                                            Margin="0, 10, 0, 0">
+                                    <Button x:Name="createLocalCopyBtn"
+                                            Style="{StaticResource localDocOptionBtnStyle}"
+                                            Width="200"
+                                            Margin="0, 0, 0, 0"
+                                            Click="CreateLocalCopy">
+                                        <Button.Content>
+                                            <StackPanel VerticalAlignment="Top"
+                                                        HorizontalAlignment="Stretch"
+                                                        Orientation="Vertical">
+                                                <Image Style="{StaticResource localDocOptionBtnImageStyle}"
+                                                       Source="../Resources/createLocalCopyIcon.png"/>
+                                                <TextBlock Text="Создать локальную копию"
+                                                           Margin="0, 10, 0, 0"
+                                                           Style="{StaticResource localDocOptionBtnTextBlockStyle}"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
                         </Grid>
                     </StackPanel>
                 </StackPanel>

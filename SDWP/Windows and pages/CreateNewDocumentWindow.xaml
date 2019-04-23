@@ -32,7 +32,7 @@
             <Setter Property="Padding" Value="0, 5, 0, 5"/>
         </Style>
 
-        <DataTemplate x:Key="templatesComboBoxItemTemplate">
+        <DataTemplate x:Key="localTemplatesComboBoxItemTemplate">
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left">
@@ -43,6 +43,20 @@
                            Foreground="Black"
                            FontSize="14"
                            Text="{Binding FileName}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="cloudTemplatesComboBoxItemTemplate">
+            <StackPanel Orientation="Vertical"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+                <TextBlock VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Margin="10, 0, 0, 0"
+                           FontFamily="Arial, Verdana"
+                           Foreground="Black"
+                           FontSize="14"
+                           Text="{Binding TemplateName}"/>
             </StackPanel>
         </DataTemplate>
     </Window.Resources>
@@ -89,12 +103,12 @@
                     <ComboBox x:Name="localTemplatesComboBox"
                               Margin="20, 10, 0, 0"
                               Style="{StaticResource templateComboBoxStyle}"
-                              ItemTemplate="{StaticResource templatesComboBoxItemTemplate}"/>
+                              ItemTemplate="{StaticResource localTemplatesComboBoxItemTemplate}"/>
                     <ComboBox x:Name="cloudTemplatesComboBox"
                               Margin="20, 10, 0, 0"
                               Visibility="Collapsed"
                               Style="{StaticResource templateComboBoxStyle}"
-                              ItemTemplate="{StaticResource templatesComboBoxItemTemplate}"/>
+                              ItemTemplate="{StaticResource cloudTemplatesComboBoxItemTemplate}"/>
                 </Grid>
 
             </StackPanel>

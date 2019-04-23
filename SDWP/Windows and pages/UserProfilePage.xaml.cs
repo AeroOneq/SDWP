@@ -66,7 +66,6 @@ namespace SDWP
 
             EmailService = serviceFactory.GetEmailService();
             UserService = serviceFactory.GetUserService();
-
             ExceptionHandler = sdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
@@ -230,7 +229,6 @@ namespace SDWP
                 try
                 {
                     UserInfo newUserInfo = CreateNewUserObject();
-
                     UserInfo.CheckUserProperties(newUserInfo);
 
                     if (newUserInfo.Email != UserInfo.CurrentUser.Email)
@@ -323,6 +321,7 @@ namespace SDWP
 
             timer.Start();
         }
+
         private async void CloseEnterCodeGrid(object sender, MouseButtonEventArgs e)
         {
             emailCodeTextBox.Text = string.Empty;
@@ -381,11 +380,13 @@ namespace SDWP
             if (IsProfileDataEdititing)
                 userPhotoBorder.BorderBrush = new SolidColorBrush(Colors.Orange);
         }
+
         private void UserPhotoMouseLeave(object sender, MouseEventArgs e)
         {
             if (IsProfileDataEdititing)
                 userPhotoBorder.BorderBrush = new SolidColorBrush(Colors.OrangeRed);
         }
+
         /// <summary>
         /// Shows a file open dialog to choose a new picture 
         /// </summary>
@@ -409,6 +410,7 @@ namespace SDWP
                 }
             }
         }
+
         private byte[] CreateByteRepresentationOfAnImage(string imagePath)
         {
             try

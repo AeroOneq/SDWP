@@ -39,6 +39,7 @@ namespace SDWP.Interfaces
         List<Paragraph> CurrentParagraphsList { get; }
 
         void UploadLocalDocumentation(LocalDocumentation documentation);
+        void UploadCloudDocumentation(Documentation documentation, List<Document> documents);
         /// <summary>
         /// Changes the state of this controller by uploading the selected doc
         /// </summary>

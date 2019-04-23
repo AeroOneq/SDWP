@@ -52,7 +52,6 @@
         </Style>
     </Page.Resources>
     
-    
     <Page.Content>
         <Grid>
             <ScrollViewer VerticalAlignment="Top"
@@ -123,6 +122,30 @@
                             </Button.Content>
                         </Button>
 
+                        <Button x:Name="saveCloudDocumentationBtn"
+                                Style="{StaticResource saveBtnStyle}"
+                                Margin="20, 0, 0, 0"
+                                Width="180"
+                                Click="SaveCloudDocumentation">
+                            <Button.Content>
+                                <StackPanel VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Orientation="Horizontal">
+                                    <Image VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           Source="../Resources/exportPageSaveAsIcon.png"
+                                           Width="20"
+                                           Height="20"/>
+                                    <TextBlock FontFamily="Arial,Verdana"
+                                               Text="Сохранить в облако"
+                                               Foreground="Gray"
+                                               FontSize="15"
+                                               Margin="10, 0, 0, 0"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                     </StackPanel>
                 </StackPanel>
 

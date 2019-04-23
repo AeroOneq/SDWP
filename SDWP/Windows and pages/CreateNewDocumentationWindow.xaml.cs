@@ -31,6 +31,7 @@ namespace SDWP
 
         private IExceptionHandler ExceptionHandler { get; set; }
         private ILocalDocumentationService LocalDocumentationService { get; }
+        private ICloudDocumentationService CloudDocumentationService { get; }
         #endregion
 
         #region Properties
@@ -38,13 +39,23 @@ namespace SDWP
         #endregion
 
         #region Constructors and initialize methods
-        public CreateNewDocumentationWindow(ILocalDocumentationService localDocumentationService)
+        public CreateNewDocumentationWindow()
         {
             InitializeComponent();
             InitializeProperties();
             InitializeServices();
+        }
 
+        public CreateNewDocumentationWindow(ILocalDocumentationService localDocumentationService)
+            : this()
+        {
             LocalDocumentationService = localDocumentationService;
+        }
+
+        public CreateNewDocumentationWindow(ICloudDocumentationService cloudDocumentationService)
+            : this()
+        {
+            CloudDocumentationService = cloudDocumentationService;
         }
 
         private void InitializeProperties()
@@ -79,11 +90,21 @@ namespace SDWP
                     return;
                 }
 
-                LocalDocumentation localDocumentation = new LocalDocumentation(GetNewDocumentation(documentationName), new List<Document>());
-                localDocumentation.DocumentationPath = System.IO.Path.Combine(LocalDocumentationService.StoragePath,
-                    localDocumentation.Documentation.Name + ".sdwp");
+                Documentation documentation = GetNewDocumentation(documentationName);
+                if (CloudDocumentationService == null)
+                {
+                    documentation.StorageType = StorageType.Local;
+                    LocalDocumentation localDocumentation = new LocalDocumentation(documentation, new List<Document>());
+                    localDocumentation.DocumentationPath = System.IO.Path.Combine(LocalDocumentationService.StoragePath,
+                        localDocumentation.Documentation.Name + ".sdwp");
 
-                await LocalDocumentationService.CreateLocalDocumentationFile(localDocumentation);
+                    await LocalDocumentationService.CreateLocalDocumentationFile(localDocumentation);
+                }
+                else
+                {
+                    documentation.StorageType = StorageType.Cloud;
+                    await CloudDocumentationService.InsertDocumentation(documentation);
+                }
 
                 DialogResult = true;
                 Close();

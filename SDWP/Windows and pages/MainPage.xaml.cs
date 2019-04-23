@@ -101,6 +101,16 @@ namespace SDWP
             UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
         }
 
+        public void UploadCloudDocumentation(Documentation documentation, List<Document> documents)
+        {
+            ClearMainPage();
+
+            LocalDocumentation = null;
+
+            DocController.UploadCloudDocumentation(documentation, documents);
+            UploadDocumentation(documentation, documents);
+        }
+
         /// <summary>
         /// Clears all documentations' stack panels and DocController
         /// </summary>

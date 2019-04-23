@@ -20,7 +20,7 @@ namespace DatabaseController
 
 
             Connector connector = new Connector(DatabaseProperties.ConnectionString);
-            //connector.DeleteTable<UserInfo>();
+            connector.DeleteTable<Documentation>();
             connector.AddTable<Documentation>();
             /*UserInfo userInfo = new UserInfo
             {

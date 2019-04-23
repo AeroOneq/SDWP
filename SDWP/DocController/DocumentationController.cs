@@ -31,6 +31,12 @@ namespace SDWP
             Documents = localDocumentation.Documents;
         }
 
+        public void UploadCloudDocumentation(Documentation documentation, List<Document> documents)
+        {
+            Documentation = documentation;
+            Documents = documents;
+        }
+
         public void UploadItem(Item selectedItem)
         {
             if (selectedItem.Items == null)

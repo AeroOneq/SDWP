@@ -11,15 +11,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+using System.Data.SqlClient;
 
 using ApplicationLib.Models;
 using ApplicationLib.Services;
 using ApplicationLib.Interfaces;
+using ApplicationLib.Database;
 
 using SDWP.Factories;
 using SDWP.Interfaces;
 using SDWP.Exceptions;
-using System.IO;
 
 namespace SDWP
 {
@@ -33,12 +35,14 @@ namespace SDWP
         private Documentation Documentation { get; }
 
         private List<LocalTemplate> LocalTemplates { get; set; }
+        private List<Template> CloudTemplates { get; set; }
+
         private string DefaultStoragePath { get; } = @"C:\Users\Aero\Desktop\Templates";
 
         private TextBlock LocalTemplatesTextBlock { get; set; }
         private TextBlock CloudTemplatesTextBlock { get; set; }
         private ComboBox LocalTemplatesComboBox { get; set; }
-        private ComboBox CloudTemplateComboBox { get; set; }
+        private ComboBox CloudTemplatesComboBox { get; set; }
         private TextBox DocumentNameTextBox { get; set; }
         #endregion
 
@@ -46,6 +50,7 @@ namespace SDWP
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
         private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
 
+        private ICloudTemplateService CloudTemplateService { get; set; }
         private ILocalTemplateService LocalTemplateService { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
         #endregion
@@ -65,7 +70,7 @@ namespace SDWP
             LocalTemplatesTextBlock = offlineTemplatesTextBlock;
             CloudTemplatesTextBlock = onlineTemplatesTextBlock;
             LocalTemplatesComboBox = localTemplatesComboBox;
-            CloudTemplateComboBox = cloudTemplatesComboBox;
+            CloudTemplatesComboBox = cloudTemplatesComboBox;
             DocumentNameTextBox = documentNameTextBox;
         }
 
@@ -74,25 +79,9 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
 
+            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService(DatabaseProperties.ConnectionString);
             LocalTemplateService = ServiceAbstractFactory.GetLocalTemplateService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
-        }
-
-        private async Task GetLocalTemplates()
-        {
-            try
-            {
-                LocalTemplateService.StoragePath = DefaultStoragePath;
-                LocalTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
-            }
-            catch (IOException ex)
-            {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            catch (Exception ex)
-            {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
         }
 
         #region Event handlers
@@ -123,7 +112,12 @@ namespace SDWP
             }
             else
             {
-#warning create logic for creating doc from cloud template
+                if (CloudTemplatesComboBox.SelectedItem is Template selectedTemplate)
+                {
+                    document.Items = selectedTemplate.Items;
+
+                    Documents.Add(document);
+                }
             }
 
             DialogResult = true;
@@ -142,15 +136,18 @@ namespace SDWP
                 AuthorID = UserInfo.CurrentUser.ID,
                 UpdatedAt = DateTime.Now,
                 AuthorName = UserInfo.CurrentUser.Name,
-                Access = Access.Public,
+                Access = Access.Private,
                 DocumentationID = Documentation.ID,
             };
         }
 
+        #region Templates selection and uploading
         private async void LocalTemplatesTextBlockMouseDown(object sender, MouseButtonEventArgs e)
         {
             LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
             CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+            LocalTemplatesComboBox.Visibility = Visibility.Visible;
+            CloudTemplatesComboBox.Visibility = Visibility.Collapsed;
 
             await GetLocalTemplates();
             AddEmptyTemplateToLocalTemplates();
@@ -161,6 +158,60 @@ namespace SDWP
             if (LocalTemplates.Count > 0)
                 LocalTemplatesComboBox.SelectedIndex = 0;
         }
+
+        private async Task GetLocalTemplates()
+        {
+            LocalTemplates = new List<LocalTemplate>();
+            try
+            {
+                LocalTemplateService.StoragePath = DefaultStoragePath;
+                LocalTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+
+        private async void CloudTemplatesTextBlockMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+            LocalTemplatesComboBox.Visibility = Visibility.Collapsed;
+            CloudTemplatesComboBox.Visibility = Visibility.Visible;
+
+            await GetCloudTemplates();
+
+            CloudTemplatesComboBox.ItemsSource = null;
+            CloudTemplatesComboBox.ItemsSource = CloudTemplates;
+
+            if (CloudTemplates.Count > 0)
+            {
+                CloudTemplatesComboBox.SelectedIndex = 0;
+            }
+        }
+
+        private async Task GetCloudTemplates()
+        {
+            CloudTemplates = new List<Template>();
+            try
+            {
+                CloudTemplates = (await CloudTemplateService.GetTemplates("UserID", UserInfo.CurrentUser.ID)).ToList();
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Adds an local template with an empty Items so that user can create an empty document
@@ -183,12 +234,6 @@ namespace SDWP
             localTemplates.AddRange(LocalTemplates);
 
             LocalTemplates = localTemplates;
-        }
-
-        private void CloudTemplatesTextBlockMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
-            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
         }
 
         private void TemplateTypesTextBlockMouseEnter(object sender, RoutedEventArgs e)

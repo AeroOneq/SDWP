@@ -13,10 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Data.SqlClient;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
+using ApplicationLib.Database;
 
 using SDWP.Interfaces;
 using SDWP.Exceptions;
@@ -35,12 +37,18 @@ namespace SDWP
         public Action CloseAccGrid { get; set; }
         #endregion
 
-        #region Properties
-        private MainPage MainPage { get; }
-        private ILocalDocumentationService LocalDocumentationService { get; set; }
+        #region Services and factories
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
+
+        private ICloudDocumentationService CloudDocumentationService { get; set; }
+        private ICloudDocumentsService CloudDocumentsService { get; set; }
+        private ILocalDocumentationService LocalDocumentationService { get; set; }
         private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
+        #endregion
+
+        #region Properties
+        private MainPage MainPage { get; }
 
         private string FilePath { get; } = @"C:\Users\Aero\Desktop\Курсач\SDWP\SDWP\SDWP\bin\Debug\Docs\";
         #endregion
@@ -58,10 +66,13 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
 
+            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService(
+                DatabaseProperties.ConnectionString);
+            CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService(
+                DatabaseProperties.ConnectionString);
             LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
-
 
         #region Saving processes
         /// <summary>
@@ -86,7 +97,8 @@ namespace SDWP
         }
 
         /// <summary>
-        /// Gets the main page documentation and documents which are related to this documentation
+        /// Gets the main page documentation and documents which are related to this documentation and forms the
+        /// local documentation object, even if the cloud documentation is uploaded. 
         /// </summary>
         private LocalDocumentation GetMainPageLocalDocumentation()
         {
@@ -173,5 +185,67 @@ namespace SDWP
             return null;
         }
         #endregion
+
+        private async void SaveCloudDocumentation(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (MainPage.DocController.Documentation != null &&
+                    MainPage.DocController.Documentation.StorageType == StorageType.Cloud)
+                {
+                    Documentation documentation = MainPage.DocController.Documentation;
+                    List<Document> documents = MainPage.DocController.Documents;
+
+                    await CloudDocumentationService.UpdateDocumentation(documentation);
+                    await SynchronizeDocuments(documentation, documents);
+
+                    SDWPMessageBox.ShowSDWPMessageBox("Успешно", "Докуемнтация успешно сохранена", MessageBoxButton.OK);
+                }
+                else
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Нет облачной документации для сохранения",
+                        MessageBoxButton.OK);
+                }
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the new document list after it was changed locally with the database
+        /// </summary>
+        private async Task SynchronizeDocuments(Documentation documentation, List<Document> documents)
+        {
+            List<Document> databaseDocuments = (await CloudDocumentsService.GetDocuments(
+                "DocumentationID", documentation.ID)).ToList();
+
+            //update the documents which were updated and add new ones
+            foreach (Document document in documents)
+            {
+                if (databaseDocuments.FindIndex(d => d.ID == document.ID) > -1)
+                {
+                    await CloudDocumentsService.UpdateDocument(document);
+                }
+                else
+                {
+                    await CloudDocumentsService.InsertDocument(document);
+                }
+            }
+
+            //delete the documents from the database which were deleted locally
+            foreach (Document databaseDocument in databaseDocuments)
+            {
+                if (documents.FindIndex(d => d.ID == databaseDocument.ID) == -1)
+                {
+                    await CloudDocumentsService.DeleteDocument(databaseDocument);
+                }
+            }
+        }
     }
 }

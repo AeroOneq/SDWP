@@ -670,7 +670,7 @@
             <StackPanel VerticalAlignment="Top"
                         HorizontalAlignment="Stretch"
                         Orientation="Vertical"
-                        Margin="0, 0, 0, 0">
+                        Margin="0, 0, 0, 20">
                 <local:PageHeader x:Name="pageHeader"
                                   Header="Шаблоны"
                                   IsRefreshEnabled="True"
@@ -779,7 +779,19 @@
                     <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
                                 Orientation="Vertical">
-                        <TextBlock Text="Текст подсказки"
+                        <TextBlock Text="Имя шаблона"
+                                   VerticalAlignment="Top"
+                                   HorizontalAlignment="Left"
+                                   Margin="10, 0, 0, 0"
+                                   FontFamily="Arial, Verdana"
+                                   Foreground="Gray"
+                                   FontSize="13"/>
+                        <TextBox x:Name="templateNameTextBox"
+                                 Style="{StaticResource hintTextBoxStyle}"
+                                 Margin="10, 0, 0, 10"
+                                 TextChanged="TemplateTextBoxTextChanged"/>
+
+                        <TextBlock Text="Подсказка"
                                    VerticalAlignment="Top"
                                    HorizontalAlignment="Left"
                                    Margin="10, 0, 0, 0"
@@ -790,6 +802,7 @@
                                  Style="{StaticResource hintTextBoxStyle}"
                                  Margin="10, 0, 0, 10"
                                  TextChanged="HintTextBoxTextChanged"/>
+                        
                         <TreeView x:Name="templateTreeView"
                                   Margin="10, 0, 0, 0"
                                   Style="{StaticResource templateTreeViewStyle}"/>

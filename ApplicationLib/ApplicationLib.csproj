@@ -87,6 +87,7 @@
     <Compile Include="Models\Documentation models\ParagraphElements\Paragraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphElement.cs" />
     <Compile Include="Models\Documentation models\ParagraphJsonConverter.cs" />
+    <Compile Include="Models\Documentation models\StorageType.cs" />
     <Compile Include="Models\Documentation models\Template.cs" />
     <Compile Include="Services\cloud services\CloudDocumentationService.cs" />
     <Compile Include="Services\cloud services\CloudDocumentsService.cs" />

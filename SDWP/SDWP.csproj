@@ -394,5 +394,11 @@
   <ItemGroup>
     <Resource Include="Resources\defaultParagraphImageImage.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\createNewCloudDocIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\createLocalCopyIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

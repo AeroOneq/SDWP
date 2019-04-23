@@ -24,5 +24,8 @@ namespace ApplicationLib.Models
         [CanBeNull(false)]
         [SetAzureSQLDataType("int")]
         public Access Access { get; set; }
+        [CanBeNull(false)]
+        [SetAzureSQLDataType("int")]
+        public StorageType StorageType { get; set; }
     }
 }
