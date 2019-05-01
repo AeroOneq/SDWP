@@ -13,29 +13,10 @@ namespace DatabaseController
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            /*CSFileParser cSFileParser = new CSFileParser();
-            cSFileParser.GetMethodsTable("C:\\Users\\Aero\\Desktop\\Курсач\\SDWP\\SDWP\\ApplicationLib\\bin\\Debug\\ApplicationLib.dll");*/
-
-
-            Connector connector = new Connector(DatabaseProperties.ConnectionString);
-            connector.DeleteTable<Documentation>();
-            connector.AddTable<Documentation>();
-            /*UserInfo userInfo = new UserInfo
-            {
-                ID = 0,
-                Login = "Aero",
-                Password = "qwerty",
-                Name = "Евгений",
-                Surname = "Степанов",
-                BirthDate = DateTime.Now,
-                Email = "stepanov-ev@yandex.ru"
-            };
-            connector.Insert(userInfo);*/
-            Console.WriteLine("Success");
-
-            Console.ReadKey();
+            WordDB wordDB = new WordDB(new Documentation(), new List<Document>(), "");
+            await wordDB.CreateWordDocument();
         }
     }
 }

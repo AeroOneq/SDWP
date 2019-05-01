@@ -37,6 +37,13 @@
     <Reference Include="AeroORMFramework">
       <HintPath>..\..\..\..\..\source\repos\AeroORMFramework\AeroORMFramework\bin\Debug\AeroORMFramework.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.9.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.9.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\source\repos\AeroORMFramework\AeroORMFramework\bin\Debug\Newtonsoft.Json.dll</HintPath>
@@ -48,6 +55,13 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=4.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.5.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Xaml" />
@@ -66,6 +80,7 @@
     <Compile Include="Database\HTTP.cs" />
     <Compile Include="Database\TemplatesDB.cs" />
     <Compile Include="Database\UsersDB.cs" />
+    <Compile Include="Database\WordDB.cs" />
     <Compile Include="Exceptions\ServerException.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentDB.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentationDB.cs" />
@@ -100,6 +115,7 @@
     <Compile Include="Services\local storages\LocalTemplatesService.cs" />
     <Compile Include="Tests\NumberedListTests.cs" />
     <Compile Include="Tests\TableTest.cs" />
+    <Compile Include="Tests\WordTest.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
     </Compile>
