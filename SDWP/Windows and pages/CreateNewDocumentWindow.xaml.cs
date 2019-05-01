@@ -79,7 +79,7 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
 
-            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService(DatabaseProperties.ConnectionString);
+            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService();
             LocalTemplateService = ServiceAbstractFactory.GetLocalTemplateService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
@@ -200,7 +200,7 @@ namespace SDWP
             CloudTemplates = new List<Template>();
             try
             {
-                CloudTemplates = (await CloudTemplateService.GetTemplates("UserID", UserInfo.CurrentUser.ID)).ToList();
+                CloudTemplates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
             }
             catch (SqlException ex)
             {

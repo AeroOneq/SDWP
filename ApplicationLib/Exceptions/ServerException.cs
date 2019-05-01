@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApplicationLib.Interfaces
+namespace ApplicationLib.Exceptions
 {
-    public interface ICloudService<Type>
+    public class ServerException : Exception
     {
-        ICloudDatabase<Type> Database { get; }
     }
 }

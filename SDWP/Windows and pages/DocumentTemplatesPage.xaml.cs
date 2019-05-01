@@ -76,7 +76,7 @@ namespace SDWP
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
             LocalTemplateService = ServiceAbstractFactory.GetLocalTemplateService();
             LocalTemplateService.StoragePath = DefaultStoragePath;
-            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService(DatabaseProperties.ConnectionString);
+            CloudTemplateService = ServiceAbstractFactory.GetCloudTemplateService();
         }
 
         private void InitializeProperties()
@@ -103,7 +103,7 @@ namespace SDWP
 
         private async Task UploadTemplatesFromColoudStorage()
         {
-            List<Template> templates = (await CloudTemplateService.GetTemplates("UserID", UserInfo.CurrentUser.ID)).ToList();
+            List<Template> templates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
             cloudTemplatesListBox.ItemsSource = templates;
         }
         #endregion
@@ -498,7 +498,7 @@ namespace SDWP
                 {
                     Items = new List<Item>(),
                     TemplateName = "Новый шаблон",
-                    CreationAt = DateTime.Now,
+                    CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     UserID = UserInfo.CurrentUser.ID
                 };

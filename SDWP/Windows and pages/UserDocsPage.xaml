@@ -568,7 +568,7 @@
                                         VerticalAlignment="Top"
                                         HorizontalAlignment="Left"
                                         Orientation="Vertical"
-                                        Visibility="Visible"
+                                        Visibility="Collapsed"
                                         Margin="20, 15, 0, 0">
                                 <StackPanel VerticalAlignment="Top"
                                             HorizontalAlignment="Left"

@@ -16,6 +16,7 @@ namespace ApplicationLib.Models
     public class ParagraphImage : ParagraphElement
     {
         #region Properties
+        [JsonProperty("source")]
         public byte[] ImageSource { get; set; }
         #endregion
 

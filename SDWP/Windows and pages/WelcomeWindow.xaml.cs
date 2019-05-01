@@ -33,12 +33,16 @@ namespace SDWP
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Services
         private IEmailService<UserInfo> EmailService { get; set; }
         private IUserService<UserInfo> UserService { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
+        #endregion
 
+        #region Properties
         private UserInfo NewUser { get; set; }
-
+        private int CodeID { get; set; } = -1;
+        #endregion
         public MainWindow()
         {
             InitializeComponent();
@@ -75,8 +79,10 @@ namespace SDWP
             try
             {
                 SwitchOnTheLoader(rightCreateAccLoaderGrid);
+
                 UserInfo newUser = CreateNewUser();
                 bool checkingResult = await CheckUserInputDataAsync(newUser);
+
                 if (checkingResult)
                     SendEmailAndGoToCodeGridAsync(newUser);
             }
@@ -135,7 +141,7 @@ namespace SDWP
             try
             {
                 NewUser = newUser;
-                await EmailService.SendCodeEmail(NewUser);
+                CodeID = await EmailService.SendCodeEmail(NewUser);
             }
             catch (InvalidOperationException ex)
             {
@@ -170,15 +176,9 @@ namespace SDWP
         {
             try
             {
-                SwitchOnTheLoader(rightCreateAccLoaderGrid);
                 string code = codeTextBox.Text;
 
                 await CheckCodeAndCreateAccAsync(code);
-
-                SwitchOffTheLoader(rightCreateAccLoaderGrid);
-                MessageBox.Show("Статус создание аккаунта", "Аккаунт был успешно создан",
-                    MessageBoxButton.OK);
-                WelcomePageRightGridAnimations.HideTheGrid(registrationElementsGrid);
             }
             catch (NotAppropriateUserParam ex)
             {
@@ -196,23 +196,31 @@ namespace SDWP
 
         private async Task CheckCodeAndCreateAccAsync(string code)
         {
-            try
+            SwitchOnTheLoader(rightCreateAccLoaderGrid);
+
+            if (await EmailService.CheckCode(CodeID, code))
             {
-                if (code == EmailService.Code)
-                    await UserService.CreateNewAccountAsync(NewUser);
+                await UserService.CreateNewAccountAsync(NewUser);
+                await DeleteCode();
+
+                SwitchOffTheLoader(rightCreateAccLoaderGrid);
+
+                SDWPMessageBox.ShowSDWPMessageBox("Статус создание аккаунта", "Аккаунт был успешно создан",
+                    MessageBoxButton.OK);
+
+                WelcomePageRightGridAnimations.HideTheGrid(registrationElementsGrid);
             }
-            catch (NotAppropriateUserParam ex)
+            else
             {
-                HandleAccCreationException(ex);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы ввели неверный код", MessageBoxButton.OK);
+                SwitchOffTheLoader(rightCreateAccLoaderGrid);
             }
-            catch (SqlException ex)
-            {
-                HandleAccCreationException(ex);
-            }
-            catch (Exception ex)
-            {
-                HandleAccCreationException(ex);
-            }
+        }
+
+        private async Task DeleteCode()
+        {
+            await EmailService.DeleteCode(CodeID);
+            CodeID = -1;
         }
 
         /// <summary>
@@ -223,7 +231,7 @@ namespace SDWP
             return new UserInfo
             {
                 Login = regLoginTextBox.Text,
-                Password = regPassTextBox.Password,
+                Password = regPassTextBox.Password.GetHashCode().ToString(),
                 Name = regNameTextBox.Text,
                 Surname = regSurnameTextBox.Text,
                 BirthDate = GetUserBirthDate(),

@@ -100,10 +100,9 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
 
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
-            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService(
-                DatabaseProperties.ConnectionString);
+            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService();
             LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
-            CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService(DatabaseProperties.ConnectionString);
+            CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService();
         }
         #endregion
 
@@ -129,7 +128,7 @@ namespace SDWP
         {
             try
             {
-                CloudDocumentation = (await CloudDocumentationService.GetDocumentations("AuthorID", UserInfo.CurrentUser.ID))
+                CloudDocumentation = (await CloudDocumentationService.GetUserDocumentations(UserInfo.CurrentUser.ID))
                     .ToList();
                 CloudDocumentationListBox.ItemsSource = CloudDocumentation;
             }
@@ -249,7 +248,8 @@ namespace SDWP
 
         private async Task DeleteAllDocumentationDocuments(int documentationID)
         {
-            IEnumerable<Document> documents = await CloudDocumentsService.GetDocuments("DocumentationID", documentationID);
+            IEnumerable<Document> documents = await CloudDocumentsService.
+                GetDocumentationDocuments(documentationID);
             foreach (Document document in documents)
             {
                 await CloudDocumentsService.DeleteDocument(document);
@@ -273,8 +273,8 @@ namespace SDWP
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
                 {
-                    List<Document> documents = (await CloudDocumentsService.GetDocuments("DocumentationID",
-                        selectedDocumentation.ID)).ToList();
+                    List<Document> documents = (await CloudDocumentsService.
+                        GetDocumentationDocuments(selectedDocumentation.ID)).ToList();
 
                     MainPage.UploadCloudDocumentation(selectedDocumentation, documents);
                     CloseAccGrid();
@@ -304,8 +304,8 @@ namespace SDWP
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
                 {
-                    List<Document> documents = (await CloudDocumentsService.GetDocuments(
-                        "DocumentationID", selectedDocumentation.ID)).ToList();
+                    List<Document> documents = (await CloudDocumentsService.
+                        GetDocumentationDocuments(selectedDocumentation.ID)).ToList();
                     selectedDocumentation.StorageType = StorageType.Local;
 
                     string filePath = GetFilePathToLocalCopy();
@@ -447,7 +447,7 @@ namespace SDWP
         /// </summary>
         private async Task<int> GetLastDocumentationID()
         {
-            List<Documentation> documentations = (await CloudDocumentationService.GetDocumentations("AuthorID",
+            List<Documentation> documentations = (await CloudDocumentationService.GetUserDocumentations(
                 UserInfo.CurrentUser.ID)).ToList();
 
             return documentations[documentations.Count - 1].ID;

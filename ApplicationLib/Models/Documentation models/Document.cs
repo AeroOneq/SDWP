@@ -1,34 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using AeroORMFramework;
+using Newtonsoft.Json;
 
 namespace ApplicationLib.Models
 {
     public class Document
     {
-        [PrimaryKey]
-        [CanBeNull(false)]
-        [AutoincrementID]
+        [JsonProperty("id")]
         public int ID { get; set; }
 
-        [CanBeNull(false)]
+        [JsonProperty("documentationID")]
         public int DocumentationID { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("name")]
         public string Name { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("authorID")]
         public int AuthorID { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("authorName")]
         public string AuthorName { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("creationDate")]
         public DateTime CreationDate { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("updatedAt")]
         public DateTime UpdatedAt { get; set; }
-        [CanBeNull(false)]
-        [SetAzureSQLDataType("int")]
+        [JsonProperty("access")]
         public Access Access { get; set; }
 
-        [CanBeNull(false)]
-        [Json]
+        [JsonProperty("items")]
         public List<Item> Items { get; set; }
     }
 }

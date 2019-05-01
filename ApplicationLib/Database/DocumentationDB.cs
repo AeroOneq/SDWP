@@ -3,64 +3,123 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+
+using Newtonsoft.Json;
 
 using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
+using ApplicationLib.Exceptions;
 
 using AeroORMFramework;
 
 namespace ApplicationLib.Database
 {
-    internal class DocumentationDB : ICloudDatabase<Documentation>
+    internal class DocumentationDB : ICloudDocumentationDB<Documentation>
     {
         #region Properties
-        private Connector Connector { get; set; }
+        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/documentations";
         #endregion
 
-        public DocumentationDB(string connectionString)
+        public async Task<IEnumerable<Documentation>> GetAllDocumentations()
         {
-            Connector = new Connector(connectionString);
-        }
-
-        public async Task<IEnumerable<Documentation>> GetAllRecords()
-        {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
-                List<Documentation> documentations = Connector.GetAllRecords<Documentation>();
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
+
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new ServerException();
+
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+                IEnumerable<Documentation> documentations =
+                    JsonConvert.DeserializeObject<IEnumerable<Documentation>>(responseContent);
+
                 return documentations;
             });
         }
 
-        public async Task<IEnumerable<Documentation>> GetRecords(string columnName, object value)
+        public async Task<IEnumerable<Documentation>> GetUserDocumentations(int userID)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
-                List<Documentation> documentations = Connector.GetRecords<Documentation>(columnName, value);
+
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?userID={userID}", "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
+
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new ServerException();
+
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+                IEnumerable<Documentation> documentations = JsonConvert.
+                    DeserializeObject<IEnumerable<Documentation>>(responseContent);
+
                 return documentations;
             });
         }
 
-        public async Task UpdateRecord(Documentation documentation)
+        public async Task UpdateDocumentation(Documentation documentation)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                Connector.UpdateRecord(documentation);
+
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "PUT");
+
+                using (var rqStream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(rqStream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(documentation));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
 
-        public async Task DeleteRecord(Documentation documentation)
+        public async Task DeleteDocumentation(int documentationID)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                Connector.DeleteRecord(documentation);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?documentationID={documentationID}", "DELETE");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
+
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
             });
         }
 
-        public async Task InsertRecord(Documentation documentation)
+        public async Task InsertDocumentation(Documentation documentation)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                Connector.Insert(documentation);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "POST"); 
+
+                using (var rqStream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(rqStream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(documentation));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)(await httpWebRequest.GetResponseAsync());
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
     }

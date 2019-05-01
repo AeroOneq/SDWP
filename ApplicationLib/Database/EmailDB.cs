@@ -8,72 +8,65 @@ using System.Threading.Tasks;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
+using ApplicationLib.Exceptions;
 
 namespace ApplicationLib.Database
 {
     public class EmailDB : IEmailDatabase<UserInfo>
     {
-        private Random Random { get; set; } = new Random();
-        public string Code { get; private set; }
+        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/emailcodes";
 
-        public async Task SendCodeEmail(UserInfo user)
+        public async Task<bool> CheckCode(int codeID, string code)
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                MailAddress senderAdress = new MailAddress("stepanov-ev@yandex.ru");
-                MailAddress addresseeAdress = new MailAddress(user.Email);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?codeID={codeID}&code={code}", "GET");
 
-                Code = CreateNewCode();
-
-                MailMessage mailMessage = new MailMessage(senderAdress, addresseeAdress)
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
                 {
-                    Subject = "This is automatically-generated message, do not reply",
-                    Body = $"Your code is {Code}"
-                };
-
-                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587)
+                    return false;
+                }
+                else if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    Credentials = new NetworkCredential("aeroone90@gmail.com", "AeroOne1"),
-                    EnableSsl = true
-                };
-
-                smtpClient.Send(mailMessage);
+                    return true;
+                }
+                else
+                {
+                    throw new ServerException();
+                }
             });
         }
 
-        private string CreateNewCode()
-        {
-            string code = string.Empty;
-            for (int i = 0; i < 6; i++)
-            {
-                code += (char)Random.Next('A', 'Z' + 1);
-            }
-            return code;
-        }
-
-        public async Task SendNewPasswordToUser(UserInfo user, string newPassword)
+        public async Task DeleteCode(int codeID)
         {
             await Task.Run(() =>
             {
-                MailAddress senderAdress = new MailAddress("stepanov-ev@yandex.ru");
-                MailAddress addresseeAdress = new MailAddress(user.Email);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?codeID={codeID}", "DELETE"); 
 
-                MailMessage mailMessage = new MailMessage(senderAdress, addresseeAdress)
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
-                    Subject = "This is automatically-generated message, do not reply",
-                    Body = $"Your new password is {newPassword}"
-                };
-
-                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587)
-                {
-                    Credentials = new NetworkCredential("aeroone90@gmail.com", "AeroOne1"),
-                    EnableSsl = true
-                };
-
-                smtpClient.Send(mailMessage);
+                    throw new ServerException();
+                }
             });
         }
 
-        public async Task ResetCode() => await Task.Run(() => Code = null);
+        public async Task<int> SendCodeEmail(UserInfo user)
+        {
+            return await Task.Run(() =>
+            {
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?userID={user.ID}&email={user.Email}", "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+
+                return int.Parse(HTTP.GetResponseContent(httpWebResponse));
+            });
+
+        }
     }
 }

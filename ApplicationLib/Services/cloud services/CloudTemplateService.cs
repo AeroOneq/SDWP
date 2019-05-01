@@ -12,36 +12,36 @@ namespace ApplicationLib.Services
 {
     class CloudTemplateService : ICloudTemplateService
     {
-        public ICloudDatabase<Template> Database { get; }
+        public ICloudTemplatesDB<Template> Database { get; }
 
-        public CloudTemplateService(string connectionString)
+        public CloudTemplateService()
         {
-            Database = new TemplatesDB(connectionString);
+            Database = new TemplatesDB();
         }
 
         public async Task DeleteTemplate(Template template)
         {
-            await Database.DeleteRecord(template);
+            await Database.DeleteTemplate(template);
         }
 
         public async Task<IEnumerable<Template>> GetAllTemplates()
         {
-            return await Database.GetAllRecords();
+            return await Database.GetAllTemplates();
         }
 
-        public async Task<IEnumerable<Template>> GetTemplates(string columnName, object value)
+        public async Task<IEnumerable<Template>> GetUserTemplates(int userID)
         {
-            return await Database.GetRecords(columnName, value);
+            return await Database.GetUserTemplates(userID);
         }
 
         public async Task InsertTemplate(Template template)
         {
-            await Database.InsertRecord(template);
+            await Database.InsertTemplate(template);
         }
 
         public async Task UpdateTemplate(Template template)
         {
-            await Database.UpdateRecord(template);
+            await Database.UpdateTemplate(template);
         }
     }
 }

@@ -27,11 +27,11 @@ namespace ApplicationLib.Models
                 if (!reader.Read())
                     return paragraph;
 
-                if ("Type".Equals(propertyName))
+                if ("type".Equals(propertyName))
                 {
                     paragraph.Type = reader.Value?.ToString();
                 }
-                else if ("ParagraphElement".Equals(propertyName))
+                else if ("element".Equals(propertyName))
                 {
                     switch (paragraph.Type)
                     {

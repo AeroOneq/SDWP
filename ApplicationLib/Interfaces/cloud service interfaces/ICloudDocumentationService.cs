@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Interfaces
 {
-    public interface ICloudDocumentationService : ICloudService<Documentation>
+    public interface ICloudDocumentationService
     {
+
         Task DeleteDocumentation(Documentation entity);
         Task<IEnumerable<Documentation>> GetAllDocumentations();
-        Task<IEnumerable<Documentation>> GetDocumentations(string columnName, object value);
+        Task<IEnumerable<Documentation>> GetUserDocumentations(int id);
         Task InsertDocumentation(Documentation entity);
         Task UpdateDocumentation(Documentation entity);
     }

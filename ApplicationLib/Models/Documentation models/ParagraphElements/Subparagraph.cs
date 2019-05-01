@@ -15,6 +15,7 @@ namespace ApplicationLib.Models
     public class Subparagraph : ParagraphElement
     {
         #region Properties
+        [JsonProperty("text")]
         public string Text { get; set; }
         #endregion
 

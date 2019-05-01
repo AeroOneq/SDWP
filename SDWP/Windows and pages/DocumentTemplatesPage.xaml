@@ -673,7 +673,7 @@
                         Margin="0, 0, 0, 20">
                 <local:PageHeader x:Name="pageHeader"
                                   Header="Шаблоны"
-                                  IsRefreshEnabled="True"
+                                  IsRefreshEnabled="False"
                                   VerticalAlignment="Top"
                                   Width="{Binding ElementName=documentTemplatesPage, Path=ActualWidth}"
                                   Height="86"

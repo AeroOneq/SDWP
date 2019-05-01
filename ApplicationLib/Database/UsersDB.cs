@@ -6,40 +6,39 @@ using System;
 using System.Threading.Tasks;
 
 using ApplicationLib.Interfaces;
+using System.Net;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ApplicationLib.Database
 {
     public class UsersDB : IUserDatabase<UserInfo>
     {
-        #region Services
-        private IEmailService<UserInfo> EmailService { get; }
-        #endregion
-
         #region Properties
-        private Random Random { get; } = new Random();
-        private string ConnectionString { get; } = DatabaseProperties.ConnectionString;
+        private string ApiURL { get; } = "http://localhost:61890/sdwpapi/v1.0.0/users";
         #endregion
-
-        public UsersDB()
-        {
-            IServiceAbstractFactory serviceFactory = new ServiceAbstractFactory();
-            EmailService = serviceFactory.GetEmailService();
-        }
 
         #region Authorization methods
         public async Task<UserInfo> TryToLoginAsync(LoginData loginData)
         {
             return await Task.Run(() =>
             {
-                Connector connector = new Connector(ConnectionString);
-                UserInfo user = connector.GetRecord<UserInfo>("Login", loginData.Login);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + 
+                    $"?login={loginData.Login}&pass={loginData.Password.GetHashCode()}", "GET");
 
-                if (user.Login == null)
-                    throw new UserNotFoundException("Incorrect login or passwrod");
-                if (user.Password == loginData.Password)
-                    return user;
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+                else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
+                {
+                    throw new UserNotFoundException("Неправильный пароль или логин");
+                }
 
-                throw new UserNotFoundException("Incorrect password");
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+
+                return JsonConvert.DeserializeObject<UserInfo>(responseContent);
             });
         }
         #endregion
@@ -49,8 +48,22 @@ namespace ApplicationLib.Database
         {
             await Task.Run(() =>
             {
-                Connector connector = new Connector(ConnectionString);
-                connector.Insert(newUser);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "POST");
+
+                using (var stream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(newUser));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
         #endregion
@@ -60,12 +73,17 @@ namespace ApplicationLib.Database
         {
             await Task.Run(() =>
             {
-                Connector connector = new Connector(ConnectionString);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?login={login}", "GET");
 
-                UserInfo tempUser = connector.GetRecord<UserInfo>("Login", login);
-
-                if (tempUser.Login != null)
-                    throw new NotAppropriateUserParam("This login is already taken");
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+                else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
+                {
+                    throw new NotAppropriateParamException("Логин уже занят");
+                }
             });
         }
 
@@ -73,12 +91,17 @@ namespace ApplicationLib.Database
         {
             await Task.Run(() =>
             {
-                Connector connector = new Connector(ConnectionString);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?email={email}", "GET");
 
-                UserInfo tempUser = connector.GetRecord<UserInfo>("Email", email);
-
-                if (tempUser.Login != null)
-                    throw new NotAppropriateUserParam("This email is already taken");
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+                else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
+                {
+                    throw new NotAppropriateParamException("E-mail уже занят");
+                }
             });
         }
         #endregion
@@ -86,51 +109,21 @@ namespace ApplicationLib.Database
         #region Remind pass methods
         public async Task RemindPassAsync(string login, string email)
         {
-            await Task.Run(async () =>
+            await Task.Run(() =>
             {
-                UserInfo user = FindSuitableUserRecord(login, email);
-                string newPassword = CreateNewPassword();
-                ChangePassInTheDataBase(user, newPassword);
-                await EmailService.SendNewPasswordToUser(user, newPassword);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL +
+                    $"/remindpass?login={login}&email={email}", "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new UserNotFoundException("Пользователь с такими параметрами не существует");
+                }
+                else if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
             });
-        }
-
-        /// <summary>
-        /// Finds the user recrod with the given login
-        /// </summary>
-        /// <returns>
-        /// If the email of this record is the same as the input email returns
-        /// the UserInfo object, throws an exception otherwise
-        /// </returns>
-        private static UserInfo FindSuitableUserRecord(string login, string email)
-        {
-            Connector connector = new Connector(DatabaseProperties.ConnectionString);
-            UserInfo user = connector.GetRecord<UserInfo>("Login", login);
-            if (user.Email == email)
-                return user;
-            throw new UserNotFoundException("User with such parameters doen't exists");
-        }
-
-        private void ChangePassInTheDataBase(UserInfo user, string newPassword)
-        {
-            Connector connector = new Connector(DatabaseProperties.ConnectionString);
-#warning FIX THIS SHIT
-            connector.DeleteRecord(user);
-            user.Password = newPassword;
-            connector.Insert(user);
-        }
-
-        private string CreateNewPassword()
-        {
-            string newPass = string.Empty;
-            for (int i = 0; i < 10; i++)
-            {
-                if (Random.Next() % 2 == 0)
-                    newPass += (char)Random.Next('a', 'z' + 1);
-                else
-                    newPass += (char)Random.Next('A', 'Z' + 1);
-            }
-            return newPass;
         }
         #endregion
 
@@ -139,18 +132,39 @@ namespace ApplicationLib.Database
         {
             await Task.Run(() =>
             {
-                Connector connector = new Connector(DatabaseProperties.ConnectionString);
-                connector.UpdateRecord<UserInfo>(user);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "PUT");
+
+                using (var stream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(user));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
             });
         }
         #endregion
 
-        public async Task<UserInfo> GetUser(string columnName, object value)
+        public async Task<UserInfo> GetUserByID(int id)
         {
             return await Task.Run(() =>
             {
-                Connector connector = new Connector(DatabaseProperties.ConnectionString);
-                return connector.GetRecord<UserInfo>(columnName, value);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?id={id}", "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+                return JsonConvert.DeserializeObject<UserInfo>(responseContent);
             });
         }
     }

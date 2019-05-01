@@ -8,11 +8,11 @@ using ApplicationLib.Models;
 
 namespace ApplicationLib.Interfaces
 {
-    public interface ICloudTemplateService : ICloudService<Template>
+    public interface ICloudTemplateService
     {
         Task DeleteTemplate(Template entity);
         Task<IEnumerable<Template>> GetAllTemplates();
-        Task<IEnumerable<Template>> GetTemplates(string columnName, object value);
+        Task<IEnumerable<Template>> GetUserTemplates(int userID);
         Task InsertTemplate(Template entity);
         Task UpdateTemplate(Template entity);
     }

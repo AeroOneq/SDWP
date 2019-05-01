@@ -16,6 +16,7 @@ namespace ApplicationLib.Models
     public class Table : ParagraphElement
     {
         #region Properties
+        [JsonProperty("tableCells")]
         public string[][] TableCells { get; set; }
         #endregion
 

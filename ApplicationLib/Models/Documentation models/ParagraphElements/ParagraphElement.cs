@@ -11,8 +11,10 @@ using Newtonsoft.Json;
 namespace ApplicationLib.Models
 {
     public class ParagraphElement : IParagraphElement
-    { 
+    {
+        [JsonProperty("hint")]
         public string Hint { get; set; }
+        [JsonProperty("title")]
         public string Title { get; set; }
 
         [JsonIgnore]

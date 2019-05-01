@@ -14,22 +14,19 @@ namespace ApplicationLib.Models
 {
     public class Template
     {
-        [PrimaryKey]
-        [AutoincrementID]
-        [CanBeNull(false)]
+        [JsonProperty("id")]
         public int ID { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("userID")]
         public int UserID { get; set; }
 
-        [CanBeNull(false)]
+        [JsonProperty("templateName")]
         public string TemplateName { get; set; }
-        [CanBeNull(false)]
-        public DateTime CreationAt { get; set; }
-        [CanBeNull(false)]
+        [JsonProperty("createdAt")]
+        public DateTime CreatedAt { get; set; }
+        [JsonProperty("updatedAt")]
         public DateTime UpdatedAt { get; set; }
 
-        [CanBeNull(false)]
-        [Json]
+        [JsonProperty("items")]
         public List<Item> Items { get; set; }
 
         public string GetJsonString()

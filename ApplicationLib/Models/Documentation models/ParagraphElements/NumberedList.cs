@@ -17,6 +17,7 @@ namespace ApplicationLib.Models
     public class NumberedList : ParagraphElement
     {
         #region Properties
+        [JsonProperty("elements")]
         public List<NumberedListElement> ListElements { get; set; }
         #endregion
 

@@ -11,15 +11,19 @@ namespace ApplicationLib.Services
 {
     public class EmailService : IEmailService<UserInfo>
     {
-        private EmailDB Email { get; } = new EmailDB();
-        public string Code => Email.Code;
+        private IEmailDatabase<UserInfo> Email { get; } = new EmailDB();
 
-        public async Task SendCodeEmail(UserInfo user) =>
+        public async Task<bool> CheckCode(int codeID, string code)
+        {
+            return await Email.CheckCode(codeID, code);
+        }
+
+        public async Task DeleteCode(int codeID)
+        {
+            await Email.DeleteCode(codeID);
+        }
+
+        public async Task<int> SendCodeEmail(UserInfo user) =>
             await Email.SendCodeEmail(user);
-
-        public async Task SendNewPasswordToUser(UserInfo user, string newPassword) =>
-            await Email.SendNewPasswordToUser(user, newPassword);
-
-        public async Task ResetCode() => await Email.ResetCode();
     }
 }

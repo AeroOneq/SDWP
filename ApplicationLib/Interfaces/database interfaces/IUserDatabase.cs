@@ -17,6 +17,6 @@ namespace ApplicationLib.Interfaces
         Task CheckEmail(string email);
         Task RemindPassAsync(string login, string email);
         Task UpdateUserRecord(UserType user);
-        Task<UserInfo> GetUser(string columnName, object value);
+        Task<UserInfo> GetUserByID(int id);
     }
 }

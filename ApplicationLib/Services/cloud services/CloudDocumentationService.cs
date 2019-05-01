@@ -14,26 +14,26 @@ namespace ApplicationLib.Services
 {
     internal class CloudDocumentationService : ICloudDocumentationService
     {
-        public ICloudDatabase<Documentation> Database { get; }
+        public ICloudDocumentationDB<Documentation> Database { get; }
 
-        public CloudDocumentationService(string connectionString)
+        public CloudDocumentationService()
         {
-            Database = new DocumentationDB(connectionString);
+            Database = new DocumentationDB();
         }
 
         public async Task DeleteDocumentation(Documentation entity) =>
-            await Database.DeleteRecord(entity);
+            await Database.DeleteDocumentation(entity.ID);
 
         public async Task<IEnumerable<Documentation>> GetAllDocumentations() =>
-            await Database.GetAllRecords();
+            await Database.GetAllDocumentations();
 
-        public async Task<IEnumerable<Documentation>> GetDocumentations(string columnName, object value) =>
-            await Database.GetRecords(columnName, value);
+        public async Task<IEnumerable<Documentation>> GetUserDocumentations(int userID) =>
+            await Database.GetUserDocumentations(userID);
 
         public async Task InsertDocumentation(Documentation entity) =>
-            await Database.InsertRecord(entity);
+            await Database.InsertDocumentation(entity);
 
         public async Task UpdateDocumentation(Documentation entity) =>
-            await Database.UpdateRecord(entity);
+            await Database.UpdateDocumentation(entity);
     }
 }

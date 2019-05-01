@@ -30,19 +30,19 @@ namespace ApplicationLib.Services
             return new LocalTemplatesSevice();
         }
 
-        public ICloudDocumentationService GetCloudDocumentationService(string connectionString)
+        public ICloudDocumentationService GetCloudDocumentationService()
         {
-            return new CloudDocumentationService(connectionString);
+            return new CloudDocumentationService();
         }
 
-        public ICloudDocumentsService GetCloudDocumentsService(string connectionString)
+        public ICloudDocumentsService GetCloudDocumentsService()
         {
-            return new CloudDocumentsService(connectionString);
+            return new CloudDocumentsService();
         }
 
-        public ICloudTemplateService GetCloudTemplateService(string connectionString)
+        public ICloudTemplateService GetCloudTemplateService()
         {
-            return new CloudTemplateService(connectionString);
+            return new CloudTemplateService();
         }
     }
 }

@@ -8,55 +8,116 @@ using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 
 using AeroORMFramework;
+using System.Net;
+using ApplicationLib.Exceptions;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace ApplicationLib.Database
 {
-    class TemplatesDB : ICloudDatabase<Template>
+    class TemplatesDB : ICloudTemplatesDB<Template>
     {
-        private Connector Connector { get; }
+        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/templates";
 
-        public TemplatesDB(string connectionString)
-        {
-            Connector = new Connector(connectionString);
-        }
-
-        public async Task DeleteRecord(Template template)
+        public async Task DeleteTemplate(Template template)
         {
             await Task.Run(() =>
             {
-                Connector.DeleteRecord(template);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?templateID={template.ID}", "DELETE");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
 
-        public async Task<IEnumerable<Template>> GetAllRecords()
+        public async Task<IEnumerable<Template>> GetAllTemplates()
         {
             return await Task.Run(() =>
             {
-                return Connector.GetAllRecords<Template>();
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+                IEnumerable<Template> templates = JsonConvert.DeserializeObject<
+                    IEnumerable<Template>>(responseContent);
+
+                return templates;
             });
         }
 
-        public async Task<IEnumerable<Template>> GetRecords(string columnName, object value)
+        public async Task<IEnumerable<Template>> GetUserTemplates(int userID)
         {
             return await Task.Run(() =>
             {
-                return Connector.GetRecords<Template>(columnName, value);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?userID={userID}", "GET");
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+
+                string responseContent = HTTP.GetResponseContent(httpWebResponse);
+                IEnumerable<Template> templates = JsonConvert.DeserializeObject<
+                    IEnumerable<Template>>(responseContent);
+
+                return templates;
             });
         }
 
-        public async Task InsertRecord(Template template)
+        public async Task InsertTemplate(Template template)
         {
             await Task.Run(() =>
             {
-                Connector.Insert(template);
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "POST");
+
+                using (var stream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(template));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
 
-        public async Task UpdateRecord(Template template)
+        public async Task UpdateTemplate(Template template)
         {
             await Task.Run(() =>
             {
-                Connector.UpdateRecord(template);
+
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "PUT");
+
+                using (var stream = httpWebRequest.GetRequestStream())
+                {
+                    using (var sw = new StreamWriter(stream))
+                    {
+                        sw.Write(JsonConvert.SerializeObject(template));
+                    }
+                }
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
+                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    throw new ServerException();
+                }
             });
         }
     }

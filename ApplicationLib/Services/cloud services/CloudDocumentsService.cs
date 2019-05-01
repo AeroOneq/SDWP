@@ -12,36 +12,37 @@ namespace ApplicationLib.Services
 {
     class CloudDocumentsService : ICloudDocumentsService
     {
-        public ICloudDatabase<Document> Database { get; }
+        public ICloudDocumentDB<Document> Database { get; }
 
-        public CloudDocumentsService(string connectionString)
+        public CloudDocumentsService()
         {
-            Database = new DocumentsDB(connectionString);
+            Database = new DocumentsDB();
         }
 
         public async Task DeleteDocument(Document document)
         {
-            await Database.DeleteRecord(document);
+            await Database.DeleteDocument(document);
         }
 
         public async Task<IEnumerable<Document>> GetAllDocuments()
         {
-            return await Database.GetAllRecords();
+            return await Database.GetAllDocuments();
         }
 
-        public async Task<IEnumerable<Document>> GetDocuments(string columnName, object value)
+        public async Task<IEnumerable<Document>> GetDocumentationDocuments(
+            int documentationID)
         {
-            return await Database.GetRecords(columnName, value);
+            return await Database.GetDocumentationDocuments(documentationID);
         }
 
         public async Task InsertDocument(Document document)
         {
-            await Database.InsertRecord(document);
+            await Database.InsertDocument(document);
         }
 
         public async Task UpdateDocument(Document document)
         {
-            await Database.UpdateRecord(document);
+            await Database.UpdateDocument(document);
         }
     }
 }

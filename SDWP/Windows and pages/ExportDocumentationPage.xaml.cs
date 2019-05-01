@@ -66,10 +66,8 @@ namespace SDWP
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
 
-            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService(
-                DatabaseProperties.ConnectionString);
-            CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService(
-                DatabaseProperties.ConnectionString);
+            CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService();
+            CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService();
             LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
@@ -84,7 +82,8 @@ namespace SDWP
             LocalDocumentation localDocumentation = GetMainPageLocalDocumentation();
             if (localDocumentation == null)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Нет документации для сохранения", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Нет документации для сохранения",
+                    MessageBoxButton.OK);
                 return;
             }
 
@@ -124,7 +123,8 @@ namespace SDWP
             try
             {
                 await LocalDocumentationService.CreateLocalDocumentationFile(localDocumentation);
-                SDWPMessageBox.ShowSDWPMessageBox("Статус сохранения", "Документация успешно сохранена", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Статус сохранения", "Документация успешно сохранена",
+                    MessageBoxButton.OK);
             }
             catch (IOException ex)
             {
@@ -145,14 +145,16 @@ namespace SDWP
 
             if (savingFilePath == null)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Ошибка выбора файла для сохранения", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Ошибка выбора файла для сохранения",
+                    MessageBoxButton.OK);
                 return;
             }
 
             LocalDocumentation localDocumentation = GetMainPageLocalDocumentation();
             if (localDocumentation == null)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Нет документации для сохранения", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Нет документации для сохранения",
+                    MessageBoxButton.OK);
                 return;
             }
 
@@ -199,7 +201,8 @@ namespace SDWP
                     await CloudDocumentationService.UpdateDocumentation(documentation);
                     await SynchronizeDocuments(documentation, documents);
 
-                    SDWPMessageBox.ShowSDWPMessageBox("Успешно", "Докуемнтация успешно сохранена", MessageBoxButton.OK);
+                    SDWPMessageBox.ShowSDWPMessageBox("Успешно", "Докуемнтация успешно сохранена",
+                        MessageBoxButton.OK);
                 }
                 else
                 {
@@ -222,8 +225,8 @@ namespace SDWP
         /// </summary>
         private async Task SynchronizeDocuments(Documentation documentation, List<Document> documents)
         {
-            List<Document> databaseDocuments = (await CloudDocumentsService.GetDocuments(
-                "DocumentationID", documentation.ID)).ToList();
+            List<Document> databaseDocuments = (await CloudDocumentsService.
+                GetDocumentationDocuments(documentation.ID)).ToList();
 
             //update the documents which were updated and add new ones
             foreach (Document document in documents)

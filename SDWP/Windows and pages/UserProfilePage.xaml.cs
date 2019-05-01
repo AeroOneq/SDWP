@@ -31,16 +31,17 @@ namespace SDWP
     /// </summary
     public partial class UserProfilePage : Page, IAccountPage
     {
+        #region Services
         private IEmailService<UserInfo> EmailService { get; set; }
         private IUserService<UserInfo> UserService { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
+        #endregion
 
         #region Properties
+        private int CodeID { get; set; } = -1;
         public Action CloseAccGrid { get; set; }
 
         private byte[] NewUserPhoto { get; set; } = null;
-        private Connector Connector { get; } = new Connector(
-            DatabaseProperties.ConnectionString);
         private bool IsProfileDataEdititing { get; set; } = false;
         private bool PasswordBoxState { get; set; } = false;
 
@@ -218,6 +219,7 @@ namespace SDWP
         private async void StartUpdatingProcessAsync(object sender, EventArgs e)
         {
             PageHeader.SwitchOnTopLoader();
+
             if (CheckIfDataChanged())
             {
                 PageHeader.SwitchOffTheLoader();
@@ -231,71 +233,79 @@ namespace SDWP
                     UserInfo newUserInfo = CreateNewUserObject();
                     UserInfo.CheckUserProperties(newUserInfo);
 
+                    if (UserInfo.CurrentUser.Login != newUserInfo.Login)
+                        await UserService.CheckLogin(newUserInfo.Login);
+
                     if (newUserInfo.Email != UserInfo.CurrentUser.Email)
                     {
                         await UserService.CheckEmail(newUserInfo.Email);
-                        await EmailService.SendCodeEmail(newUserInfo);
+                        CodeID = await EmailService.SendCodeEmail(newUserInfo);
 
                         ShowEnterCodeGrid();
                         StartCodeTimer();
                     }
                     else
-                    {
-                        if (UserInfo.CurrentUser.Login != newUserInfo.Login)
-                            await UserService.CheckLogin(newUserInfo.Login);
-
+                    { 
                         await UserService.UpdateRecord(newUserInfo);
-                        await EmailService.ResetCode();
 
                         OnSuccesfullUpdate();
                     }
                 }
                 catch (NotAppropriateUserParam ex)
                 {
-                    await EmailService.ResetCode();
                     PageHeader.SwitchOffTheLoader();
-
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
                 catch (Exception ex)
                 {
-                    await EmailService.ResetCode();
                     PageHeader.SwitchOffTheLoader();
-
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
             }
+
             PageHeader.SwitchOffTheLoader();
         }
             
         private void OnSuccesfullUpdate()
         {
             UpdateCommonUserAndRefreshUI();
+
             Dispatcher.Invoke(() => PageHeader.SwitchOffTheLoader());
             Dispatcher.Invoke(() => SDWPMessageBox.ShowSDWPMessageBox(
-                "Статус обновления профиля", "Профиль умпешно обновлен",
+                "Статус обновления профиля", "Профиль успешно обновлен",
                 MessageBoxButton.OK));
             Dispatcher.Invoke(() => HideEnterCodeGrid());
         }
 
         private async void UpdateCommonUserAndRefreshUI()
         {
-            UserInfo.CurrentUser = await UserService.GetUser("ID", UserInfo.CurrentUser.ID);
+            UserInfo.CurrentUser = await UserService.GetUserByID(UserInfo.CurrentUser.ID);
             Dispatcher.Invoke(() => UploadUserDataToUI());
         }
 
         private async void UpdateRecordAfterEmailConfirmationAsync(object sender,
             EventArgs e)
         {
-            PageHeader.SwitchOnTopLoader();
-            UserInfo newUserInfo = CreateNewUserObject();
-            if (!(EmailService.Code == null) && emailCodeTextBox.Text == EmailService.Code)
-                await UserService.UpdateRecord(newUserInfo);
-            else
+            try
             {
-                PageHeader.SwitchOffTheLoader();
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка подтверждения e-mail",
-                    "Вы ввели неверный код", MessageBoxButton.OK);
+                PageHeader.SwitchOnTopLoader();
+
+                UserInfo newUserInfo = CreateNewUserObject();
+                if (CodeID != -1 && await EmailService.CheckCode(CodeID, emailCodeTextBox.Text))
+                {
+                    await UserService.UpdateRecord(newUserInfo);
+                    OnSuccesfullUpdate();
+                }
+                else
+                {
+                    PageHeader.SwitchOffTheLoader();
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка подтверждения e-mail",
+                        "Вы ввели неверный код", MessageBoxButton.OK);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -313,7 +323,8 @@ namespace SDWP
                 currentTimerTime += new TimeSpan(0, 0, 1);
                 if (currentTimerTime.Seconds == 0 && currentTimerTime.Minutes == 2)
                 {
-                    await EmailService.ResetCode();
+                    await DeleteCode();
+
                     timeTillCodeExpireTextBlock.Text = "Код недействителен";
                     timer.Stop();
                 }
@@ -321,11 +332,25 @@ namespace SDWP
 
             timer.Start();
         }
+        private async Task DeleteCode()
+        {
+            try
+            {
+                await EmailService.DeleteCode(CodeID);
+                CodeID = -1;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
 
         private async void CloseEnterCodeGrid(object sender, MouseButtonEventArgs e)
         {
             emailCodeTextBox.Text = string.Empty;
-            await EmailService.ResetCode();
+            await DeleteCode();
+
+            PageHeader.SwitchOffTheLoader();
             HideEnterCodeGrid();
         }
 

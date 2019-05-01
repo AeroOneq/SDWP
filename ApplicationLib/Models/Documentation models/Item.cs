@@ -6,9 +6,12 @@ namespace ApplicationLib.Models
 {
     public class Item : IParentableItem
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("items")]
         public List<Item> Items { get; set; }
+        [JsonProperty("paragraphs")]
         public List<Paragraph> Paragraphs { get; set; }
 
         [JsonIgnore]

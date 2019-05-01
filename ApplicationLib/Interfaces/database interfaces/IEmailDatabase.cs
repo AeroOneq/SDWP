@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 namespace ApplicationLib.Interfaces
 {
     interface IEmailDatabase<UserType>
-    {
-        string Code { get; }
-        Task SendCodeEmail(UserType user);
-        Task SendNewPasswordToUser(UserType user, string newPassword);
-        Task ResetCode();
+    { 
+        Task<int> SendCodeEmail(UserType user);
+        Task<bool> CheckCode(int codeID, string code);
+        Task DeleteCode(int codeID);
     }
 }

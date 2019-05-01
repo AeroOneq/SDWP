@@ -26,13 +26,13 @@ namespace ApplicationLib.Services
         public async Task UpdateRecord(UserInfo user) =>
             await Database.UpdateUserRecord(user);
 
-        public async Task<UserInfo> GetUser(string columnName, object value) =>
-            await Database.GetUser(columnName, value);
+        public async Task<UserInfo> GetUserByID(int id) =>
+            await Database.GetUserByID(id);
 
         public async Task CheckLogin(string login) =>
             await Database.CheckLogin(login);
 
         public async Task CheckEmail(string email) =>
-            await Database.CheckLogin(email);
+            await Database.CheckEmail(email);
     }
 }

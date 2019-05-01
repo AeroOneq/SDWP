@@ -63,9 +63,14 @@
     <Compile Include="Database\DocumentationDB.cs" />
     <Compile Include="Database\DocumentsDB.cs" />
     <Compile Include="Database\EmailDB.cs" />
+    <Compile Include="Database\HTTP.cs" />
     <Compile Include="Database\TemplatesDB.cs" />
     <Compile Include="Database\UsersDB.cs" />
+    <Compile Include="Exceptions\ServerException.cs" />
+    <Compile Include="Interfaces\database interfaces\ICloudDocumentDB.cs" />
+    <Compile Include="Interfaces\database interfaces\ICloudDocumentationDB.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDatabase.cs" />
+    <Compile Include="Interfaces\database interfaces\ICloudTemplatesDB.cs" />
     <Compile Include="Interfaces\database interfaces\IEmailDatabase.cs" />
     <Compile Include="Interfaces\database interfaces\IUserDatabase.cs" />
     <Compile Include="Interfaces\models%27 interfaces\ISerializable.cs" />
@@ -79,7 +84,6 @@
     <Compile Include="Interfaces\local storage interfaces\ILocalTemplateStorage.cs" />
     <Compile Include="Interfaces\cloud service interfaces\ICloudDocumentationService.cs" />
     <Compile Include="Interfaces\cloud service interfaces\ICloudDocumentsService.cs" />
-    <Compile Include="Interfaces\cloud service interfaces\ICloudService.cs" />
     <Compile Include="Interfaces\cloud service interfaces\ICloudTemplateService.cs" />
     <Compile Include="Models\Documentation models\LocalDocumentation.cs" />
     <Compile Include="Models\Documentation models\LocalTemplate.cs" />
@@ -226,6 +230,7 @@
     <Resource Include="Views\Resources\addRowDownIcon.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

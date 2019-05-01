@@ -511,7 +511,5 @@ namespace SDWP
                 (new MainWindow()).Show();
             }
         }
-
-
     }
 }

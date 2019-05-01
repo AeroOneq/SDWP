@@ -15,8 +15,8 @@ namespace ApplicationLib.Interfaces
         IEmailService<UserInfo> GetEmailService();
         ILocalDocumentationService GetLocalDocumentationService();
         ILocalTemplateService GetLocalTemplateService();
-        ICloudDocumentationService GetCloudDocumentationService(string connectionString);
-        ICloudDocumentsService GetCloudDocumentsService(string connectionString);
-        ICloudTemplateService GetCloudTemplateService(string connectionString);
+        ICloudDocumentationService GetCloudDocumentationService();
+        ICloudDocumentsService GetCloudDocumentsService();
+        ICloudTemplateService GetCloudTemplateService();
     }
 }

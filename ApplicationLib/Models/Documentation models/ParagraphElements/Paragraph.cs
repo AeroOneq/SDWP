@@ -13,7 +13,9 @@ namespace ApplicationLib.Models
     public class Paragraph : IParentableParagraph
     {
         #region Properties
+        [JsonProperty("type")]
         public string Type { get; set; }
+        [JsonProperty("element")]
         public ParagraphElement ParagraphElement { get; set; }
 
         [JsonIgnore]
