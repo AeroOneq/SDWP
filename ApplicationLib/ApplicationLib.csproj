@@ -115,7 +115,6 @@
     <Compile Include="Services\local storages\LocalTemplatesService.cs" />
     <Compile Include="Tests\NumberedListTests.cs" />
     <Compile Include="Tests\TableTest.cs" />
-    <Compile Include="Tests\WordTest.cs" />
     <Compile Include="Views\DocumentMenuOption.xaml.cs">
       <DependentUpon>DocumentMenuOption.xaml</DependentUpon>
     </Compile>

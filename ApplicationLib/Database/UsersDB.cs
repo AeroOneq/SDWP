@@ -15,7 +15,7 @@ namespace ApplicationLib.Database
     public class UsersDB : IUserDatabase<UserInfo>
     {
         #region Properties
-        private string ApiURL { get; } = "http://localhost:61890/sdwpapi/v1.0.0/users";
+        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/users";
         #endregion
 
         #region Authorization methods

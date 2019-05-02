@@ -65,7 +65,6 @@ namespace ApplicationLib.Database
         {
             await Task.Run(async () =>
             {
-
                 HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL, "PUT");
 
                 using (var rqStream = httpWebRequest.GetRequestStream())
