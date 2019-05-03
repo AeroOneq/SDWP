@@ -11,7 +11,6 @@ using ApplicationLib.Models;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocumentFormat.OpenXml.InkML;
 
 using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 using WordTable = DocumentFormat.OpenXml.Wordprocessing.Table;
@@ -19,29 +18,38 @@ using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
-namespace ApplicationLib.Database
+namespace ApplicationLib.Word
 {
     public class WordDB
     {
         private Models.Document Document { get; }
         private MainDocumentPart MainPart { get; set; }
         private Body Body { get; set; }
+        private WordRenderSettings WordRenderSettings { get; }
 
         #region Render properties
         private double TabValue { get; } = 500;
         #endregion
 
         #region Word render constants
-        string[][] titlePageTable = new string[2][]
+        string[][] TitlePageTable { get; } = new string[2][]
         {
             new string[5]{"Инв. № подл", "Подп и дата", "Взаим инв №", "Инв № дубл", "Подп и дата"}.Reverse().ToArray(),
             new string[5]{ "RU.17701729.04.03-01 ТЗ", "", "", "", "" }.Reverse().ToArray()
         };
+        string[][] FooterTable { get; } = new string[4][]
+        {
+            new string[5]{ "", "", "", "", "" },
+            new string[5]{ "Изм", "Лист.", "№ Документа", "Подпись", "Дата"},
+            new string[5]{ "RU.17701729.04.03-01 ТЗ", "", "", "", "" },
+            new string[5]{ "Инв. № подл.", "Подп. и дата", "Взам. Инв №", "Инв. № дубл", "Подп и дата"}
+        };
         #endregion
 
-        public WordDB(Models.Document document)
+        public WordDB(Models.Document document, WordRenderSettings wordRenderSettings)
         {
             Document = document;
+            WordRenderSettings = wordRenderSettings;
         }
 
         public async Task CreateWordDocument()
@@ -56,7 +64,6 @@ namespace ApplicationLib.Database
                     true))
                 {
                     MainPart = wordDocument.AddMainDocumentPart();
-
                     MainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
                     Body = new Body();
 
@@ -64,11 +71,208 @@ namespace ApplicationLib.Database
                     CreateSecondApprovalPage();
                     CreateTableOfContents();
                     RenderDocument();
+                    Body.Append(GetSectionPtr());
 
                     MainPart.Document.Append(Body);
                 }
+
+                using (WordprocessingDocument wordDocument = WordprocessingDocument.Open("test.docx", true))
+                {
+                    MainPart = wordDocument.MainDocumentPart;
+
+                    MainPart.DeleteParts(MainPart.HeaderParts);
+                    MainPart.DeleteParts(MainPart.FooterParts);
+
+                    HeaderPart headerPart = MainPart.AddNewPart<HeaderPart>();
+                    FooterPart footerPart = MainPart.AddNewPart<FooterPart>();
+
+                    string headerID = MainPart.GetIdOfPart(headerPart);
+                    string footerID = MainPart.GetIdOfPart(footerPart);
+
+                    CreateFooterContent(footerPart);
+                    CreateHeaderContent(headerPart);
+
+                    var sectionPropsList = MainPart.Document.Body.Descendants<SectionProperties>().ToList();
+                    var sectionProps = sectionPropsList[1];
+
+                    sectionProps.Append(new FooterReference() { Type = HeaderFooterValues.Default, Id = footerID });
+                    sectionProps.Append(new HeaderReference() { Type = HeaderFooterValues.Default, Id = headerID });
+                }
             });
         }
+
+        #region Footer and Header
+        private void CreateFooterContent(FooterPart footerPart)
+        {
+            Footer footer = new Footer() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "w14 wp14" } };
+           
+            footer.AddNamespaceDeclaration("wpc", "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas");
+            footer.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            footer.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
+            footer.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+            footer.AddNamespaceDeclaration("m", "http://schemas.openxmlformats.org/officeDocument/2006/math");
+            footer.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
+            footer.AddNamespaceDeclaration("wp14", "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing");
+            footer.AddNamespaceDeclaration("wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing");
+            footer.AddNamespaceDeclaration("w10", "urn:schemas-microsoft-com:office:word");
+            footer.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            footer.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            footer.AddNamespaceDeclaration("wpg", "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup");
+            footer.AddNamespaceDeclaration("wpi", "http://schemas.microsoft.com/office/word/2010/wordprocessingInk");
+            footer.AddNamespaceDeclaration("wne", "http://schemas.microsoft.com/office/word/2006/wordml");
+            footer.AddNamespaceDeclaration("wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape");
+
+            WordTable wordTable = new WordTable();
+            TableProperties tableProperties = new TableProperties(new TableBorders(
+                new TopBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                },
+                new BottomBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                },
+                new LeftBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                },
+                new RightBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                },
+                new InsideHorizontalBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                },
+                new InsideVerticalBorder
+                {
+                    Val = new EnumValue<BorderValues>(BorderValues.Single),
+                    Size = 12
+                }), new Justification() { Val = JustificationValues.Center });
+
+            wordTable.Append(tableProperties);
+
+            for (int i = 0; i < FooterTable.Length; i++)
+            {
+                TableRow tableRow = new TableRow();
+                for (int j = 0; j < FooterTable[i].Length; j++)
+                {
+                    TableCell tableCell = new TableCell();
+
+                    WordParagraph paragraph = new WordParagraph();
+                    ParagraphProperties pproperties = new ParagraphProperties(
+                        new Justification() { Val = JustificationValues.Center }, new SpacingBetweenLines()
+                        {
+                            After = "0",
+                            Before = "0",
+                            Line = "200"
+                        });
+
+                    paragraph.Append(pproperties);
+
+                    Run run = new Run();
+                    RunProperties runProperties = new RunProperties(new RunFonts()
+                    {
+                        Ascii = WordRenderSettings.FontFamily,
+                        HighAnsi = WordRenderSettings.FontFamily
+                    })
+                    {
+                        Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                        FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
+                    };
+                    Text text = new Text(FooterTable[i][j]);
+
+                    run.Append(runProperties);
+                    run.Append(text);
+
+                    paragraph.Append(run);
+
+                    tableCell.Append(paragraph);
+                    tableRow.Append(tableCell);
+                }
+
+                wordTable.Append(tableRow);
+            }
+
+            footer.Append(wordTable);
+
+            footerPart.Footer = footer;
+        }
+        private void CreateHeaderContent(HeaderPart headerPart)
+        {
+            Header header = new Header() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "w14 wp14" } };
+            header.AddNamespaceDeclaration("wpc", "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas");
+            header.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+            header.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
+            header.AddNamespaceDeclaration("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+            header.AddNamespaceDeclaration("m", "http://schemas.openxmlformats.org/officeDocument/2006/math");
+            header.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
+            header.AddNamespaceDeclaration("wp14", "http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing");
+            header.AddNamespaceDeclaration("wp", "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing");
+            header.AddNamespaceDeclaration("w10", "urn:schemas-microsoft-com:office:word");
+            header.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            header.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            header.AddNamespaceDeclaration("wpg", "http://schemas.microsoft.com/office/word/2010/wordprocessingGroup");
+            header.AddNamespaceDeclaration("wpi", "http://schemas.microsoft.com/office/word/2010/wordprocessingInk");
+            header.AddNamespaceDeclaration("wne", "http://schemas.microsoft.com/office/word/2006/wordml");
+            header.AddNamespaceDeclaration("wps", "http://schemas.microsoft.com/office/word/2010/wordprocessingShape");
+
+            header.Append(GetHeaderContent());
+            headerPart.Header = header;
+        }
+        private SdtBlock GetHeaderContent()
+        {
+            return new SdtBlock(
+                            new SdtProperties(
+                                new SdtId() { Val = 317275692 },
+                                new SdtContentDocPartObject(
+                                    new DocPartGallery() { Val = "Page Numbers (Top of Page)" },
+                                    new DocPartUnique())),
+                            new SdtContentBlock(
+                                new WordParagraph(
+                                    new ParagraphProperties(
+                                        new ParagraphStyleId() { Val = "Header" },
+                                        new Justification() { Val = JustificationValues.Center }),
+                                    new SimpleField(
+                                        new Run(
+                                            new RunProperties(
+                                                new NoProof(),
+                                                new SpacingBetweenLines()
+                                                {
+                                                    After = "100",
+                                                    Before = "100",
+                                                    Line = "200"
+                                                }),
+                                            new Text("1"))
+                                        { RsidRunAddition = "001F06F5" })
+                                    { Instruction = " PAGE   \\* MERGEFORMAT " })
+                                { RsidParagraphAddition = "00F1559F", RsidRunAdditionDefault = "00BB29E4" },
+                                new WordParagraph(
+                                    new ParagraphProperties(
+                                        new Caps(),
+                                        new Color() { Val = WordRenderSettings.DefaultColor },
+                                        new FontSize() { Val = WordRenderSettings.DefaultTextSize },
+                                        new Justification() { Val = JustificationValues.Center },
+                                        new SpacingBetweenLines()
+                                        {
+                                            After = "100",
+                                            Before = "0",
+                                            Line = "200"
+                                        }),
+                                    new Run(
+                                        new RunProperties(new RunFonts()
+                                        {
+                                            Ascii = WordRenderSettings.FontFamily,
+                                            HighAnsi = WordRenderSettings.FontFamily
+                                        }),
+                                        new Text("RU.17701729.04.03-01 ТЗ")))));
+        }
+        #endregion
 
         #region Main start methods
         private void CreateTitlePage()
@@ -91,7 +295,7 @@ namespace ApplicationLib.Database
 
             AddSoftwateEngineerSignatureTable();
 
-            AddEmptyParagrahs(8);
+            AddEmptyParagrahs(5);
 
             AddTownAndYearParagraph();
             Body.Append(GetLastParagraphOfThePage());
@@ -110,12 +314,13 @@ namespace ApplicationLib.Database
 
             AddEmptyParagrahs(1);
             Body.Append(GetLastParagraphOfThePage());
+            Body.Append(GetSectionPtr());
         }
         private void CreateTableOfContents()
         {
             SdtBlock tableOfContents = new SdtBlock();
-            RunProperties tocRpr = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman" },
-                new Color() { Val = "auto" }, new FontSize() { Val = "24" });
+            RunProperties tocRpr = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily },
+                new Color() { Val = "auto" }, new FontSize() { Val = WordRenderSettings.DefaultTextSize });
             SdtContentDocPartObject sdtContentDocPartObject = new SdtContentDocPartObject(
                 new DocPartGallery() { Val = "Table of Contents" }, new DocPartUnique());
 
@@ -134,11 +339,11 @@ namespace ApplicationLib.Database
 
             p.Append(ppr);
 
-            RunProperties rpr = new RunProperties(new RunFonts() { Ascii = "Times New Roman", HighAnsi = "Times New Roman" })
+            RunProperties rpr = new RunProperties(new RunFonts() { Ascii = WordRenderSettings.FontFamily, HighAnsi = WordRenderSettings.FontFamily })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                FontSize = new FontSize() { Val = "24" }
+                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
             };
 
             Run run = new Run();
@@ -184,6 +389,8 @@ namespace ApplicationLib.Database
             {
                 index = (int.Parse(index) + 1).ToString();
                 RenderItem(item, 0, index);
+
+                Body.Append(GetLastParagraphOfThePage());
             }
         }
         private void RenderItem(Item item, int depth, string index)
@@ -236,10 +443,10 @@ namespace ApplicationLib.Database
             p.Append(pp);
 
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" })
+            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily })
             {
-                Color = new Color() { Val = "#000000" },
-                FontSize = new FontSize() { Val = "24" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
                 Caps = new Caps(),
                 Bold = new Bold()
             };
@@ -253,7 +460,6 @@ namespace ApplicationLib.Database
 
             return p;
         }
-
         private WordParagraph GetParagraphHeader(string name, int depth)
         {
             WordParagraph p = new WordParagraph();
@@ -264,10 +470,10 @@ namespace ApplicationLib.Database
 
             Run run = new Run();
             RunProperties runProperties = new RunProperties(new RunFonts()
-            { HighAnsi = "Times New Roman", Ascii = "Times New Roman" })
+            { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily })
             {
-                Color = new Color() { Val = "#000000" },
-                FontSize = new FontSize() { Val = "24" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
                 Bold = new Bold()
             };
 
@@ -299,9 +505,9 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" },
 
             };
@@ -331,9 +537,9 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" },
 
             };
@@ -380,10 +586,10 @@ namespace ApplicationLib.Database
             };
             paragraph.Append(pp);
 
-            var run = new Run(new Break() { Type = BreakValues.Page });
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var run = new Run(new LastRenderedPageBreak(), new Break() { Type = BreakValues.Page });
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.PrependChild(runProperties);
@@ -395,10 +601,16 @@ namespace ApplicationLib.Database
 
             return paragraph;
         }
+        private WordParagraph GetSectionPtr()
+        {
+            return new WordParagraph(
+                new ParagraphProperties(
+                    new SectionProperties()));
+        }
         private Run GetTabRun()
         {
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" });
+            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
             run.Append(runProperties);
             run.Append(new TabChar());
 
@@ -514,7 +726,8 @@ namespace ApplicationLib.Database
 
             for (int i = 0; i < 5; i++)
             {
-                TableRow tableRow = new TableRow(new TableRowProperties(new TableRowHeight() { Val = (uint)(i == 4 ? 2600 : 2000) }));
+                TableRow tableRow = new TableRow(new TableRowProperties(
+                    new TableRowHeight() { Val = (uint)(i == 4 ? 2600 : 2000) }));
                 for (int j = 0; j < 2; j++)
                 {
                     TableCell tableCell = new TableCell();
@@ -530,9 +743,8 @@ namespace ApplicationLib.Database
                     var rp = new RunProperties()
                     {
                         Italic = new Italic(),
-
                     };
-                    var t = new Text(titlePageTable[j][i]);
+                    var t = new Text(TitlePageTable[j][i]);
 
                     r.Append(rp);
                     r.Append(t);
@@ -542,7 +754,8 @@ namespace ApplicationLib.Database
                         new TableCellWidth { Width = "3000" })
                     {
                         TextDirection = new TextDirection() { Val = TextDirectionValues.BottomToTopLeftToRight },
-                        TableCellVerticalAlignment = new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center },
+                        TableCellVerticalAlignment = new TableCellVerticalAlignment()
+                        { Val = TableVerticalAlignmentValues.Center },
                         TableCellWidth = new TableCellWidth() { Width = "529", Type = TableWidthUnitValues.Dxa },
                     });
                     tableCell.Append(p);
@@ -553,7 +766,6 @@ namespace ApplicationLib.Database
             }
 
             Body.Append(table);
-
         }
         private void AddOrganizationHeader()
         {
@@ -566,11 +778,12 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            RunProperties runProperties = new RunProperties(
+                new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
@@ -599,11 +812,12 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts
+            { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "35" },
 
             };
@@ -633,10 +847,10 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
@@ -665,11 +879,11 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
@@ -698,11 +912,11 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
@@ -724,9 +938,9 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.PrependChild(runProperties);
@@ -759,10 +973,10 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            RunProperties runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
@@ -790,10 +1004,10 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Caps = new Caps(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
@@ -815,10 +1029,10 @@ namespace ApplicationLib.Database
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue("Times New Roman") })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
-                Color = new Color() { Val = "#000000" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "25" }
             };
             run.Append(runProperties);
@@ -845,8 +1059,8 @@ namespace ApplicationLib.Database
 
             RunFonts runFonts = new RunFonts()
             {
-                Ascii = "Times New Roman",
-                HighAnsi = "Times New Roman"
+                Ascii = WordRenderSettings.FontFamily,
+                HighAnsi = WordRenderSettings.FontFamily
             };
             pp.Append(runFonts);
 
@@ -860,11 +1074,11 @@ namespace ApplicationLib.Database
             Run run = new Run();
             RunProperties runProperties = new RunProperties(new RunFonts()
             {
-                HighAnsi = "Times New Roman",
-                Ascii = "Times New Roman"
+                HighAnsi = WordRenderSettings.FontFamily,
+                Ascii = WordRenderSettings.FontFamily
             })
             {
-                FontSize = new FontSize() { Val = "24" }
+                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
             };
             if (depth == 0)
             {
@@ -878,7 +1092,7 @@ namespace ApplicationLib.Database
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
             run.Append(runProperties);
             run.Append(new PositionalTab()
             {
@@ -890,7 +1104,7 @@ namespace ApplicationLib.Database
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
             run.Append(runProperties);
             text = new Text("0");
             run.Append(text);
@@ -935,8 +1149,8 @@ namespace ApplicationLib.Database
                 Ascii = "Times New Roman"
             })
             {
-                Color = new Color() { Val = "#000000" },
-                FontSize = new FontSize() { Val = "24" },
+                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
 
             };
             run.PrependChild(runProperties);
@@ -981,7 +1195,7 @@ namespace ApplicationLib.Database
                 RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman" })
                 {
                     FontSize = new FontSize() { Val = "20" },
-                    Color = new Color() { Val = "#000000" }
+                    Color = new Color() { Val = WordRenderSettings.DefaultColor }
                 };
                 Text text = new Text(element.Text);
 
@@ -1083,7 +1297,7 @@ namespace ApplicationLib.Database
             return element;
         }
         private void InsertTable(Models.Table table, int depth)
-        { 
+        {
             Body.Append(RenderTable(table, depth));
         }
         private WordTable RenderTable(Models.Table table, int depth)
@@ -1119,7 +1333,7 @@ namespace ApplicationLib.Database
                 {
                     Val = new EnumValue<BorderValues>(BorderValues.Single),
                     Size = 12
-                }), new TableIndentation() { Width = (int)(depth * TabValue)});
+                }), new TableIndentation() { Width = (int)(depth * TabValue) });
 
             wordTable.Append(tableProperties);
 
@@ -1139,8 +1353,8 @@ namespace ApplicationLib.Database
                     Run run = new Run();
                     RunProperties rp = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" })
                     {
-                        Color = new Color() { Val = "#000000" },
-                        FontSize = new FontSize() { Val = "24" }
+                        Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                        FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
                     };
 
                     run.Append(rp);

@@ -80,7 +80,7 @@
     <Compile Include="Database\HTTP.cs" />
     <Compile Include="Database\TemplatesDB.cs" />
     <Compile Include="Database\UsersDB.cs" />
-    <Compile Include="Database\WordDB.cs" />
+    <Compile Include="Word\WordDB.cs" />
     <Compile Include="Exceptions\ServerException.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentDB.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentationDB.cs" />
@@ -163,6 +163,7 @@
     <Compile Include="Views\TableEditView.xaml.cs">
       <DependentUpon>TableEditView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Word\WordSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DocumentMenuOption.xaml">
