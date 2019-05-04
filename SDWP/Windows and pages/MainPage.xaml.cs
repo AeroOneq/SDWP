@@ -98,7 +98,7 @@ namespace SDWP
             LocalDocumentation = localDocumentation;
 
             DocController.UploadLocalDocumentation(LocalDocumentation);
-            UploadDocumentation(localDocumentation.Documentation, localDocumentation.Documents);
+            UploadDocumentation();
         }
 
         public void UploadCloudDocumentation(Documentation documentation, List<Document> documents)
@@ -108,7 +108,7 @@ namespace SDWP
             LocalDocumentation = null;
 
             DocController.UploadCloudDocumentation(documentation, documents);
-            UploadDocumentation(documentation, documents);
+            UploadDocumentation();
         }
 
         /// <summary>
@@ -123,9 +123,9 @@ namespace SDWP
             ParagraphsListPanel.Children.Clear();
         }
 
-        private void UploadDocumentation(Documentation documentation, List<Document> documents)
+        private void UploadDocumentation()
         {
-            DataContext = documentation;
+            DataContext = DocController.Documentation;
 
             UploadDocumentationDataToUI(DocController.Documentation);
             UploadDocumentsDataToUI(DocController.Documents);

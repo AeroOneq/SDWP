@@ -19,12 +19,14 @@ using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
 using ApplicationLib.Database;
+using ApplicationLib.Word;
 
 using SDWP.Interfaces;
 using SDWP.Exceptions;
 using SDWP.Factories;
 
 using Microsoft.Win32;
+using ApplicationLib.Factories;
 
 namespace SDWP
 {
@@ -39,37 +41,72 @@ namespace SDWP
 
         #region Services and factories
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
+        private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
+        private IRenderersAbstractFactory RenderersAbstractFactory { get; set; }
 
         private ICloudDocumentationService CloudDocumentationService { get; set; }
         private ICloudDocumentsService CloudDocumentsService { get; set; }
         private ILocalDocumentationService LocalDocumentationService { get; set; }
-        private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
         private IExceptionHandler ExceptionHandler { get; set; }
+        private IWordRenderer WordDocumentRenderer { get; set; }
         #endregion
 
         #region Properties
         private MainPage MainPage { get; }
+        private RenderSettings RenderSettings { get; set; }
 
-        private string FilePath { get; } = @"C:\Users\Aero\Desktop\Курсач\SDWP\SDWP\SDWP\bin\Debug\Docs\";
+        private TextBox WordFilePathTextBox { get; set; }
+        private PageHeader PageHeader { get; set; }
         #endregion
 
         public ExportDocumentationPage(MainPage mainPage)
         {
             InitializeComponent();
-            InitializeService();
+            InitializeServices();
+            SetUpInitialWordRenderSettings();
+            SetDataContext();
+            InitializeProperties();
 
             MainPage = mainPage;
         }
 
-        private void InitializeService()
+        private void SetDataContext()
+        {
+            DataContext = RenderSettings;
+        }
+
+        private void SetUpInitialWordRenderSettings()
+        {
+            RenderSettings = new RenderSettings()
+            {
+                AddFooter = true,
+                AddHeader = true,
+                AddLeftTable = true,
+                AddSecondPage = true,
+                AddTitlePage = true,
+                DefaultColor = "#000000",
+                DefaultTextSize = "12",
+                FontFamily = "Times New Roman"
+            };
+        }
+
+        private void InitializeServices()
         {
             ServiceAbstractFactory = new ServiceAbstractFactory();
             SdwpAbstractFactory = new SdwpAbstractFactory();
+            RenderersAbstractFactory = new RenderersAbstractFactory();
 
+            WordDocumentRenderer = RenderersAbstractFactory.GetWordDocumentRender();
             CloudDocumentationService = ServiceAbstractFactory.GetCloudDocumentationService();
             CloudDocumentsService = ServiceAbstractFactory.GetCloudDocumentsService();
             LocalDocumentationService = ServiceAbstractFactory.GetLocalDocumentationService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
+        }
+
+        private void InitializeProperties()
+        {
+            WordFilePathTextBox = wordExportFilePathTextBox;
+            PageHeader = pageHeader;
         }
 
         #region Saving processes
@@ -250,5 +287,50 @@ namespace SDWP
                 }
             }
         }
+
+        #region Word export
+        private void SelectWordFileForSaving(object sender, RoutedEventArgs e)
+        {
+            string filePath = FolderDialog.ShowDialog();
+
+            if (filePath != null)
+            {
+                WordFilePathTextBox.Text = filePath;
+            }
+        }
+
+        private async void ExportDocumentationToWord(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PageHeader.SwitchOnTopLoader();
+
+                Documentation documentation = MainPage.DocController.Documentation;
+                List<Document> documents = MainPage.DocController.Documents;
+
+                foreach (Document document in documents)
+                {
+                    WordDocumentRenderer.SetRenderParams(RenderSettings, document,
+                        documentation);
+
+                    await WordDocumentRenderer.RenderDocument();
+                }
+
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно срендерина в Word", MessageBoxButton.OK);
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
+        }
+        #endregion
     }
 }

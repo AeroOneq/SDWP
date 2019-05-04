@@ -592,39 +592,71 @@
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
                           Margin="0, 40, 0, 0">
-                    <Grid x:Name="documentationPropertiesGrid"
-                              Margin="0, 0, 0, 0">
+                    <StackPanel x:Name="documentationPropertiesStackPannel"
+                                Margin="0, 30, 0, 0">
 
                         <TextBlock Style="{StaticResource propertyNameStyle}"
-                                       Margin="15, 15, 0, 0"
-                                       Text="Назавние:"/>
+                                   Margin="15, 0, 0, 0"
+                                   Text="Назавние проекта:"/>
                         <TextBox x:Name="documentationNameTextBox"
-                                     Margin="10, 30, 15, 0"
-                                     Style="{StaticResource documentationNameGridStyle}"
-                                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                                 Margin="10, 0, 15, 0"
+                                 Style="{StaticResource documentationNameGridStyle}"
+                                 Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
+                                   Margin="15, 0, 0, 0"
+                                   Text="Team Lead:"/>
+                        <TextBox x:Name="documentationCodeTextBox"
+                                 Margin="10, 0, 15, 0"
+                                 Style="{StaticResource documentationNameGridStyle}"
+                                 Text="{Binding TeamLeadName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
+                                   Margin="15, 0, 0, 0"
+                                   Text="Имя менеджера:"/>
+                        <TextBox x:Name="documentationTeamLeadTextBox"
+                                 Margin="10, 0, 15, 0"
+                                 Style="{StaticResource documentationNameGridStyle}"
+                                 Text="{Binding ManagerName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
+                                   Margin="15, 0, 0, 0"
+                                   Text="Код проекта:"/>
+                        <TextBox x:Name="documentationProjectCodeTextBox"
+                                 Margin="10, 0, 15, 0"
+                                 Style="{StaticResource documentationNameGridStyle}"
+                                 Text="{Binding ProjectCode, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Style="{StaticResource propertyNameStyle}"
+                                   Margin="15, 0, 0, 0"
+                                   Text="Имя разработчика:"/>
+                        <TextBox x:Name="documentationSoftwareEngineerNameTextBox"
+                                 Margin="10, 0, 15, 0"
+                                 Style="{StaticResource documentationNameGridStyle}"
+                                 Text="{Binding SoftwareEngineerName, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Style="{StaticResource propertyNameStyle}"
                                    Text="Дата создания: "
-                                   Margin="15, 55, 0, 0"/>
+                                   Margin="15, 0, 0, 0"/>
                         <TextBlock x:Name="documentationCreationDateTextBlock"
                                    Style="{StaticResource propertyValueStyle}"
                                    Text="30.05.2000"
-                                   Margin="15, 70, 15, 0"/>
+                                   Margin="15, 0, 15, 0"/>
 
                         <TextBlock Style="{StaticResource propertyNameStyle}"
-                                               Margin="15, 130, 0, 0"
+                                               Margin="15, 10, 0, 0"
                                                FontSize="15"
                                                Text="Документы:"/>
 
                         <ScrollViewer VerticalAlignment="Stretch"
                                           HorizontalAlignment="Stretch"
-                                          Margin="0, 150, 0, 0"
+                                          Margin="0, 0, 0, 0"
                                           VerticalScrollBarVisibility="Hidden">
                             <StackPanel x:Name="documentsListStackPanel"
                                         VerticalAlignment="Top"
                                         HorizontalAlignment="Stretch"/>
                         </ScrollViewer>
-                    </Grid>
+                    </StackPanel>
                 </Grid>
             </Grid>
 

@@ -80,7 +80,11 @@
     <Compile Include="Database\HTTP.cs" />
     <Compile Include="Database\TemplatesDB.cs" />
     <Compile Include="Database\UsersDB.cs" />
-    <Compile Include="Word\WordDB.cs" />
+    <Compile Include="Factories\RenderersAbstractFactory.cs" />
+    <Compile Include="Interfaces\factories%27  interfaces\IRenderAbstractFactory.cs" />
+    <Compile Include="Interfaces\word interfaces\IDocumentRenderer.cs" />
+    <Compile Include="Interfaces\word interfaces\IWordRenderer.cs" />
+    <Compile Include="Word\WordRenderer.cs" />
     <Compile Include="Exceptions\ServerException.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentDB.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentationDB.cs" />
@@ -105,7 +109,7 @@
     <Compile Include="Models\Documentation models\ParagraphElements\NumberedListElement.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\Paragraph.cs" />
     <Compile Include="Models\Documentation models\ParagraphElements\ParagraphElement.cs" />
-    <Compile Include="Models\Documentation models\ParagraphJsonConverter.cs" />
+    <Compile Include="Models\JsonConverters\ParagraphJsonConverter.cs" />
     <Compile Include="Models\Documentation models\StorageType.cs" />
     <Compile Include="Models\Documentation models\Template.cs" />
     <Compile Include="Services\cloud services\CloudDocumentationService.cs" />
@@ -163,7 +167,7 @@
     <Compile Include="Views\TableEditView.xaml.cs">
       <DependentUpon>TableEditView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Word\WordSettings.cs" />
+    <Compile Include="Word\RenderSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DocumentMenuOption.xaml">

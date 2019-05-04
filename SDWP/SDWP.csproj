@@ -401,5 +401,8 @@
   <ItemGroup>
     <Resource Include="Resources\createLocalCopyIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exportToWordIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

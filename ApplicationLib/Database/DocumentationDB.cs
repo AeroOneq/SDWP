@@ -21,7 +21,6 @@ namespace ApplicationLib.Database
         #region Properties
         private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/documentations";
         #endregion
-
         public async Task<IEnumerable<Documentation>> GetAllDocumentations()
         {
             return await Task.Run(async () =>

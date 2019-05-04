@@ -18,6 +18,7 @@ using ApplicationLib.Models;
 using ApplicationLib.Services;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Database;
+using ApplicationLib.Factories;
 
 using SDWP.Factories;
 using SDWP.Interfaces;

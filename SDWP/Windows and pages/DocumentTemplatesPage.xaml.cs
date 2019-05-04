@@ -11,6 +11,7 @@ using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Services;
 using ApplicationLib.Database;
+using ApplicationLib.Factories;
 
 using SDWP.Interfaces;
 using SDWP.Exceptions;

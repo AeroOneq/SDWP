@@ -24,5 +24,15 @@ namespace ApplicationLib.Models
         public Access Access { get; set; }
         [JsonProperty("storageType")]
         public StorageType StorageType { get; set; }
+        [JsonProperty("projectName")]
+        public string ProjectName { get; set; }
+        [JsonProperty("teamLeadName")]
+        public string TeamLeadName { get; set; }
+        [JsonProperty("managerName")]
+        public string ManagerName { get; set; }
+        [JsonProperty("projectCode")]
+        public string ProjectCode { get; set; }
+        [JsonProperty("softwareEngineerName")]
+        public string SoftwareEngineerName { get; set; }
     }
 }

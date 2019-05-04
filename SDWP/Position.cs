@@ -100,7 +100,8 @@ namespace SDWP
         #region User Grid pages resize methods
         public void InitializeUserAccGridPagesParams(Frame parentFrame)
         {
-            (parentFrame.Content as Page).Width = parentFrame.Width;
+            if (parentFrame != null)
+                (parentFrame.Content as Page).Width = parentFrame.Width;
         }
         #endregion
         #endregion

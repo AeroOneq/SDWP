@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.IO;
 
 using ApplicationLib.Models;
+using ApplicationLib.Interfaces;
 
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
@@ -14,18 +15,20 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 using WordTable = DocumentFormat.OpenXml.Wordprocessing.Table;
+using WordDocument = DocumentFormat.OpenXml.Wordprocessing.Document;
 using A = DocumentFormat.OpenXml.Drawing;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
 
 namespace ApplicationLib.Word
 {
-    public class WordDB
+    public class WordRenderer : IWordRenderer
     {
-        private Models.Document Document { get; }
+        private Models.Document Document { get; set; }
         private MainDocumentPart MainPart { get; set; }
         private Body Body { get; set; }
-        private WordRenderSettings WordRenderSettings { get; }
+        private RenderSettings RenderSettings { get; set; }
+        private Documentation Documentation { get; set; }
 
         #region Render properties
         private double TabValue { get; } = 500;
@@ -46,66 +49,90 @@ namespace ApplicationLib.Word
         };
         #endregion
 
-        public WordDB(Models.Document document, WordRenderSettings wordRenderSettings)
+
+        public void SetRenderParams(RenderSettings renderSettings, Models.Document document,
+            Documentation documentation)
         {
+            RenderSettings = new RenderSettings(renderSettings);
             Document = document;
-            WordRenderSettings = wordRenderSettings;
+            Documentation = documentation;
+
+            RenderSettings.DefaultTextSize = (int.Parse(RenderSettings.DefaultTextSize) * 2).ToString();
+            TitlePageTable[1][4] = Documentation.ProjectCode;
+            FooterTable[2][0] = Documentation.ProjectCode;
         }
 
-        public async Task CreateWordDocument()
+        #region IDocumentRenderer
+        public async Task RenderDocument()
         {
             await Task.Run(() =>
             {
-                if (File.Exists("test.docx"))
-                    File.Delete("test.docx");
+                string filePath = Path.Combine(RenderSettings.FolderPath, Document.Name + ".docx");
+                if (File.Exists(filePath))
+                    File.Delete(filePath);
 
-                using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(
-                    "test.docx", WordprocessingDocumentType.Document,
-                    true))
-                {
-                    MainPart = wordDocument.AddMainDocumentPart();
-                    MainPart.Document = new DocumentFormat.OpenXml.Wordprocessing.Document();
-                    Body = new Body();
+                CreateDocument(filePath);
+                AppendFooterAndHeader(filePath);
+            });
+        }
+        #endregion
 
+        private void CreateDocument(string filePath)
+        {
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(
+                filePath, WordprocessingDocumentType.Document, true))
+            {
+                MainPart = wordDocument.AddMainDocumentPart();
+                MainPart.Document = new WordDocument();
+                Body = new Body();
+
+                if (RenderSettings.AddTitlePage)
                     CreateTitlePage();
+
+                if (RenderSettings.AddSecondPage)
                     CreateSecondApprovalPage();
-                    CreateTableOfContents();
-                    RenderDocument();
-                    Body.Append(GetSectionPtr());
 
-                    MainPart.Document.Append(Body);
-                }
+                CreateTableOfContents();
+                RenderDocumentBody();
 
-                using (WordprocessingDocument wordDocument = WordprocessingDocument.Open("test.docx", true))
-                {
-                    MainPart = wordDocument.MainDocumentPart;
+                Body.Append(GetSectionPtr());
+                MainPart.Document.Append(Body);
+            }
+        }
+        private void AppendFooterAndHeader(string filePath)
+        {
+            using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(filePath, true))
+            {
+                MainPart = wordDocument.MainDocumentPart;
 
-                    MainPart.DeleteParts(MainPart.HeaderParts);
-                    MainPart.DeleteParts(MainPart.FooterParts);
+                MainPart.DeleteParts(MainPart.HeaderParts);
+                MainPart.DeleteParts(MainPart.FooterParts);
 
-                    HeaderPart headerPart = MainPart.AddNewPart<HeaderPart>();
-                    FooterPart footerPart = MainPart.AddNewPart<FooterPart>();
+                HeaderPart headerPart = MainPart.AddNewPart<HeaderPart>();
+                FooterPart footerPart = MainPart.AddNewPart<FooterPart>();
 
-                    string headerID = MainPart.GetIdOfPart(headerPart);
-                    string footerID = MainPart.GetIdOfPart(footerPart);
+                string headerID = MainPart.GetIdOfPart(headerPart);
+                string footerID = MainPart.GetIdOfPart(footerPart);
 
+                if (RenderSettings.AddFooter)
                     CreateFooterContent(footerPart);
+
+                if (RenderSettings.AddHeader)
                     CreateHeaderContent(headerPart);
 
-                    var sectionPropsList = MainPart.Document.Body.Descendants<SectionProperties>().ToList();
-                    var sectionProps = sectionPropsList[1];
+                var sectionPropsList = MainPart.Document.Body.Descendants<SectionProperties>().ToList();
+                var sectionProps = sectionPropsList[1];
 
-                    sectionProps.Append(new FooterReference() { Type = HeaderFooterValues.Default, Id = footerID });
-                    sectionProps.Append(new HeaderReference() { Type = HeaderFooterValues.Default, Id = headerID });
-                }
-            });
+                sectionProps.Append(new FooterReference() { Type = HeaderFooterValues.Default, Id = footerID });
+                sectionProps.Append(new HeaderReference() { Type = HeaderFooterValues.Default, Id = headerID });
+            }
         }
 
         #region Footer and Header
         private void CreateFooterContent(FooterPart footerPart)
         {
             Footer footer = new Footer() { MCAttributes = new MarkupCompatibilityAttributes() { Ignorable = "w14 wp14" } };
-           
+
             footer.AddNamespaceDeclaration("wpc", "http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas");
             footer.AddNamespaceDeclaration("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
             footer.AddNamespaceDeclaration("o", "urn:schemas-microsoft-com:office:office");
@@ -178,12 +205,12 @@ namespace ApplicationLib.Word
                     Run run = new Run();
                     RunProperties runProperties = new RunProperties(new RunFonts()
                     {
-                        Ascii = WordRenderSettings.FontFamily,
-                        HighAnsi = WordRenderSettings.FontFamily
+                        Ascii = RenderSettings.FontFamily,
+                        HighAnsi = RenderSettings.FontFamily
                     })
                     {
-                        Color = new Color() { Val = WordRenderSettings.DefaultColor },
-                        FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
+                        Color = new Color() { Val = RenderSettings.DefaultColor },
+                        FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize }
                     };
                     Text text = new Text(FooterTable[i][j]);
 
@@ -255,8 +282,8 @@ namespace ApplicationLib.Word
                                 new WordParagraph(
                                     new ParagraphProperties(
                                         new Caps(),
-                                        new Color() { Val = WordRenderSettings.DefaultColor },
-                                        new FontSize() { Val = WordRenderSettings.DefaultTextSize },
+                                        new Color() { Val = RenderSettings.DefaultColor },
+                                        new FontSize() { Val = RenderSettings.DefaultTextSize },
                                         new Justification() { Val = JustificationValues.Center },
                                         new SpacingBetweenLines()
                                         {
@@ -267,8 +294,8 @@ namespace ApplicationLib.Word
                                     new Run(
                                         new RunProperties(new RunFonts()
                                         {
-                                            Ascii = WordRenderSettings.FontFamily,
-                                            HighAnsi = WordRenderSettings.FontFamily
+                                            Ascii = RenderSettings.FontFamily,
+                                            HighAnsi = RenderSettings.FontFamily
                                         }),
                                         new Text("RU.17701729.04.03-01 ТЗ")))));
         }
@@ -277,7 +304,9 @@ namespace ApplicationLib.Word
         #region Main start methods
         private void CreateTitlePage()
         {
-            AddTitlePageTable();
+            if (RenderSettings.AddTitlePage)
+                AddTitlePageTable();
+
             AddOrganizationHeader();
 
             AddEmptyParagrahs(1);
@@ -319,8 +348,8 @@ namespace ApplicationLib.Word
         private void CreateTableOfContents()
         {
             SdtBlock tableOfContents = new SdtBlock();
-            RunProperties tocRpr = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily },
-                new Color() { Val = "auto" }, new FontSize() { Val = WordRenderSettings.DefaultTextSize });
+            RunProperties tocRpr = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily },
+                new Color() { Val = "auto" }, new FontSize() { Val = RenderSettings.DefaultTextSize });
             SdtContentDocPartObject sdtContentDocPartObject = new SdtContentDocPartObject(
                 new DocPartGallery() { Val = "Table of Contents" }, new DocPartUnique());
 
@@ -339,11 +368,11 @@ namespace ApplicationLib.Word
 
             p.Append(ppr);
 
-            RunProperties rpr = new RunProperties(new RunFonts() { Ascii = WordRenderSettings.FontFamily, HighAnsi = WordRenderSettings.FontFamily })
+            RunProperties rpr = new RunProperties(new RunFonts() { Ascii = RenderSettings.FontFamily, HighAnsi = RenderSettings.FontFamily })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
+                FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize }
             };
 
             Run run = new Run();
@@ -382,7 +411,7 @@ namespace ApplicationLib.Word
                     UploadItemsToTableOfContents(i, sdtContentBlock, depth + 1, index + "." + dopIndex);
                 }
         }
-        private void RenderDocument()
+        private void RenderDocumentBody()
         {
             string index = "0";
             foreach (Item item in Document.Items)
@@ -443,10 +472,10 @@ namespace ApplicationLib.Word
             p.Append(pp);
 
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily })
+            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
-                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize },
                 Caps = new Caps(),
                 Bold = new Bold()
             };
@@ -470,10 +499,10 @@ namespace ApplicationLib.Word
 
             Run run = new Run();
             RunProperties runProperties = new RunProperties(new RunFonts()
-            { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily })
+            { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
-                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize },
                 Bold = new Bold()
             };
 
@@ -505,9 +534,9 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" },
 
             };
@@ -537,9 +566,9 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" },
 
             };
@@ -587,9 +616,9 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run(new LastRenderedPageBreak(), new Break() { Type = BreakValues.Page });
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.PrependChild(runProperties);
@@ -610,7 +639,7 @@ namespace ApplicationLib.Word
         private Run GetTabRun()
         {
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
+            RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily });
             run.Append(runProperties);
             run.Append(new TabChar());
 
@@ -646,7 +675,7 @@ namespace ApplicationLib.Word
             firstCell.Append(GetCenterParagraph("      Должность должность должность    "));
             firstCell.Append(GetCenterParagraph("      Должность должность должность    "));
             firstCell.Append(GetCenterParagraph("                                       "));
-            firstCell.Append(GetRightParagraph("                     /Имя руководителя/"));
+            firstCell.Append(GetRightParagraph($"                     /{Documentation.TeamLeadName}/"));
             firstCell.Append(GetRightParagraph("              \"___\"__________________"));
 
             tableRow.Append(firstCell);
@@ -666,7 +695,7 @@ namespace ApplicationLib.Word
             secondCell.Append(GetCenterParagraph("      Должность должность должность    "));
             secondCell.Append(GetCenterParagraph("      Должность должность должность    "));
             secondCell.Append(GetCenterParagraph("                                       "));
-            secondCell.Append(GetRightParagraph("                     /Имя руководителя/"));
+            secondCell.Append(GetRightParagraph($"                     /{Documentation.ManagerName}/"));
             secondCell.Append(GetRightParagraph("              \"___\"__________________"));
 
             tableRow.Append(secondCell);
@@ -779,11 +808,11 @@ namespace ApplicationLib.Word
 
             Run run = new Run();
             RunProperties runProperties = new RunProperties(
-                new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+                new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
@@ -813,17 +842,17 @@ namespace ApplicationLib.Word
 
             var run = new Run();
             var runProperties = new RunProperties(new RunFonts
-            { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "35" },
 
             };
             run.PrependChild(runProperties);
 
-            var text = new Text("НАСТОЛЬНОЕ ПРИЛОЖЕНИЕ ДЛЯ СОЗДАНИЯ ДОКУМЕНТАЦИИ ПРОГРАММНОГО ПРОДУКТА");
+            var text = new Text(Documentation.ProjectName);
 
             run.Append(text);
             paragraph.Append(run);
@@ -847,15 +876,15 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
 
-            var text = new Text("Техническое задание");
+            var text = new Text(Document.Name);
 
             run.Append(text);
             paragraph.Append(run);
@@ -879,11 +908,11 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
@@ -912,16 +941,16 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.Append(runProperties);
 
-            var text = new Text("RU.17701729.04.03-01 ТЗ 01-1-ЛУ");
+            var text = new Text(Documentation.ProjectCode);
 
             run.Append(text);
             paragraph.Append(run);
@@ -938,9 +967,9 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "30" }
             };
             run.PrependChild(runProperties);
@@ -973,10 +1002,10 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             Run run = new Run();
-            RunProperties runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            RunProperties runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
@@ -1004,15 +1033,15 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Caps = new Caps(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "27" }
             };
             run.PrependChild(runProperties);
 
-            text = new Text("RU.17701729.04.03-01 ТЗ 01-1-ЛУ");
+            text = new Text(Documentation.ProjectCode);
 
             run.Append(text);
             paragraph.Append(run);
@@ -1029,10 +1058,10 @@ namespace ApplicationLib.Word
             paragraph.Append(pp);
 
             var run = new Run();
-            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(WordRenderSettings.FontFamily) })
+            var runProperties = new RunProperties(new RunFonts { HighAnsi = new StringValue(RenderSettings.FontFamily) })
             {
                 Bold = new Bold(),
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = "25" }
             };
             run.Append(runProperties);
@@ -1059,8 +1088,8 @@ namespace ApplicationLib.Word
 
             RunFonts runFonts = new RunFonts()
             {
-                Ascii = WordRenderSettings.FontFamily,
-                HighAnsi = WordRenderSettings.FontFamily
+                Ascii = RenderSettings.FontFamily,
+                HighAnsi = RenderSettings.FontFamily
             };
             pp.Append(runFonts);
 
@@ -1074,11 +1103,11 @@ namespace ApplicationLib.Word
             Run run = new Run();
             RunProperties runProperties = new RunProperties(new RunFonts()
             {
-                HighAnsi = WordRenderSettings.FontFamily,
-                Ascii = WordRenderSettings.FontFamily
+                HighAnsi = RenderSettings.FontFamily,
+                Ascii = RenderSettings.FontFamily
             })
             {
-                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
+                FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize }
             };
             if (depth == 0)
             {
@@ -1092,7 +1121,7 @@ namespace ApplicationLib.Word
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily });
             run.Append(runProperties);
             run.Append(new PositionalTab()
             {
@@ -1104,7 +1133,7 @@ namespace ApplicationLib.Word
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = WordRenderSettings.FontFamily, Ascii = WordRenderSettings.FontFamily });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily });
             run.Append(runProperties);
             text = new Text("0");
             run.Append(text);
@@ -1149,8 +1178,8 @@ namespace ApplicationLib.Word
                 Ascii = "Times New Roman"
             })
             {
-                Color = new Color() { Val = WordRenderSettings.DefaultColor },
-                FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize },
+                Color = new Color() { Val = RenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize },
 
             };
             run.PrependChild(runProperties);
@@ -1195,7 +1224,7 @@ namespace ApplicationLib.Word
                 RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman" })
                 {
                     FontSize = new FontSize() { Val = "20" },
-                    Color = new Color() { Val = WordRenderSettings.DefaultColor }
+                    Color = new Color() { Val = RenderSettings.DefaultColor }
                 };
                 Text text = new Text(element.Text);
 
@@ -1353,8 +1382,8 @@ namespace ApplicationLib.Word
                     Run run = new Run();
                     RunProperties rp = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman", Ascii = "Times New Roman" })
                     {
-                        Color = new Color() { Val = WordRenderSettings.DefaultColor },
-                        FontSize = new FontSize() { Val = WordRenderSettings.DefaultTextSize }
+                        Color = new Color() { Val = RenderSettings.DefaultColor },
+                        FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize }
                     };
 
                     run.Append(rp);
