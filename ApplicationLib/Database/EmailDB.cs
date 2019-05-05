@@ -14,7 +14,7 @@ namespace ApplicationLib.Database
 {
     public class EmailDB : IEmailDatabase<UserInfo>
     {
-        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/emailcodes";
+        private string ApiURL { get; } = "http://localhost:61890/sdwpapi/v1.0.0/emailcodes";
 
         public async Task<bool> CheckCode(int codeID, string code)
         {
@@ -43,6 +43,21 @@ namespace ApplicationLib.Database
             await Task.Run(() =>
             {
                 HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?codeID={codeID}", "DELETE"); 
+
+                HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new ServerException();
+                }
+            });
+        }
+
+        public async Task SendChangePassLink(UserInfo user)
+        {
+            await Task.Run(() =>
+            {
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?userID={user.ID}", "PUT");
+                httpWebRequest.ContentLength = 0;
 
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)

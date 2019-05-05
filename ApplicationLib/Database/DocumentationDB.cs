@@ -19,7 +19,7 @@ namespace ApplicationLib.Database
     internal class DocumentationDB : ICloudDocumentationDB<Documentation>
     {
         #region Properties
-        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/documentations";
+        private string ApiURL { get; } = "http://localhost:61890/sdwpapi/v1.0.0/documentations";
         #endregion
         public async Task<IEnumerable<Documentation>> GetAllDocumentations()
         {

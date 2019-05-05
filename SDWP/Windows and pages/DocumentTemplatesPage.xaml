@@ -220,28 +220,29 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
-                                BorderBrush="{StaticResource mainThemeBrush}"
                                 BorderThickness="1"
                                 CornerRadius="10"
-                                Background="White"
+                                Background="#F0F0F0"
+                                BorderBrush="LightGray"
                                 Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center"
+                            <ContentPresenter x:Name="contentPresenter"
+                                              VerticalAlignment="Center"
                                               HorizontalAlignment="Center"/>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="MouseOver">
                                         <Storyboard>
-                                            <ColorAnimation Storyboard.TargetName="border"
-                                                            Storyboard.TargetProperty="Background.Color"
-                                                            To="#F5F5F5"
+                                            <ColorAnimation Storyboard.TargetProperty="BorderBrush.Color"
+                                                            Storyboard.TargetName="border"
+                                                            To="{StaticResource mainThemeColor}"
                                                             SpeedRatio="100"/>
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Normal">
                                         <Storyboard>
                                             <ColorAnimation Storyboard.TargetName="border"
-                                                            Storyboard.TargetProperty="Background.Color"
-                                                            To="White"
+                                                            Storyboard.TargetProperty="BorderBrush.Color"
+                                                            To="#F0F0F0"
                                                             SpeedRatio="100"/>
                                         </Storyboard>
                                     </VisualState>

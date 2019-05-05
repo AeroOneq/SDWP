@@ -23,6 +23,11 @@ namespace ApplicationLib.Services
             await Email.DeleteCode(codeID);
         }
 
+        public async Task SendChangePassLink(UserInfo user)
+        {
+            await Email.SendChangePassLink(user);
+        }
+
         public async Task<int> SendCodeEmail(UserInfo user) =>
             await Email.SendCodeEmail(user);
     }

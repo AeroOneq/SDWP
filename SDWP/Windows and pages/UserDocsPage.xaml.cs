@@ -1,28 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Media.Animation;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Data.SqlClient;
 
 using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
-using ApplicationLib.Services;
-using ApplicationLib.Database;
 using ApplicationLib.Factories;
-
-using SDWP.Models;
 using SDWP.Factories;
 using SDWP.Interfaces;
 
@@ -127,6 +116,7 @@ namespace SDWP
 
         private async Task UploadDocumentationsFromCloudSotrage()
         {
+            PageHeader.SwitchOnTopLoader();
             try
             {
                 CloudDocumentation = (await CloudDocumentationService.GetUserDocumentations(UserInfo.CurrentUser.ID))
@@ -140,6 +130,10 @@ namespace SDWP
             catch (Exception ex)
             {
                 ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
             }
         }
         #endregion
@@ -225,6 +219,7 @@ namespace SDWP
         /// </summary>
         private async void DeleteCloudDocumentation(object sender, RoutedEventArgs e)
         {
+            PageHeader.SwitchOnTopLoader();
             try
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
@@ -245,12 +240,17 @@ namespace SDWP
             {
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
         }
 
         private async Task DeleteAllDocumentationDocuments(int documentationID)
         {
             IEnumerable<Document> documents = await CloudDocumentsService.
                 GetDocumentationDocuments(documentationID);
+
             foreach (Document document in documents)
             {
                 await CloudDocumentsService.DeleteDocument(document);
@@ -259,17 +259,35 @@ namespace SDWP
 
         private async void CreateCloudDocumentation(object sender, RoutedEventArgs e)
         {
-            CreateNewDocumentationWindow createNewDocumentationWindow =
-                new CreateNewDocumentationWindow(CloudDocumentationService);
-
-            if (createNewDocumentationWindow.ShowDialog() == true)
+            PageHeader.SwitchOnTopLoader();
+            try
             {
-                await UploadDocumentationsFromCloudSotrage();
+                CreateNewDocumentationWindow createNewDocumentationWindow =
+                    new CreateNewDocumentationWindow(CloudDocumentationService);
+
+                if (createNewDocumentationWindow.ShowDialog() == true)
+                {
+                    await UploadDocumentationsFromCloudSotrage();
+                }
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
             }
         }
 
         private async void UploadCloudDocumentationToMainPage(object sender, RoutedEventArgs e)
         {
+            PageHeader.SwitchOnTopLoader();
+
             try
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
@@ -294,6 +312,10 @@ namespace SDWP
             {
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
         }
 
         /// <summary>
@@ -301,6 +323,7 @@ namespace SDWP
         /// </summary>
         private async void CreateLocalCopy(object sender, RoutedEventArgs e)
         {
+            PageHeader.SwitchOnTopLoader();
             try
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
@@ -345,6 +368,10 @@ namespace SDWP
             {
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
         }
 
         /// <summary>
@@ -380,18 +407,30 @@ namespace SDWP
         #region Local documentation methods
         private async void CreateLocalDocumentation(object sender, RoutedEventArgs e)
         {
-            if (LocalDocumentationService.StoragePath == null)
+            try
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте папку с документами", MessageBoxButton.OK);
-                return;
+                if (LocalDocumentationService.StoragePath == null)
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте папку с документами",
+                        MessageBoxButton.OK);
+                    return;
+                }
+
+                CreateNewDocumentationWindow createNewDocumentationWindow =
+                    new CreateNewDocumentationWindow(LocalDocumentationService);
+
+                if (createNewDocumentationWindow.ShowDialog() == true)
+                {
+                    await UploadDocumentationsFromLocalSotrage();
+                }
             }
-
-            CreateNewDocumentationWindow createNewDocumentationWindow =
-                new CreateNewDocumentationWindow(LocalDocumentationService);
-
-            if (createNewDocumentationWindow.ShowDialog() == true)
+            catch (IOException ex)
             {
-                await UploadDocumentationsFromLocalSotrage();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -400,6 +439,7 @@ namespace SDWP
         /// </summary>
         private async void PublishLocalDocumentation(object sender, RoutedEventArgs e)
         {
+            PageHeader.SwitchOnTopLoader();
             try
             {
                 if (LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
@@ -415,7 +455,8 @@ namespace SDWP
                 }
                 else
                 {
-                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете докуемнтацию для публикации", MessageBoxButton.OK);
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете докуемнтацию для публикации",
+                        MessageBoxButton.OK);
                 }
             }
             catch (SqlException ex)
@@ -426,14 +467,29 @@ namespace SDWP
             {
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
+            }
         }
 
         private async Task PublishDocuments(int documentationID, List<Document> documents)
         {
-            foreach (Document document in documents)
+            try
             {
-                document.DocumentationID = documentationID;
-                await CloudDocumentsService.InsertDocument(document);
+                foreach (Document document in documents)
+                {
+                    document.DocumentationID = documentationID;
+                    await CloudDocumentsService.InsertDocument(document);
+                }
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -486,16 +542,27 @@ namespace SDWP
 
         private async void DeleteLocalDocumentation(object sender, RoutedEventArgs e)
         {
-            if (!(LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation))
+            try
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
-                return;
+                if (!(LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation))
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали документацию", MessageBoxButton.OK);
+                    return;
+                }
+
+                LocalDocumentationService.DeleteLocalDocumentationFile(LocalDocumentations.Find((
+                    ld => ld.Documentation == selectedDocumentation)));
+
+                await UploadDocumentationsFromLocalSotrage();
             }
-
-            LocalDocumentationService.DeleteLocalDocumentationFile(LocalDocumentations.Find((
-                ld => ld.Documentation == selectedDocumentation)));
-
-            await UploadDocumentationsFromLocalSotrage();
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
         #endregion
     }

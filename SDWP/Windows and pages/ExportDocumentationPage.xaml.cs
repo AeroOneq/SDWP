@@ -308,6 +308,8 @@ namespace SDWP
                 Documentation documentation = MainPage.DocController.Documentation;
                 List<Document> documents = MainPage.DocController.Documents;
 
+                CheckIfDocumentationReadyToExport(documentation, documents);
+
                 foreach (Document document in documents)
                 {
                     WordDocumentRenderer.SetRenderParams(RenderSettings, document,
@@ -317,6 +319,10 @@ namespace SDWP
                 }
 
                 SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно срендерина в Word", MessageBoxButton.OK);
+            }
+            catch (ArgumentException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (IOException ex)
             {
@@ -329,6 +335,30 @@ namespace SDWP
             finally
             {
                 PageHeader.SwitchOffTheLoader();
+            }
+        }
+
+        /// <summary>
+        /// Checks if the render parameters are set correctly and if the 
+        /// documentation and documents are ready to be rendered
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// The argument exception is thrown when some of the render params are wrong
+        /// </exception>
+        private void CheckIfDocumentationReadyToExport(Documentation documentation,
+            List<Document> documents)
+        {
+            if (documents == null || documentation == null)
+                throw new ArgumentException("Нет документации или документов для экспорта");
+
+            if (!int.TryParse(RenderSettings.DefaultTextSize, out int size) || size <= 0)
+                throw new ArgumentException("Неправильно введен размер шрифта");
+
+            if (string.IsNullOrEmpty(RenderSettings.FolderPath) ||
+                string.IsNullOrWhiteSpace(RenderSettings.FolderPath) ||
+                !Directory.Exists(RenderSettings.FolderPath))
+            {
+                throw new ArgumentException("Неправильно введен путь для сохранения");
             }
         }
         #endregion

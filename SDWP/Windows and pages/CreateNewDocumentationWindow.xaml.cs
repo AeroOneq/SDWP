@@ -129,6 +129,11 @@ namespace SDWP
                 CreationDate = DateTime.Now,
                 Name = name,
                 UpdatedAt = DateTime.Now,
+                ManagerName = string.Empty,
+                ProjectCode = string.Empty,
+                ProjectName = string.Empty,
+                SoftwareEngineerName = string.Empty,
+                TeamLeadName = string.Empty
             };
         }
         #endregion

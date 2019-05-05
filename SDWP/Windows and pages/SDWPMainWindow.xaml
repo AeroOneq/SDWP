@@ -331,7 +331,7 @@
                           Style="{StaticResource leftMenuOptionGridStyle}"
                           Margin="10, 250, 10, 0">
                         <TextBlock Style="{StaticResource leftMenuOptionTextBlockStyle}"
-                               Text="Сохранить"/>
+                               Text="Экспорт"/>
                     </Grid>
                     <!--Quit the programm option-->
                     <Grid x:Name="leftMenuUserQuitOptionGrid"

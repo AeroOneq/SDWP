@@ -18,6 +18,7 @@ using SDWP.Exceptions;
 using SDWP.Factories;
 using SDWP.Models;
 using System.IO;
+using System.Data.SqlClient;
 
 namespace SDWP
 {
@@ -98,14 +99,36 @@ namespace SDWP
         #region Templates uploading
         private async Task UploadTemplatesFromLocalStorage()
         {
-            List<LocalTemplate> localTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
-            LocalTemplatesListBox.ItemsSource = localTemplates;
+            try
+            {
+                List<LocalTemplate> localTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
+                LocalTemplatesListBox.ItemsSource = localTemplates;
+            }
+            catch (IOException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         private async Task UploadTemplatesFromColoudStorage()
         {
-            List<Template> templates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
-            cloudTemplatesListBox.ItemsSource = templates;
+            try
+            {
+                List<Template> templates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
+                cloudTemplatesListBox.ItemsSource = templates;
+            }
+            catch (SqlException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
         #endregion
 
@@ -380,7 +403,8 @@ namespace SDWP
 
                 if (LocalTemplatesMode)
                 {
-                    IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>;
+                    IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource
+                        as IEnumerable<LocalTemplate>;
                     foreach (LocalTemplate template in templates)
                     {
                         await LocalTemplateService.RewriteTemplateFile(template);
@@ -428,18 +452,19 @@ namespace SDWP
                     Template template = CloudTemplatesListBox.SelectedItem as Template;
                     await CloudTemplateService.UpdateTemplate(template);
                 }
+
+                PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Шаблон успешно сохранен", MessageBoxButton.OK);
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -477,6 +502,8 @@ namespace SDWP
                 }
 
                 TemplateTreeView.Items.Clear();
+                PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Шаблон успешно удален", MessageBoxButton.OK);
             }
             catch (IOException ex)
             {
@@ -495,6 +522,7 @@ namespace SDWP
         {
             try
             {
+                PageHeader.SwitchOnTopLoader();
                 Template template = new Template()
                 {
                     Items = new List<Item>(),
@@ -510,7 +538,8 @@ namespace SDWP
 
                     await LocalTemplateService.CreateTemplateFile(localTemplate);
 
-                    List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as IEnumerable<LocalTemplate>).ToList();
+                    List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as
+                        IEnumerable<LocalTemplate>).ToList();
                     templates.Add(localTemplate);
 
                     LocalTemplatesListBox.ItemsSource = null;
@@ -526,13 +555,18 @@ namespace SDWP
                     CloudTemplatesListBox.ItemsSource = null;
                     CloudTemplatesListBox.ItemsSource = templates;
                 }
+
+                PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Шаблон успешно создан", MessageBoxButton.OK);
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
@@ -589,7 +623,7 @@ namespace SDWP
             {
                 if (LocalTemplatesListBox.SelectedItem is LocalTemplate selectedLocalTemplate)
                 {
-                   selectedLocalTemplate.Template.TemplateName = TemplateNameTextBox.Text;
+                    selectedLocalTemplate.Template.TemplateName = TemplateNameTextBox.Text;
                 }
             }
             else

@@ -49,7 +49,6 @@ namespace ApplicationLib.Word
         };
         #endregion
 
-
         public void SetRenderParams(RenderSettings renderSettings, Models.Document document,
             Documentation documentation)
         {
@@ -1121,7 +1120,8 @@ namespace ApplicationLib.Word
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily,
+                Ascii = RenderSettings.FontFamily });
             run.Append(runProperties);
             run.Append(new PositionalTab()
             {
@@ -1133,7 +1133,8 @@ namespace ApplicationLib.Word
             p.Append(run);
 
             run = new Run();
-            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily, Ascii = RenderSettings.FontFamily });
+            runProperties = new RunProperties(new RunFonts() { HighAnsi = RenderSettings.FontFamily,
+                Ascii = RenderSettings.FontFamily });
             run.Append(runProperties);
             text = new Text("0");
             run.Append(text);
@@ -1148,6 +1149,7 @@ namespace ApplicationLib.Word
         private void InsertSubparagraph(Subparagraph subparagraph, int depth)
         {
             Body.Append(RenderSubparagraph(subparagraph, depth));
+            Body.Append(GetEmptyParagraph());
         }
         private WordParagraph RenderSubparagraph(Subparagraph subparagraph, int depth)
         {
@@ -1199,17 +1201,26 @@ namespace ApplicationLib.Word
             {
                 Body.Append(p);
             }
+            Body.Append(GetEmptyParagraph());
         }
         private IEnumerable<WordParagraph> RenderNumberedList(NumberedList numberedList, int depth)
         {
             List<WordParagraph> wordParagraphs = new List<WordParagraph>();
 
+            int index = 1;
             foreach (NumberedListElement element in numberedList.ListElements)
             {
                 WordParagraph p = new WordParagraph();
                 ParagraphProperties pp = new ParagraphProperties(new ParagraphStyleId() { Val = "a0" })
                 {
-                    Indentation = new Indentation() { Left = (500 * depth).ToString() }
+                    Indentation = new Indentation() { Left = (500 * depth).ToString() },
+                    SpacingBetweenLines = new SpacingBetweenLines()
+                    {
+                        Before = "100",
+                        After = "100",
+                        Line = "200",
+                        LineRule = LineSpacingRuleValues.Exact
+                    },
                 };
                 NumberingProperties numberingProperties = new NumberingProperties()
                 {
@@ -1223,10 +1234,10 @@ namespace ApplicationLib.Word
                 Run run = new Run();
                 RunProperties runProperties = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman" })
                 {
-                    FontSize = new FontSize() { Val = "20" },
+                    FontSize = new FontSize() { Val = RenderSettings.DefaultTextSize },
                     Color = new Color() { Val = RenderSettings.DefaultColor }
                 };
-                Text text = new Text(element.Text);
+                Text text = new Text(index + ") " + element.Text);
 
                 run.Append(runProperties);
                 run.Append(text);
@@ -1234,6 +1245,7 @@ namespace ApplicationLib.Word
                 p.Append(run);
 
                 wordParagraphs.Add(p);
+                index++;
             }
 
             return wordParagraphs;
@@ -1253,12 +1265,12 @@ namespace ApplicationLib.Word
             };
 
             p.Append(pp);
-            Run run = new Run(GetDrawing(MainPart.GetIdOfPart(imagePart), depth));
+            Run run = new Run(GetDrawing(MainPart.GetIdOfPart(imagePart)));
             p.Append(run);
 
             Body.AppendChild(p);
         }
-        private Drawing GetDrawing(string relationshipId, int depth)
+        private Drawing GetDrawing(string relationshipId)
         {
             var element =
                  new Drawing(
@@ -1293,8 +1305,7 @@ namespace ApplicationLib.Word
                                              new A.BlipExtensionList(
                                                  new A.BlipExtension()
                                                  {
-                                                     Uri =
-                                                       "{28A0092B-C50C-407E-A947-70E740481C1C}"
+                                                     Uri = "{28A0092B-C50C-407E-A947-70E740481C1C}"
                                                  })
                                          )
                                          {
@@ -1328,6 +1339,7 @@ namespace ApplicationLib.Word
         private void InsertTable(Models.Table table, int depth)
         {
             Body.Append(RenderTable(table, depth));
+            Body.Append(GetEmptyParagraph());
         }
         private WordTable RenderTable(Models.Table table, int depth)
         {

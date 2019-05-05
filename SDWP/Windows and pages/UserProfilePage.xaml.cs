@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,10 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ApplicationLib.Database;
 using System.Windows.Media.Animation;
-using AeroORMFramework;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows.Threading;
@@ -18,10 +14,7 @@ using System.Windows.Threading;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
 using ApplicationLib.Interfaces;
-using ApplicationLib.Services;
 using ApplicationLib.Factories;
-
-using SDWP.Exceptions;
 using SDWP.Factories;
 using SDWP.Interfaces;
 
@@ -76,8 +69,6 @@ namespace SDWP
             nameTextBox.Text = UserInfo.CurrentUser.Name;
             surnameTextBox.Text = UserInfo.CurrentUser.Surname;
             loginTextBox.Text = UserInfo.CurrentUser.Login;
-            passwordTextBox.Text = passwordPasswordBox.Password =
-                UserInfo.CurrentUser.Password;
             birthDateTextBox.Text = UserInfo.CurrentUser.BirthDate.
                 ToShortDateString();
             emailTextBox.Text = UserInfo.CurrentUser.Email;
@@ -194,17 +185,6 @@ namespace SDWP
                     tb.Style = this.Resources["userProfileTextBoxDisabled"] as Style;
             });
 
-            PasswordBox[] passwordBoxes = userProfileDataGrid.Children.
-                OfType<PasswordBox>().ToArray();
-            Array.ForEach(passwordBoxes, pb =>
-            {
-                pb.IsEnabled = newEnableValue;
-                if (newEnableValue)
-                    pb.Style = this.Resources["userProfilePasswordBoxEnabled"] as Style;
-                else
-                    pb.Style = this.Resources["userProfilePasswordBoxDisabled"] as Style;
-            });
-
             if (newEnableValue)
                 userPhotoBorder.BorderBrush = new SolidColorBrush(Color.FromRgb(
                     255, 69, 0));
@@ -217,6 +197,22 @@ namespace SDWP
         #endregion
 
         #region Update profile data methods
+        private async void UpdatePassword(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                PageHeader.SwitchOnTopLoader();
+
+                await EmailService.SendChangePassLink(UserInfo.CurrentUser);
+
+                PageHeader.SwitchOffTheLoader();
+            }
+            catch (Exception ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+        }
         private async void StartUpdatingProcessAsync(object sender, EventArgs e)
         {
             PageHeader.SwitchOnTopLoader();
@@ -360,7 +356,6 @@ namespace SDWP
             return nameTextBox.Text == UserInfo.CurrentUser.Name &&
                    surnameTextBox.Text == UserInfo.CurrentUser.Surname &&
                    loginTextBox.Text == UserInfo.CurrentUser.Login &&
-                   passwordTextBox.Text == UserInfo.CurrentUser.Password &&
                    emailTextBox.Text == UserInfo.CurrentUser.Email &&
                    birthDateTextBox.Text == UserInfo.CurrentUser.BirthDate.ToShortDateString()
                    && NewUserPhoto == null;
@@ -371,7 +366,6 @@ namespace SDWP
             {
                 ID = UserInfo.CurrentUser.ID,
                 Login = loginTextBox.Text,
-                Password = passwordTextBox.Text,
                 Name = nameTextBox.Text,
                 Surname = surnameTextBox.Text,
                 BirthDate = GetNewUserDateTime(),
@@ -486,43 +480,6 @@ namespace SDWP
         {
             TextBlock cancelTextBlock = sender as TextBlock;
             cancelTextBlock.TextDecorations = null;
-        }
-
-        private void SeePasswordIconMouseDown(object sender, EventArgs e)
-        {
-            if (!PasswordBoxState)
-            {
-                passwordTextBox.Visibility = Visibility.Visible;
-                passwordPasswordBox.Visibility = Visibility.Collapsed;
-                PasswordBoxState = true;
-            }
-            else
-            {
-                passwordTextBox.Visibility = Visibility.Collapsed;
-                passwordPasswordBox.Visibility = Visibility.Visible;
-                PasswordBoxState = false;
-            }
-        }
-        private void SeePasswordIconMouseLeave(object sender, EventArgs e)
-        {
-            seePasswordActiveIcon.Visibility = Visibility.Collapsed;
-            seePasswordStaticIcon.Visibility = Visibility.Visible;
-        }
-        private void SeePasswordIconMouseEnter(object sender, EventArgs e)
-        {
-            seePasswordActiveIcon.Visibility = Visibility.Visible;
-            seePasswordStaticIcon.Visibility = Visibility.Collapsed;
-        }
-
-        private void PasswordTextBoxTextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (passwordTextBox != null && passwordPasswordBox != null)
-                passwordPasswordBox.Password = passwordTextBox.Text;
-        }
-        private void PasswordPasswordBoxTextChanged(object sender, RoutedEventArgs e)
-        {
-            if (passwordTextBox != null && passwordPasswordBox != null)
-                passwordTextBox.Text = passwordPasswordBox.Password;
         }
         #endregion
     }
