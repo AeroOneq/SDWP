@@ -82,8 +82,47 @@
     <Compile Include="Database\UsersDB.cs" />
     <Compile Include="Factories\RenderersAbstractFactory.cs" />
     <Compile Include="Interfaces\factories%27  interfaces\IRenderAbstractFactory.cs" />
-    <Compile Include="Interfaces\word interfaces\IDocumentRenderer.cs" />
-    <Compile Include="Interfaces\word interfaces\IWordRenderer.cs" />
+    <Compile Include="Word\Commands\item command\ParagraphHeaderCommand.cs" />
+    <Compile Include="Word\Commands\item command\ItemHeaderCommand.cs" />
+    <Compile Include="Word\Commands\table of contents main command\ContentsTableCommand.cs" />
+    <Compile Include="Word\Commands\utility commands\EmptyParagraphsCommand.cs" />
+    <Compile Include="Word\Commands\secondary commands\CenterParagraphCommand.cs" />
+    <Compile Include="Word\Commands\secondary commands\RightParagraphCommand.cs" />
+    <Compile Include="Word\Commands\secondary commands\TabCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\ApprovalTableCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\ApprovedParagraphCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\DocumentNameCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\DocumentNumberCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\DocumentTitleCommand.cs" />
+    <Compile Include="Word\Commands\secondary commands\EmptyParagraphCommand.cs" />
+    <Compile Include="Word\Commands\utility commands\EndOfPageCommand.cs" />
+    <Compile Include="Word\Commands\paragraphs commands\ParagraphImageCommand.cs" />
+    <Compile Include="Word\Commands\paragraphs commands\NumberedListCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\OrganizationNameCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\PagesCountCommand.cs" />
+    <Compile Include="Word\Commands\utility commands\SectionPtrCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\SoftwareEngineerSignatureCommand.cs" />
+    <Compile Include="Word\Commands\paragraphs commands\TableCommand.cs" />
+    <Compile Include="Word\Commands\table of contents main command\TableOfContentsPageCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\TitlePageTitleCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\TownAndYearCommand.cs" />
+    <Compile Include="Word\Containers\CommandsContainer.cs" />
+    <Compile Include="Word\Containers\MainCommandsContainer.cs" />
+    <Compile Include="Word\Interfaces\ICommandsContainer.cs" />
+    <Compile Include="Word\Interfaces\IMainCommandsContainer.cs" />
+    <Compile Include="Word\Interfaces\IDocumentRenderer.cs" />
+    <Compile Include="Word\Interfaces\IWordMainCommand.cs" />
+    <Compile Include="Word\Interfaces\IWordRenderer.cs" />
+    <Compile Include="Word\Commands\header and footer main commands\FooterCommand.cs" />
+    <Compile Include="Word\Commands\header and footer main commands\HeaderCommand.cs" />
+    <Compile Include="Word\Commands\item command\ItemsCommand.cs" />
+    <Compile Include="Word\Commands\title and second page commands\TitleTableCommand.cs" />
+    <Compile Include="Word\Commands\paragraphs commands\SubparagraphCommand.cs" />
+    <Compile Include="Word\Commands\second page command\SecondPageCommand.cs" />
+    <Compile Include="Word\Commands\title page command\TitlePageCommand.cs" />
+    <Compile Include="Word\Interfaces\IWordCommand.cs" />
+    <Compile Include="Word\Interfaces\IWordSecondaryCommand.cs" />
+    <Compile Include="Word\Render params\RenderData.cs" />
     <Compile Include="Word\WordRenderer.cs" />
     <Compile Include="Exceptions\ServerException.cs" />
     <Compile Include="Interfaces\database interfaces\ICloudDocumentDB.cs" />
@@ -167,7 +206,7 @@
     <Compile Include="Views\TableEditView.xaml.cs">
       <DependentUpon>TableEditView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Word\RenderSettings.cs" />
+    <Compile Include="Word\Render params\RenderSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DocumentMenuOption.xaml">

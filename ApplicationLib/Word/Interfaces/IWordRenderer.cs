@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using ApplicationLib.Models;
 using ApplicationLib.Word;
 
-namespace ApplicationLib.Interfaces
+namespace ApplicationLib.Word.Interfaces
 {
     public interface IWordRenderer : IDocumentRenderer
     {
-        void SetRenderParams(RenderSettings renderSettings, Document document,
-            Documentation documentation);
+        IMainCommandsContainer MainCommandsContainer { get; set; }
     }
 }

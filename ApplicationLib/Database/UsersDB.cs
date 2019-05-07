@@ -23,15 +23,12 @@ namespace ApplicationLib.Database
         {
             return await Task.Run(() =>
             {
-                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + 
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL +
                     $"?login={loginData.Login}&pass={loginData.Password.GetHashCode()}", "GET");
 
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    throw new ServerException();
-                }
-                else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
+
+                if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
                 {
                     throw new UserNotFoundException("Неправильный пароль или логин");
                 }
@@ -59,11 +56,6 @@ namespace ApplicationLib.Database
                 }
 
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||
-                    httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    throw new ServerException();
-                }
             });
         }
         #endregion

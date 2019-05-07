@@ -1,5 +1,6 @@
 ﻿using ApplicationLib.Models;
 using ApplicationLib.Word;
+using ApplicationLib.Word.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

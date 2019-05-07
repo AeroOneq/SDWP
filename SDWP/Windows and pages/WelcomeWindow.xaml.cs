@@ -479,10 +479,14 @@ namespace SDWP
             try
             {
                 SwitchOnTheLoader(rightRemindPassLoaderGrid);
+
                 string login = remindPassEnterLoginTextBox.Text;
                 string email = remindPassEnterEmailTextBox.Text;
+
                 bool remindPassResult = await RemindPassAsync(login, email);
+
                 SwitchOffTheLoader(rightRemindPassLoaderGrid);
+
                 if (remindPassResult)
                 {
                     SDWPMessageBox.ShowSDWPMessageBox("Статус обновления пароля",
@@ -529,9 +533,6 @@ namespace SDWP
         }
         #endregion
 
-        /// <summary>
-        /// Shows the remind pass grid
-        /// </summary>
         private void ForgotPassTextBlockClick(object sender, EventArgs eArgs)
         {
             WelcomePageRightGridAnimations.ShowTheGrid(remindPassGrid);

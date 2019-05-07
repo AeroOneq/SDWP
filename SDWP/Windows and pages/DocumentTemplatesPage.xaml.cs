@@ -31,7 +31,7 @@ namespace SDWP
         public Action CloseAccGrid { get; set; }
         #endregion
 
-        #region Services
+        #region Services and factories
         private IServiceAbstractFactory ServiceAbstractFactory { get; set; }
         private ISdwpAbstractFactory SdwpAbstractFactory { get; set; }
 
@@ -42,6 +42,7 @@ namespace SDWP
 
         #region Propeties
         private UserInfo CurrentUser { get; }
+#warning Change this
         private string DefaultStoragePath { get; } = @"C:\Users\Aero\Desktop\Templates";
         //status: either local templates or cloud templates
         private bool LocalTemplatesMode { get; set; }
@@ -315,14 +316,21 @@ namespace SDWP
 
         private void AddNewItem(object sender, RoutedEventArgs e)
         {
-            TemplateTreeViewItem templateTreeViewItem = TemplateTreeView.SelectedItem as TemplateTreeViewItem;
-            Item selectedItem = (templateTreeViewItem as TemplateTreeViewItemItem).Item;
-
-            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedItem.Items, selectedItem);
-
-            if (createNewItemWindow.ShowDialog() == true)
+            if (TemplateTreeView.SelectedItem is TemplateTreeViewItem templateTreeViewItem)
             {
-                RefreshTemplateTreeView();
+                Item selectedItem = (templateTreeViewItem as TemplateTreeViewItemItem).Item;
+
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedItem.Items, selectedItem);
+
+                if (createNewItemWindow.ShowDialog() == true)
+                {
+                    RefreshTemplateTreeView();
+                }
+            }
+            else
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон",
+                    MessageBoxButton.OK);
             }
         }
 
@@ -403,28 +411,41 @@ namespace SDWP
 
                 if (LocalTemplatesMode)
                 {
-                    IEnumerable<LocalTemplate> templates = LocalTemplatesListBox.ItemsSource
-                        as IEnumerable<LocalTemplate>;
-                    foreach (LocalTemplate template in templates)
+                    if (LocalTemplatesListBox.ItemsSource is IEnumerable<LocalTemplate> templates)
+                        foreach (LocalTemplate template in templates)
+                            await LocalTemplateService.RewriteTemplateFile(template);
+                    else
                     {
-                        await LocalTemplateService.RewriteTemplateFile(template);
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите шаблоны",
+                            MessageBoxButton.OK);
+                        return;
                     }
                 }
                 else
                 {
                     IEnumerable<Template> templates = CloudTemplatesListBox.ItemsSource as IEnumerable<Template>;
-                    foreach (Template template in templates)
+
+                    if (CloudTemplatesListBox.ItemsSource is IEnumerable<Template>)
+                        foreach (Template template in templates)
+                            await CloudTemplateService.UpdateTemplate(template);
+                    else
                     {
-                        await CloudTemplateService.UpdateTemplate(template);
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите шаблоны",
+                            MessageBoxButton.OK);
+                        return;
                     }
                 }
+
+                PageHeader.SwitchOffTheLoader();
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             finally
@@ -444,13 +465,25 @@ namespace SDWP
 
                 if (LocalTemplatesMode)
                 {
-                    LocalTemplate template = LocalTemplatesListBox.SelectedItem as LocalTemplate;
-                    await LocalTemplateService.RewriteTemplateFile(template);
+                    if (LocalTemplatesListBox.SelectedItem is LocalTemplate localTemplate)
+                        await LocalTemplateService.RewriteTemplateFile(localTemplate);
+                    else
+                    {
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Выберете шаблон для сохранения",
+                            MessageBoxButton.OK);
+                        return;
+                    }
                 }
                 else
                 {
-                    Template template = CloudTemplatesListBox.SelectedItem as Template;
-                    await CloudTemplateService.UpdateTemplate(template);
+                    if (CloudTemplatesListBox.SelectedItem is Template template)
+                        await CloudTemplateService.UpdateTemplate(template);
+                    else
+                    {
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Выберете шаблон для сохранения",
+                            MessageBoxButton.OK);
+                        return;
+                    }
                 }
 
                 PageHeader.SwitchOffTheLoader();
@@ -465,6 +498,10 @@ namespace SDWP
             {
                 PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                PageHeader.SwitchOffTheLoader();
             }
         }
 
@@ -487,6 +524,12 @@ namespace SDWP
                         LocalTemplatesListBox.ItemsSource = null;
                         LocalTemplatesListBox.ItemsSource = listBoxItemsSource;
                     }
+                    else
+                    {
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон для удаления",
+                            MessageBoxButton.OK);
+                        return;
+                    }
                 }
                 else
                 {
@@ -498,6 +541,12 @@ namespace SDWP
                         templates.Remove(selectedTemplate);
                         CloudTemplatesListBox.ItemsSource = null;
                         CloudTemplatesListBox.ItemsSource = templates;
+                    }
+                    else
+                    {
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон для удаления",
+                            MessageBoxButton.OK);
+                        return;
                     }
                 }
 

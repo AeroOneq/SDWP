@@ -27,6 +27,7 @@ using SDWP.Factories;
 
 using Microsoft.Win32;
 using ApplicationLib.Factories;
+using ApplicationLib.Word.Interfaces;
 
 namespace SDWP
 {
@@ -315,7 +316,7 @@ namespace SDWP
                     WordDocumentRenderer.SetRenderParams(RenderSettings, document,
                         documentation);
 
-                    await WordDocumentRenderer.RenderDocument();
+                    await WordDocumentRenderer.Render();
                 }
 
                 SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно срендерина в Word", MessageBoxButton.OK);
