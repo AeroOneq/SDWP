@@ -71,9 +71,6 @@ namespace ApplicationLib.Models
                     throw new NotAppropriateUserParam("Логин должен состоять из букв " +
                         "латиснкого алфавита и цифр");
             }
-            //Password check
-            if (user.Password.Length < 8)
-                throw new NotAppropriateUserParam("Пароль должен состоять минимум из 8 символов");
             //Name check
             if (user.Name.Length < 1)
                 throw new NotAppropriateUserParam("Имя должно состоять минимум из одной буквы");

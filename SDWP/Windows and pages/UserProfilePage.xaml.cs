@@ -37,7 +37,6 @@ namespace SDWP
 
         private byte[] NewUserPhoto { get; set; } = null;
         private bool IsProfileDataEdititing { get; set; } = false;
-        private bool PasswordBoxState { get; set; } = false;
 
         private PageHeader PageHeader { get; set; }
         #endregion
@@ -366,6 +365,7 @@ namespace SDWP
             {
                 ID = UserInfo.CurrentUser.ID,
                 Login = loginTextBox.Text,
+                Password = UserInfo.CurrentUser.Password,
                 Name = nameTextBox.Text,
                 Surname = surnameTextBox.Text,
                 BirthDate = GetNewUserDateTime(),

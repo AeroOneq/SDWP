@@ -14,7 +14,7 @@ namespace ApplicationLib.Database
 {
     public class EmailDB : IEmailDatabase<UserInfo>
     {
-        private string ApiURL { get; } = "http://localhost:61890/sdwpapi/v1.0.0/emailcodes";
+        private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/emailcodes";
 
         public async Task<bool> CheckCode(int codeID, string code)
         {

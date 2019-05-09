@@ -55,8 +55,10 @@ namespace ApplicationLib.Word
                     filePath, WordprocessingDocumentType.Document, true))
                 {
                     WordDocument.AddMainDocumentPart();
-                    WordDocument.MainDocumentPart.Document = new WordDocument();
-                    WordDocument.MainDocumentPart.Document.Body = new Body();
+                    WordDocument.MainDocumentPart.Document = new WordDocument
+                    {
+                        Body = new Body()
+                    };
 
                     SetDocumentCommands();
 

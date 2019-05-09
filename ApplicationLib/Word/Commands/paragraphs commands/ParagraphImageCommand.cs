@@ -52,6 +52,7 @@ namespace ApplicationLib.Word.Commands
             p.Append(run);
 
             WordDocument.MainDocumentPart.Document.Body.AppendChild(p);
+            WordDocument.MainDocumentPart.Document.Body.AppendChild(GetParagraphImageTitle());
         }
         private Drawing GetDrawing(string relationshipId)
         {
@@ -118,6 +119,43 @@ namespace ApplicationLib.Word.Commands
                      });
 
             return element;
+        }
+        private WordParagraph GetParagraphImageTitle()
+        {
+            var paragraph = new WordParagraph();
+            var pp = new ParagraphProperties()
+            {
+                Justification = new Justification() { Val = JustificationValues.Center },
+                SpacingBetweenLines = new SpacingBetweenLines()
+                {
+                    Before = "100",
+                    After = "100",
+                    Line = "300",
+                    LineRule = LineSpacingRuleValues.Exact
+                }
+            };
+            paragraph.Append(pp);
+
+            var run = new Run();
+            var runProperties = new RunProperties(new RunFonts
+            {
+                HighAnsi = new StringValue("Times New Roman"),
+                Ascii = "Times New Roman"
+            })
+            {
+                Color = new Color() { Val = RenderData.Obj.RenderSettings.DefaultColor },
+                FontSize = new FontSize() { Val = (int.Parse(RenderData.Obj.
+                    RenderSettings.DefaultTextSize)-2).ToString() },
+
+            };
+            run.PrependChild(runProperties);
+
+            var text = new Text("Рисунок (номер) - " + ParagraphImage.Title);
+
+            run.Append(text);
+            paragraph.Append(run);
+
+            return paragraph;
         }
     }
 }
