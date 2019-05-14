@@ -115,9 +115,8 @@ namespace ApplicationLib.Views
         private void SubparagraphKeyDown(object sender, KeyEventArgs e)
         {
             TextBox textBox = sender as TextBox;
-            int lastEnterSymbolIndex = textBox.Text.LastIndexOf("\n");
 
-            if (e.Key == Key.Back && textBox.Text.Length > 0 &&
+            if (e.Key == Key.Back && textBox.Text.Length > 0 && 
                 textBox.Text[textBox.Text.Length - 1] == '\n' && textBox.LineCount > 1)
             {
                 DeleteLastLine(textBox);

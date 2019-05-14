@@ -253,7 +253,7 @@
                             VerticalAlignment="Top"
                             HorizontalAlignment="Left"
                             Click="UpdatePassword"
-                            Margin="60, 450, 0, 0"
+                            Margin="60, 480, 0, 0"
                             Style="{StaticResource userProfileButton}"/>
                     <Grid x:Name="userProfileDataGrid"
                           VerticalAlignment="Top"
@@ -289,21 +289,21 @@
                                  Margin="20, 185, 0, 0"/>
                         <TextBlock Text="Другая информация"
                                    Style="{StaticResource profileDataHeader}"
-                                   Margin="22, 300, 0, 0"/>
+                                   Margin="22, 240, 0, 0"/>
                         <TextBlock Text="Почта"
                                    Style="{StaticResource userProfilePropertiesName}"
-                                   Margin="22, 325, 0, 0"/>
+                                   Margin="22, 265, 0, 0"/>
                         <TextBox x:Name="emailTextBox"
                                  Text="Email"
                                  Style="{StaticResource userProfileTextBoxDisabled}"
-                                 Margin="20, 335, 0, 0"/>
+                                 Margin="20, 275, 0, 0"/>
                         <TextBlock Text="Дата рождения"
                                    Style="{StaticResource userProfilePropertiesName}"
-                                   Margin="22, 385, 0, 0"/>
+                                   Margin="22, 330, 0, 0"/>
                         <TextBox x:Name="birthDateTextBox"
                                  Text="30.05.2000"
                                  Style="{StaticResource userProfileTextBoxDisabled}"
-                                 Margin="20, 395, 0, 0"/>
+                                 Margin="20, 340, 0, 0"/>
                     </Grid>
                     <Grid x:Name="enterCodeGrid"
                           Height="500"

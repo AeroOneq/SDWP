@@ -26,11 +26,6 @@ namespace ApplicationLib.Models
             ImageSource = imageSource;
         }
 
-        public override UserControl GetWatchView()
-        {
-            throw new NotImplementedException();
-        }
-
         public override UserControl GetEditView()
         {
             return new ImageEditView(ParentParagraph);

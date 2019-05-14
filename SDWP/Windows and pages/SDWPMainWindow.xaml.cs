@@ -168,24 +168,6 @@ namespace SDWP
         }
 
         /// <summary>
-        /// Changes the background of the hide options grid
-        /// </summary>
-        private void HideOptionsGridMouseEnter(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-            grid.Background = new SolidColorBrush(Color.FromRgb(230, 230, 230));
-        }
-
-        /// <summary>
-        /// Chenges the background of the hide options grid to its original value
-        /// </summary>
-        private void HideOptionsGridMouseLeave(object sender, MouseEventArgs e)
-        {
-            Grid grid = sender as Grid;
-            grid.Background = new SolidColorBrush(Color.FromRgb(211, 211, 211));
-        }
-
-        /// <summary>
         /// Hides the top option grid when the mouse leaves the top option grid
         /// </summary>
         private void HideTopGrids()

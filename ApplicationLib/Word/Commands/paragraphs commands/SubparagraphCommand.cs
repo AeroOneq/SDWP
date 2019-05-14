@@ -32,6 +32,7 @@ namespace ApplicationLib.Word.Commands
         {
             WordDocument.MainDocumentPart.Document.Body.Append(RenderSubparagraph());
         }
+
         private WordParagraph RenderSubparagraph()
         {
             var paragraph = new WordParagraph();
@@ -70,6 +71,7 @@ namespace ApplicationLib.Word.Commands
             var text = new Text(Subparagraph.Text);
 
             run.Append(text);
+            paragraph.Append(new TabCommand().GetElement());
             paragraph.Append(run);
 
             return paragraph;

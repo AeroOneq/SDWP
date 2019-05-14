@@ -10,6 +10,6 @@ namespace ApplicationLib.Word.Interfaces
 {
     public interface IWordRenderer : IDocumentRenderer
     {
-        IMainCommandsContainer MainCommandsContainer { get; set; }
+        ICommandsContainer CommandsContainer { get; set; }
     }
 }

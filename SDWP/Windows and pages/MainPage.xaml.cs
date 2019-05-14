@@ -125,7 +125,6 @@ namespace SDWP
 
         private void UploadDocumentation()
         {
-            DataContext = DocController.Documentation;
 
             UploadDocumentationDataToUI(DocController.Documentation);
             UploadDocumentsDataToUI(DocController.Documents);
@@ -133,7 +132,7 @@ namespace SDWP
 
         private void UploadDocumentationDataToUI(Documentation documentation)
         {
-#warning Create Upload logic
+            DataContext = DocController.Documentation;
         }
 
         /// <summary>

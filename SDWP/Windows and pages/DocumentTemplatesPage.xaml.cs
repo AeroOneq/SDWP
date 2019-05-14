@@ -437,6 +437,8 @@ namespace SDWP
                 }
 
                 PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Все шаблоны выбранного раздела сохранены",
+                     MessageBoxButton.OK);
             }
             catch (IOException ex)
             {

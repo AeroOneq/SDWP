@@ -685,7 +685,7 @@
                             Margin="20, 25, 0, 0"
                             Orientation="Horizontal">
                     <TextBlock x:Name="goToLocalDocumentation"
-                               Text="Локальный шаблоны"
+                               Text="Локальные шаблоны"
                                Style="{StaticResource templateTypesTextBlockStyle}"
                                PreviewMouseDown="GoToLocalTemplatesMode"/>
                     <TextBlock x:Name="goToCloudDocumentation"

@@ -13,10 +13,11 @@ using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
 
 using AeroORMFramework;
+using System.Runtime.InteropServices;
 
 namespace ApplicationLib.Database
 {
-    internal class DocumentationDB : ICloudDocumentationDB<Documentation>
+    public class DocumentationDB : ICloudDocumentationDB<Documentation>
     {
         #region Properties
         private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/documentations";

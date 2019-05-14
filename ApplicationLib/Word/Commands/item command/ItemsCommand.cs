@@ -15,10 +15,9 @@ using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 
 namespace ApplicationLib.Word.Commands
 {
-    public class ItemsCommand : IWordMainCommand
+    public class ItemsCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
-
         public ICommandsContainer CommandsContainer { get; private set; }
 
         public ItemsCommand(WordprocessingDocument wordDocument)
@@ -43,14 +42,16 @@ namespace ApplicationLib.Word.Commands
             {
                 index = (int.Parse(index) + 1).ToString();
                 AddCommandsToList(item, 0, index);
+                CommandsContainer.Add(new EndOfPageCommand(WordDocument));
             }
+
             CommandsContainer.Add(new SectionPtrCommand(WordDocument));
         }
 
         private void AddCommandsToList(Item item, int depth, string index)
         {
             if (depth == 0)
-                CommandsContainer.Add(new ItemHeaderCommand(WordDocument, index + " " + item.Name));
+                CommandsContainer.Add(new ItemHeaderCommand(WordDocument, index + ". " + item.Name));
             else
                 CommandsContainer.Add(new ParagraphHeaderCommand(WordDocument, index + " " + item.Name, depth));
 
@@ -92,7 +93,5 @@ namespace ApplicationLib.Word.Commands
                 }
             }
         }
-
-
     }
 }

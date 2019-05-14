@@ -107,11 +107,8 @@
     <Compile Include="Word\Commands\title and second page commands\TitlePageTitleCommand.cs" />
     <Compile Include="Word\Commands\title and second page commands\TownAndYearCommand.cs" />
     <Compile Include="Word\Containers\CommandsContainer.cs" />
-    <Compile Include="Word\Containers\MainCommandsContainer.cs" />
     <Compile Include="Word\Interfaces\ICommandsContainer.cs" />
-    <Compile Include="Word\Interfaces\IMainCommandsContainer.cs" />
     <Compile Include="Word\Interfaces\IDocumentRenderer.cs" />
-    <Compile Include="Word\Interfaces\IWordMainCommand.cs" />
     <Compile Include="Word\Interfaces\IWordRenderer.cs" />
     <Compile Include="Word\Commands\header and footer main commands\FooterCommand.cs" />
     <Compile Include="Word\Commands\header and footer main commands\HeaderCommand.cs" />
@@ -197,7 +194,6 @@
     <Compile Include="Interfaces\cloud service interfaces\IUserService.cs" />
     <Compile Include="Models\LoginData.cs" />
     <Compile Include="Models\UserInfo.cs" />
-    <Compile Include="Database\DatabaseProperties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\cloud services\EmailService.cs" />
     <Compile Include="Interfaces\factories%27  interfaces\IServiceAbstractFactory.cs" />

@@ -107,7 +107,7 @@ namespace ApplicationLib.Database
                     $"/remindpass?login={login}&email={email}", "GET");
 
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                if (httpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
                 {
                     throw new UserNotFoundException("Пользователь с такими параметрами не существует");
                 }

@@ -12,7 +12,7 @@ namespace ApplicationLib.Services
 {
     public class UserService : IUserService<UserInfo>
     {
-        private UsersDB Database { get; } = new UsersDB();
+        private IUserDatabase<UserInfo> Database { get; } = new UsersDB();
 
         public async Task<UserInfo> AuthorizeUserAsync(LoginData loginData) =>
             await Database.TryToLoginAsync(loginData);

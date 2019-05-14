@@ -167,11 +167,6 @@ namespace ApplicationLib.Models
             }
         }
 
-        public override UserControl GetWatchView()
-        {
-            throw new NotImplementedException();
-        }
-
         public override UserControl GetEditView()
         {
             return new TableEditView(ParentParagraph);

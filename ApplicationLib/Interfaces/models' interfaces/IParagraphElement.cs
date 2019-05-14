@@ -22,7 +22,6 @@ namespace ApplicationLib.Interfaces
         string Hint { get; set; }
         string Title { get; set; }
 
-        UserControl GetWatchView();
         UserControl GetEditView();
     }
 }

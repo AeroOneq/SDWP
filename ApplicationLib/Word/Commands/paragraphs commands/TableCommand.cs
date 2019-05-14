@@ -32,13 +32,13 @@ namespace ApplicationLib.Word.Commands
 
         public void Render()
         {
-            WordDocument.MainDocumentPart.Document.Body.Append(GetTableTitileParagraph());
+            WordDocument.MainDocumentPart.Document.Body.Append(GetTableTitleParagraph());
 
             WordTable wordTable = RenderTable();
             WordDocument.MainDocumentPart.Document.Body.Append(wordTable);
         }
 
-        private WordParagraph GetTableTitileParagraph()
+        private WordParagraph GetTableTitleParagraph()
         {
             var paragraph = new WordParagraph();
             var pp = new ParagraphProperties()
@@ -112,27 +112,72 @@ namespace ApplicationLib.Word.Commands
                 {
                     Val = new EnumValue<BorderValues>(BorderValues.Single),
                     Size = 6
-                }), new TableIndentation() { Width = (int)(Depth * RenderData.Obj.RenderSettings.TabValue) });
+                }));
 
             wordTable.Append(tableProperties);
 
             string[][] data = Table.TableCells;
+            bool didMethodsStart = false;
+
             for (int i = 0; i < data.GetLength(0); i++)
             {
                 TableRow tableRow = new TableRow();
+                tableRow.Append(new TableRowProperties(new TableRowHeight() { Val = 100, HeightType = HeightRuleValues.Auto }));
+
                 for (int j = 0; j < data[i].Length; j++)
                 {
                     TableCell tableCell = new TableCell();
+                    if (CheckIfHeaderRow(data, i))
+                    {
+                        if (j == 0)
+                            tableCell.Append(new TableCellProperties(
+                                new HorizontalMerge() { Val = MergedCellValues.Restart },
+                                new Shading()
+                                {
+                                    Val = ShadingPatternValues.Clear,
+                                    Fill = "f0f0f0",
+                                    Color = "Auto"
+                                }));
+                        else
+                            tableCell.Append(new TableCellProperties(
+                                new HorizontalMerge() { Val = MergedCellValues.Continue },
+                                 new Shading()
+                                 {
+                                     Val = ShadingPatternValues.Clear,
+                                     Fill = "f0f0f0",
+                                     Color = "Auto"
+                                 }));
+
+                        if (data[i][0] == "Методы")
+                            didMethodsStart = true;
+                    }
+
+                    if (!didMethodsStart && j == 3)
+                    {
+                        tableCell.Append(new TableCellProperties(new HorizontalMerge() { Val = MergedCellValues.Restart }));
+                    }
+                    else if (!didMethodsStart && j == 4)
+                    {
+                        tableCell.Append(new TableCellProperties(new HorizontalMerge() { Val = MergedCellValues.Continue }));
+                    }
+
 
                     WordParagraph p = new WordParagraph();
                     ParagraphProperties pp = new ParagraphProperties(new Justification()
-                        { Val = JustificationValues.Center });
+                    { Val = CheckIfHeaderRow(data, i) ? JustificationValues.Left : JustificationValues.Center },
+                    new SpacingBetweenLines()
+                    {
+                        After = "0"
+                    });
 
                     p.Append(pp);
 
                     Run run = new Run();
-                    RunProperties rp = new RunProperties(new RunFonts() { HighAnsi = "Times New Roman",
-                        Ascii = "Times New Roman" })
+                    RunProperties rp = new RunProperties(new RunFonts()
+                    {
+                        HighAnsi = "Times New Roman",
+                        Ascii = "Times New Roman"
+                    })
                     {
                         Color = new Color() { Val = RenderData.Obj.RenderSettings.DefaultColor },
                         FontSize = new FontSize() { Val = RenderData.Obj.RenderSettings.DefaultTextSize }
@@ -153,6 +198,11 @@ namespace ApplicationLib.Word.Commands
             }
 
             return wordTable;
+        }
+
+        private bool CheckIfHeaderRow(string[][] data, int i)
+        {
+            return data[i][0] == "Поля" || data[i][0] == "Свойства" || data[i][0] == "Методы";
         }
     }
 }

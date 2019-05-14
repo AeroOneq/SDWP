@@ -25,13 +25,12 @@ namespace ApplicationLib.Word
 {
     public class WordRenderer : IWordRenderer
     {
-        public IMainCommandsContainer RenderCommands { get; set; }
-        public IMainCommandsContainer MainCommandsContainer { get; set; }
+        public ICommandsContainer CommandsContainer { get; set; }
         private WordprocessingDocument WordDocument { get; set; }
 
         public WordRenderer()
         {
-            MainCommandsContainer = new MainCommandsContainer();
+            CommandsContainer = new CommandsContainer();
         }
 
         public void SetRenderParams(RenderSettings renderSettings, Models.Document document,
@@ -62,14 +61,14 @@ namespace ApplicationLib.Word
 
                     SetDocumentCommands();
 
-                    MainCommandsContainer.Render();
+                    CommandsContainer.Render();
                 }
 
                 using (WordDocument = WordprocessingDocument.Open(filePath, true))
                 {
                     SetFooterAndHeaderCommands();
 
-                    MainCommandsContainer.Render();
+                    CommandsContainer.Render();
                 }
             });
         }
@@ -77,27 +76,27 @@ namespace ApplicationLib.Word
 
         private void SetFooterAndHeaderCommands()
         {
-            MainCommandsContainer.Refresh();
+            CommandsContainer.Refresh();
 
             if (RenderData.Obj.RenderSettings.AddFooter)
-                MainCommandsContainer.Add(new FooterCommand(WordDocument));
+                CommandsContainer.Add(new FooterCommand(WordDocument));
 
             if (RenderData.Obj.RenderSettings.AddHeader)
-                MainCommandsContainer.Add(new HeaderCommand(WordDocument));
+                CommandsContainer.Add(new HeaderCommand(WordDocument));
         }
 
         private void SetDocumentCommands()
         {
-            MainCommandsContainer.Refresh();
+            CommandsContainer.Refresh();
 
             if (RenderData.Obj.RenderSettings.AddTitlePage)
-                MainCommandsContainer.Add(new TitlePageCommand(WordDocument));
+                CommandsContainer.Add(new TitlePageCommand(WordDocument));
 
             if (RenderData.Obj.RenderSettings.AddSecondPage)
-                MainCommandsContainer.Add(new SecondPageCommand(WordDocument));
+                CommandsContainer.Add(new SecondPageCommand(WordDocument));
 
-            MainCommandsContainer.Add(new TableOfContentsPageCommand(WordDocument));
-            MainCommandsContainer.Add(new ItemsCommand(WordDocument));
+            CommandsContainer.Add(new TableOfContentsPageCommand(WordDocument));
+            CommandsContainer.Add(new ItemsCommand(WordDocument));
         }
     }
 }

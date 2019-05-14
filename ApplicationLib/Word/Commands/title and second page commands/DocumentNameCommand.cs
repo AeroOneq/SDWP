@@ -49,7 +49,8 @@ namespace ApplicationLib.Word.Commands
             var run = new Run();
             var runProperties = new RunProperties(new RunFonts
             {
-                HighAnsi = new StringValue(RenderData.Obj.RenderSettings.FontFamily)
+                HighAnsi = new StringValue(RenderData.Obj.RenderSettings.FontFamily),
+                Ascii = new StringValue(RenderData.Obj.RenderSettings.FontFamily)
             })
             {
                 Bold = new Bold(),

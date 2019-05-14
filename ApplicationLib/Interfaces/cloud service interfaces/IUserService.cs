@@ -17,6 +17,6 @@ namespace ApplicationLib.Interfaces
         Task CheckEmail(string email);
 
         Task UpdateRecord(UserType user);
-        Task<UserInfo> GetUserByID(int id);
+        Task<UserType> GetUserByID(int id);
     }
 }

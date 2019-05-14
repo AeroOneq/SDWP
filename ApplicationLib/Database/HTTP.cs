@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Database
 {
-    internal static class HTTP
+    public static class HTTP
     {
         const string Login = "sdwpapimainuser";
         const string Password = "dihfsodgoias;pdlvknkdslnvasoifjklfnsldafjsdlfa";

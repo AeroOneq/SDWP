@@ -444,9 +444,14 @@
                        Margin="0, 70, 0, 0"
                        Style="{StaticResource headerDescripitonTextBlockStyle}"/>
             <TextBlock x:Name="applicationDescriptionTextBlock"
-                       Text="The SDWP application is made in order to simplify the process of writing documentaion. 
-                       I hope that you'll find it more convinient to write documentation here, rather than in Word or other programms. "
+                       Text="SDWP - это программа для упрощения создания документации к программам. Я надеюсь, что эта программа поможет
+                       Вам в написании документации. Если у Вас есть вопросы, предложения или замечания просьба отправлять их мне на почту: aerooneQ@yandex.ru"
                        Margin="0, 130, 0, 0"
+                       Style="{StaticResource appDescriptionTextBlockStyle}"/>
+            <TextBlock x:Name="aeroTextBlock"
+                       Text="©Aero"
+                       FontSize="20"
+                       Margin="0, 260, 0, 0"
                        Style="{StaticResource appDescriptionTextBlockStyle}"/>
         </Grid>
         <!--Remind pass grid-->
@@ -458,11 +463,10 @@
               Visibility="Hidden"
               Background="White">
             <TextBlock x:Name="remindPassHeader"
-                       Text="Remind pass"
+                       Text="Восстановить"
                        Margin="0, 20, 0, 0"
                        Style="{StaticResource headerTextBlockStyle}"/>
-            <TextBlock x:Name="viaEmailTextBox"
-                       Text="via email"
+            <TextBlock Text="пароль "
                        Margin="0, 70, 0, 0"
                        Style="{StaticResource headerDescripitonTextBlockStyle}"/>
             <Grid x:Name="remindPassFormGrid"

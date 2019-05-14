@@ -8,7 +8,7 @@ using Newtonsoft.Json.Converters;
 
 namespace ApplicationLib.Models
 {
-    class ParagraphJsonConverter : CustomCreationConverter<Paragraph>
+    public class ParagraphJsonConverter : CustomCreationConverter<Paragraph>
     {
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {

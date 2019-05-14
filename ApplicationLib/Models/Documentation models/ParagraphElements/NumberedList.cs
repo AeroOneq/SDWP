@@ -95,11 +95,6 @@ namespace ApplicationLib.Models
             SetIndexes();
         }
 
-        public override UserControl GetWatchView()
-        {
-            throw new NotImplementedException();
-        }
-
         public override UserControl GetEditView()
         {
             return new NumberedListEditView(ParentParagraph);

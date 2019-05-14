@@ -640,7 +640,8 @@
                                    Margin="15, 0, 0, 0"/>
                         <TextBlock x:Name="documentationCreationDateTextBlock"
                                    Style="{StaticResource propertyValueStyle}"
-                                   Text="30.05.2000"
+                                   IsEnabled="False"
+                                   Text="{Binding CreationDate}"
                                    Margin="15, 0, 15, 0"/>
 
                         <TextBlock Style="{StaticResource propertyNameStyle}"
@@ -697,12 +698,14 @@
                                    MouseDown="GoToPreviousItem"/>
 
                         <TextBlock x:Name="backToPreviousItemTextBlock"
-                                       FontFamily="Arial, Verdana"
-                                       Foreground="Black"
-                                       Visibility="Visible"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Margin="35, 0, 0, 0"/>
+                                   FontFamily="Arial, Verdana"
+                                   Foreground="Black"
+                                   Visibility="Visible"
+                                   Width="150"
+                                   TextTrimming="CharacterEllipsis"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Margin="35, 0, 0, 0"/>
                     </Grid>
 
                     <Image x:Name="addNewItemStaticImage"

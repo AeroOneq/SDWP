@@ -35,6 +35,7 @@ namespace ApplicationLib.Word.Commands
             {
                 WordDocument.MainDocumentPart.Document.Body.Append(p);
             }
+            RenderData.Obj.CurrentNumID++;
         }
         private IEnumerable<WordParagraph> RenderNumberedList()
         {
@@ -44,14 +45,17 @@ namespace ApplicationLib.Word.Commands
             foreach (NumberedListElement element in NumberedList.ListElements)
             {
                 WordParagraph p = new WordParagraph();
-                ParagraphProperties pp = new ParagraphProperties(new ParagraphStyleId() { Val = "a0" })
+                ParagraphProperties pp = new ParagraphProperties()
                 {
+                    NumberingProperties = new NumberingProperties(
+                        new NumberingId() { Val = RenderData.Obj.CurrentNumID},
+                        new NumberingLevelReference() {Val = 0 }),
                     Indentation = new Indentation() { Left = (500 * Depth).ToString() },
                     SpacingBetweenLines = new SpacingBetweenLines()
                     {
                         Before = "100",
                         After = "100",
-                        Line = "200",
+                        Line = "250",
                         LineRule = LineSpacingRuleValues.Exact
                     },
                 };

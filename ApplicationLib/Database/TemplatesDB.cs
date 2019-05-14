@@ -15,7 +15,7 @@ using System.IO;
 
 namespace ApplicationLib.Database
 {
-    class TemplatesDB : ICloudTemplatesDB<Template>
+    public class TemplatesDB : ICloudTemplatesDB<Template>
     {
         private string ApiURL { get; } = "https://aerothedeveloper.ru/sdwpapi/v1.0.0/templates";
 

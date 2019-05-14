@@ -52,18 +52,19 @@ namespace ApplicationLib.Views
             TableDataGrid.Columns.Clear();
             string[][] tableCells = CurrentTable.TableCells;
 
-            for (int i = 0; i < tableCells[0].Length; i++)
-            {
-                DataGridTextColumn col = new DataGridTextColumn
+            if (tableCells != null && tableCells.Length > 0 && tableCells[0] != null)
+                for (int i = 0; i < tableCells[0].Length; i++)
                 {
-                    Binding = new Binding($"[{i}]")
+                    DataGridTextColumn col = new DataGridTextColumn
                     {
-                        UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                    }
-                };
+                        Binding = new Binding($"[{i}]")
+                        {
+                            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                        }
+                    };
 
-                TableDataGrid.Columns.Add(col);
-            }
+                    TableDataGrid.Columns.Add(col);
+                }
 
             RefreshDataContext();
         }

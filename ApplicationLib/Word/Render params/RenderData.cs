@@ -12,6 +12,9 @@ namespace ApplicationLib.Word
         public RenderSettings RenderSettings { get; private set; }
         public Document Document { get; private set; }
         public Documentation Documentation { get; private set; }
+#warning add to tables
+        //id for numbered lists in the document
+        public int CurrentNumID { get; set; } = 0;
 
         #region Singleton 
         private static RenderData renderData;
@@ -37,10 +40,12 @@ namespace ApplicationLib.Word
             Obj.RenderSettings = new RenderSettings(renderSettings);
             Obj.Document = document;
             Obj.Documentation = documentation;
+            Obj.CurrentNumID = 0;
 
             Obj.RenderSettings.TitlePageTable[1][4] = Obj.Documentation.ProjectCode;
             Obj.RenderSettings.FooterTable[2][0] = Obj.Documentation.ProjectCode;
-            Obj.RenderSettings.DefaultTextSize = (int.Parse(Obj.RenderSettings.DefaultTextSize) * 2).ToString();
+            Obj.RenderSettings.DefaultTextSize = (int.Parse(Obj.RenderSettings.DefaultTextSize) 
+                    * 2).ToString();
         }
     }
 }

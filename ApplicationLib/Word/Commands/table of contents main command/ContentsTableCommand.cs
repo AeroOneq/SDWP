@@ -90,7 +90,7 @@ namespace ApplicationLib.Word.Commands
         private void UploadItemsToTableOfContents(Item item, SdtContentBlock sdtContentBlock,
             int depth, string index)
         {
-            AddTableOfContentsElement(sdtContentBlock, depth, index + " " + item.Name);
+            AddTableOfContentsElement(sdtContentBlock, depth, index + ". " + item.Name);
 
             string dopIndex = "0";
             if (item.Items != null)

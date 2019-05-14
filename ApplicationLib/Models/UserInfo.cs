@@ -64,12 +64,12 @@ namespace ApplicationLib.Models
             //Login check
             if (user.Login.Length < 6 || user.Login.Length > 200)
                 throw new NotAppropriateUserParam("Длина логина должна быть больше 6 и " +
-                    "меньше 200 символов");
+                    "меньше 200 символов, логин состоит только из букв латинского алфавита и цифр");
             for (int i = 0; i < user.Login.Length; i++)
             {
                 if (loginAllowedSymbols.IndexOf(user.Login[i]) < 0)
-                    throw new NotAppropriateUserParam("Логин должен состоять из букв " +
-                        "латиснкого алфавита и цифр");
+                    throw new NotAppropriateUserParam("Длина логина должна быть больше 6 и " +
+                    "меньше 200 символов, логин состоит только из букв латинского алфавита и цифр");
             }
             //Name check
             if (user.Name.Length < 1)

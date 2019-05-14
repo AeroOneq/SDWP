@@ -18,11 +18,17 @@ namespace FileLib.FileParsers
         private FieldInfo[] fields;
         private PropertyInfo[] properties;
         private MethodInfo[] methods;
+
+        private string lowerCaseEnglishLetters = "qwertyuiopasdfghjklzxcvbnm";
+        private int currIndex = 0;
+        private List<string> copiedFiles = new List<string>();
         #endregion
 
         public Table[] GetAssemblyTables(string filePath)
         {
-            Type[] assemblyTypes = GetAssemblyTypes(filePath);
+            Assembly assembly = Assembly.LoadFrom(filePath);
+
+            Type[] assemblyTypes = assembly.GetExportedTypes();
             Table[] assemblyTables = new Table[assemblyTypes.Length + 1];
 
             //classes table
@@ -33,17 +39,32 @@ namespace FileLib.FileParsers
                 assemblyTables[i + 1] = GetTypePropertiesTable(assemblyTypes[i]);
             }
 
+            ClearTables(assemblyTables);
+
             return assemblyTables;
+        }
+
+        private void ClearTables(Table[] assemblyTables)
+        {
+            foreach (Table table in assemblyTables)
+            {
+                List<string[]> tableCellsList = table.TableCells.ToList();
+                tableCellsList.RemoveAll(arr => arr == null);
+
+                table.TableCells = tableCellsList.ToArray();
+            }
         }
 
         private Table GetTypePropertiesTable(Type type)
         {
-            fields = type.GetFields();
-            properties = type.GetProperties();
-            methods = type.GetMethods();
+            fields = type.GetTypeInfo().DeclaredFields.ToArray();
+            properties = type.GetTypeInfo().DeclaredProperties.ToArray();
+            methods = type.GetTypeInfo().DeclaredMethods.ToArray();
+            currIndex = 0;
 
             int tableRowCount = fields.Length + methods.Length + properties.Length
-                - CountNumberOfGetAndSet(properties, methods) + 6;
+                - CountNumberOfGetAndSet(properties, methods) + ((fields.Length > 0) ? 2 : 0) +
+                ((properties.Length > 0) ? 2 : 0) + ((methods.Length > 0) ? 2 : 0);
 
             string[][] tableCells = new string[tableRowCount][];
 
@@ -59,52 +80,80 @@ namespace FileLib.FileParsers
 
         private void FillTheFieldsCells(string[][] tableCells)
         {
-            tableCells[0] = new string[TypePropertiesColCount]
-               { "Поля", string.Empty, string.Empty, string.Empty, string.Empty };
-            tableCells[1] = new string[TypePropertiesColCount]
-                { "Имя", "Модификатор досутпа", "Тип", "Назначение", string.Empty };
-
-            for (int i = 0; i < fields.Length; i++)
+            if (fields.Length > 0)
             {
-                tableCells[i + 2] = new string[TypePropertiesColCount]
-                    {fields[i].Name, GetFieldModificators(fields[i]), fields[i].FieldType.Name, string.Empty, string.Empty};
+                tableCells[0] = new string[TypePropertiesColCount]
+                    { "Поля", string.Empty, string.Empty, string.Empty, string.Empty };
+                tableCells[1] = new string[TypePropertiesColCount]
+                    { "Имя", "Модификатор доступа", "Тип", "Назначение", string.Empty };
+
+                currIndex = 2;
+
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    tableCells[i + 2] = new string[TypePropertiesColCount]
+                        {fields[i].Name, GetFieldModificators(fields[i]), fields[i].FieldType.Name, string.Empty, string.Empty};
+                    currIndex++;
+                }
             }
         }
 
         private void FillThePropertiesCells(string[][] tableCells)
         {
-            tableCells[fields.Length + 2] = new string[TypePropertiesColCount]
-                { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
-            tableCells[fields.Length + 3] = new string[TypePropertiesColCount]
-                { "Имя", "Модификатор досутпа", "Тип", "Назначение", string.Empty };
-
-            for (int i = 0; i < properties.Length; i++)
+            if (properties.Length > 0)
             {
-                tableCells[i + 4 + fields.Length] = new string[TypePropertiesColCount]
-                    {properties[i].Name, GetPropertiesModificators(properties[i], methods),
+                tableCells[currIndex++] = new string[TypePropertiesColCount]
+                    { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
+                tableCells[currIndex++] = new string[TypePropertiesColCount]
+                    { "Имя", "Модификатор досутпа", "Тип", "Назначение", string.Empty };
+
+                for (int i = 0; i < properties.Length; i++)
+                {
+                    tableCells[currIndex] = new string[TypePropertiesColCount]
+                        {properties[i].Name, GetPropertiesModificators(properties[i], methods),
                     properties[i].PropertyType.Name, string.Empty, string.Empty};
+                    currIndex++;
+                }
             }
         }
 
         private void FillTheMethodsCells(string[][] tableCells)
         {
-            tableCells[fields.Length + properties.Length + 4] = new string[TypePropertiesColCount]
-                { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
-            tableCells[fields.Length + properties.Length + 5] = new string[TypePropertiesColCount]
-                { "Имя", "Модификатор досутпа", "Тип", "Аргументы", "Назначение" };
-
-
-            int curIndex = fields.Length + properties.Length + 6;
-            for (int i = 0; i < methods.Length; i++)
+            if (methods.Length > 0)
             {
-                if (!CheckIfMethodIsProperty(methods[i], properties))
+                tableCells[currIndex++] = new string[TypePropertiesColCount]
+                    { "Методы", string.Empty, string.Empty, string.Empty, string.Empty };
+                tableCells[currIndex++] = new string[TypePropertiesColCount]
+                    { "Имя", "Модификатор досутпа", "Тип", "Аргументы", "Назначение" };
+
+                for (int i = 0; i < methods.Length; i++)
                 {
-                    tableCells[curIndex] = new string[TypePropertiesColCount]
-                        { methods[i].Name, GetMethodModificators(methods[i]), methods[i].ReturnType.Name, "", "" };
-                    curIndex++;
+                    if (!CheckIfMethodIsProperty(methods[i], properties) &&
+                        lowerCaseEnglishLetters.IndexOf(methods[i].Name[0]) == -1)
+                    {
+                        tableCells[currIndex] = new string[TypePropertiesColCount]
+                            { methods[i].Name, GetMethodModificators(methods[i]), methods[i].ReturnType.Name,
+                            GetMethodArguments(methods[i]), "" };
+                        currIndex++;
+                    }
                 }
             }
+        }
 
+        private string GetMethodArguments(MethodInfo method)
+        {
+            ParameterInfo[] parameters = method.GetParameters();
+
+            string paramsString = string.Empty;
+            foreach (ParameterInfo p in parameters)
+            {
+                paramsString += p.ParameterType.Name + " " + p.Name + ", ";
+            }
+
+            if (parameters.Length > 0)
+                paramsString = paramsString.Remove(paramsString.Length - 2, 2);
+
+            return paramsString;
         }
 
         private int CountNumberOfGetAndSet(PropertyInfo[] properties, MethodInfo[] methods)
@@ -167,7 +216,7 @@ namespace FileLib.FileParsers
             string setMods = string.Empty;
 
             for (int i = 0; i < methods.Length; i++)
-            { 
+            {
                 if ("get_" + property.Name == methods[i].Name)
                 {
                     getMods = GetMethodModificators(methods[i]);
@@ -193,8 +242,6 @@ namespace FileLib.FileParsers
                 mods += "private ";
             if (method.IsPublic)
                 mods += "public ";
-            if (method.IsVirtual)
-                mods += "virtual ";
             if (method.IsStatic)
                 mods += "static ";
 

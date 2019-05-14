@@ -15,7 +15,7 @@ using ApplicationLib.Word.Containers;
 
 namespace ApplicationLib.Word.Commands
 {
-    internal class TitlePageCommand : IWordMainCommand
+    internal class TitlePageCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         public ICommandsContainer CommandsContainer { get; private set; }

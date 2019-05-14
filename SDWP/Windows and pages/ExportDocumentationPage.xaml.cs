@@ -319,7 +319,7 @@ namespace SDWP
                     await WordDocumentRenderer.Render();
                 }
 
-                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно срендерина в Word", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно экспортирована в Word", MessageBoxButton.OK);
             }
             catch (ArgumentException ex)
             {

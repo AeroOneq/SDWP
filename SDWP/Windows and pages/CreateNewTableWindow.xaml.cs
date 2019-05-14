@@ -23,6 +23,7 @@ using SDWP.Interfaces;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
+using Newtonsoft.Json;
 
 namespace SDWP
 {
@@ -56,10 +57,10 @@ namespace SDWP
             FilePathTextBox = filePathTexxBox;
             TableTitleTextBox = tableTitleTextBox;
 
-            GetServices();
+            InitializeServices();
         }
 
-        private void GetServices()
+        private void InitializeServices()
         {
             AbstractFactory = new SdwpAbstractFactory();
 
@@ -126,7 +127,7 @@ namespace SDWP
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
-                Filter = "(*dll)|*dll",
+                Filter = "(*dll)|*dll|(*exe)|*exe",
                 CheckFileExists = true,
                 CheckPathExists = true,
                 Title = "Выберете DLL файл для сканирования",

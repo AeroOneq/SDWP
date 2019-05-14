@@ -21,7 +21,7 @@ namespace ApplicationLib.Word
         #endregion
 
         #region Word render constants
-        public double TabValue { get; } = 500;
+        public double TabValue { get; } = 400;
         public string[][] FooterTable { get; } = new string[4][]
         {
             new string[5]{ "", "", "", "", "" },

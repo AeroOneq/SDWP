@@ -113,10 +113,10 @@ namespace ApplicationLib.Views
             };
 
             if (openFileDialog.ShowDialog() == true)
-                UplodImage(openFileDialog.FileName);
+                UploadImage(openFileDialog.FileName);
         }
 
-        private void UplodImage(string imagePath)
+        private void UploadImage(string imagePath)
         {
             byte[] imageByteArr;
             using (var fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))

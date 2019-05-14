@@ -397,7 +397,7 @@
                                       HorizontalAlignment="Left"
                                       Width="{Binding ElementName=userDocsPage, Path=ActualWidth}"
                                       Height="86"
-                                      Header="Документы"/>
+                                      Header="Документация"/>
 
                     <StackPanel VerticalAlignment="Top"
                                 HorizontalAlignment="Left"
@@ -508,7 +508,6 @@
                                                    HorizontalAlignment="Left"/>
                                         <TextBlock x:Name="selectedLocalDocumentationNameTextBlock"
                                                    Style="{StaticResource localDocOptionBtnTextBlockStyle}"
-                                                   Text="SADasdsadasd"
                                                    HorizontalAlignment="Left"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal"

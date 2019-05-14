@@ -14,10 +14,9 @@ using ApplicationLib.Word.Containers;
 
 namespace ApplicationLib.Word.Commands
 {
-    internal class SecondPageCommand : IWordMainCommand
+    internal class SecondPageCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
-
         public ICommandsContainer CommandsContainer { get; private set; }
 
         public SecondPageCommand(WordprocessingDocument wordDocument)

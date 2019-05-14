@@ -25,11 +25,6 @@ namespace ApplicationLib.Models
             Text = text;
         }
 
-        public override UserControl GetWatchView()
-        {
-            throw new NotImplementedException();
-        }
-
         public override UserControl GetEditView() => new SubparagraphEditView(ParentParagraph);
     }
 }

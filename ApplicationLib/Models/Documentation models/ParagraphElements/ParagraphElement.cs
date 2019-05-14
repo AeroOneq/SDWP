@@ -20,10 +20,6 @@ namespace ApplicationLib.Models
         [JsonIgnore]
         public Paragraph ParentParagraph { get; set; }
 
-        public virtual UserControl GetWatchView()
-        {
-            return null;
-        }
         public virtual UserControl GetEditView()
         {
             return null;
