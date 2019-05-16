@@ -24,6 +24,16 @@ namespace SDWP
             InitializeComponent();
         }
 
+#warning add this method to the table
+        public static MessageBoxResult ConfirmAction()
+        {
+            SDWPMessageBox messageBox = new SDWPMessageBox { Title = "Подтверждение действия" };
+            messageBox.messageTextBlock.Text = "Вы действително хотите сделать это?";
+            messageBox.AddMessageBoxButtons(MessageBoxButton.OKCancel);
+            messageBox.ShowDialog();
+            return messageBox.MessageBoxResult;
+        }
+
         public static MessageBoxResult ShowSDWPMessageBox(string title, string message,
             MessageBoxButton buttons)
         {

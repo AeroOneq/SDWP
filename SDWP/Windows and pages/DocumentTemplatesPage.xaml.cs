@@ -41,9 +41,8 @@ namespace SDWP
         #endregion
 
         #region Propeties
-        private UserInfo CurrentUser { get; }
-#warning Change this
-        private string DefaultStoragePath { get; } = @"C:\Users\Aero\Desktop\Templates";
+#warning delete from the table CurrentUser property
+        private string DefaultStoragePath { get; }
         //status: either local templates or cloud templates
         private bool LocalTemplatesMode { get; set; }
 
@@ -68,7 +67,8 @@ namespace SDWP
             InitializeProperties();
             InitializeServices();
 
-            CurrentUser = currentUser;
+            DefaultStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
+            GoToLocalTemplatesMode(null, null);
         }
 
         private void InitializeServices()
@@ -100,17 +100,23 @@ namespace SDWP
         #region Templates uploading
         private async Task UploadTemplatesFromLocalStorage()
         {
+            PageHeader.SwitchOnTopLoader();
+
             try
             {
                 List<LocalTemplate> localTemplates = (await LocalTemplateService.GetLocalTemplates()).ToList();
                 LocalTemplatesListBox.ItemsSource = localTemplates;
+
+                PageHeader.SwitchOffTheLoader();
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
@@ -119,15 +125,19 @@ namespace SDWP
         {
             try
             {
+                PageHeader.SwitchOnTopLoader();
+
                 List<Template> templates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
                 cloudTemplatesListBox.ItemsSource = templates;
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
@@ -412,12 +422,16 @@ namespace SDWP
                 if (LocalTemplatesMode)
                 {
                     if (LocalTemplatesListBox.ItemsSource is IEnumerable<LocalTemplate> templates)
+                    {
                         foreach (LocalTemplate template in templates)
                             await LocalTemplateService.RewriteTemplateFile(template);
+                    }
                     else
                     {
+                        PageHeader.SwitchOffTheLoader();
                         SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите шаблоны",
                             MessageBoxButton.OK);
+
                         return;
                     }
                 }
@@ -430,8 +444,10 @@ namespace SDWP
                             await CloudTemplateService.UpdateTemplate(template);
                     else
                     {
+                        PageHeader.SwitchOffTheLoader();
                         SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала загрузите шаблоны",
                             MessageBoxButton.OK);
+
                         return;
                     }
                 }
@@ -449,10 +465,6 @@ namespace SDWP
             {
                 PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
-                PageHeader.SwitchOffTheLoader();
             }
         }
 
@@ -513,6 +525,9 @@ namespace SDWP
         /// </summary>
         private void DeleteTemplate(object sender, RoutedEventArgs e)
         {
+            if (SDWPMessageBox.ConfirmAction() == MessageBoxResult.Cancel)
+                return;
+
             try
             {
                 if (LocalTemplatesMode)
@@ -574,15 +589,8 @@ namespace SDWP
             try
             {
                 PageHeader.SwitchOnTopLoader();
-                Template template = new Template()
-                {
-                    Items = new List<Item>(),
-                    TemplateName = "Новый шаблон",
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now,
-                    UserID = UserInfo.CurrentUser.ID
-                };
 
+                Template template = CreateNewTemplate(); 
                 if (LocalTemplatesMode)
                 {
                     LocalTemplate localTemplate = new LocalTemplate(template);
@@ -621,31 +629,79 @@ namespace SDWP
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
+
+#warning insert this into tables
+        private Template CreateNewTemplate()
+        {
+            return new Template()
+            {
+                Items = new List<Item>(),
+                TemplateName = "Новый шаблон",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                UserID = UserInfo.CurrentUser.ID
+            };
+        }
         #endregion
 
         #region Mode switching methods
         private async void GoToLocalTemplatesMode(object sender, MouseButtonEventArgs e)
         {
-            LocalTemplatesStackPanel.Visibility = Visibility.Visible;
-            CloudTemplatesStackPanel.Visibility = Visibility.Collapsed;
+            try
+            {
+                PageHeader.SwitchOnTopLoader();
 
-            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
-            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+                LocalTemplatesStackPanel.Visibility = Visibility.Visible;
+                CloudTemplatesStackPanel.Visibility = Visibility.Collapsed;
 
-            await UploadTemplatesFromLocalStorage();
-            LocalTemplatesMode = true;
+                LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+                CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+
+                if (LocalTemplateService.StoragePath != null)
+                    await UploadTemplatesFromLocalStorage();
+
+                LocalTemplatesMode = true;
+                PageHeader.SwitchOffTheLoader();
+            }
+            catch (IOException ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         private async void GoToCloudTemplatesMode(object sender, MouseButtonEventArgs e)
         {
-            LocalTemplatesStackPanel.Visibility = Visibility.Collapsed;
-            CloudTemplatesStackPanel.Visibility = Visibility.Visible;
+            PageHeader.SwitchOnTopLoader();
 
-            LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
-            CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+            try
+            {
+                LocalTemplatesStackPanel.Visibility = Visibility.Collapsed;
+                CloudTemplatesStackPanel.Visibility = Visibility.Visible;
 
-            await UploadTemplatesFromColoudStorage();
-            LocalTemplatesMode = false;
+                LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
+                CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
+
+                await UploadTemplatesFromColoudStorage();
+                LocalTemplatesMode = false;
+
+                PageHeader.SwitchOffTheLoader();
+            }
+            catch (SqlException ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
         #endregion
 

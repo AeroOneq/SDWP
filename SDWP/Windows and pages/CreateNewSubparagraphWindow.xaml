@@ -12,7 +12,6 @@
         MinWidth="400"
         MaxHeight="200"
         MaxWidth="400">
-
     <Grid>
         <Grid VerticalAlignment="Top"
               HorizontalAlignment="Left"
@@ -29,7 +28,6 @@
                            Margin="20, 10, 0, 0"/>
                 <TextBox x:Name="subparagraphTitleTextBox"
                          Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
-                         Text="Имя абзаца..."
                          Width="200"
                          Margin="20, 10, 0, 0"
                          GotFocus="SubparagraphTitleTextBoxGotFocus"

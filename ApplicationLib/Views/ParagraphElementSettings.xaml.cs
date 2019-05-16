@@ -23,8 +23,11 @@ namespace ApplicationLib.Views
         #region IParagraphSettings
         public Action OnParagraphDelete { get; set; }
         public Action OnParagraphShowOrHideHint { get; set; }
-        public Action OnParagraphReplace { get; set; }
+        public Action MoveParagraphUp { get; set; }
+        public Action MoveParagraphDown { get; set; }
+        #endregion
 
+        #region Properties
         private Image StaticDeleteIcon { get; }
         private Image ActiveDeleteIcon { get; }
         private TextBlock ConfirmDeletionTextBlock { get; }
@@ -70,7 +73,8 @@ namespace ApplicationLib.Views
 
         private void ReplaceParagraph(object sender, MouseButtonEventArgs e)
         {
-            OnParagraphReplace();
+            reorderIconsPanel.Visibility = Visibility.Visible;
+            reorderEntryGrid.Visibility = Visibility.Collapsed;
         }
 
         private void GoToDeletionConfirmation(object sender, MouseButtonEventArgs e)
@@ -117,6 +121,24 @@ namespace ApplicationLib.Views
         private void DeleteParagraph(object sender, MouseButtonEventArgs e)
         {
             OnParagraphDelete();
+        }
+
+#warning add this to the list
+        private void ReorderIconsGridMouseLeave(object sender, MouseEventArgs e)
+        {
+            reorderIconsPanel.Visibility = Visibility.Collapsed;
+            reorderEntryGrid.Visibility = Visibility.Visible;
+        }
+
+#warning add this to the list
+        private void MoveParagraphDownClick(object sender, MouseButtonEventArgs e)
+        {
+            MoveParagraphDown();
+        }
+#warning add this to the list
+        private void MoveParagraphUpClick(object sender, MouseButtonEventArgs e)
+        {
+            MoveParagraphUp();
         }
     }
 }

@@ -213,7 +213,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="treeViewInnerTextBoxStyle" TargetType="TextBox">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
@@ -256,6 +256,18 @@
                     <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
                 </MenuItem.Icon>
             </MenuItem>
+            <MenuItem Header="Переместить вверх"
+                      Click="MoveItemUp">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Переместить вниз"
+                      Click="MoveItemDown">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
 
         <ContextMenu x:Key="treeViewContentItemContextMenu">
@@ -268,6 +280,18 @@
             <Separator/>
             <MenuItem Header="Удалить"
                       Click="OnTreeViewDeleteItem">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Переместить вверх"
+                      Click="MoveItemUp">
+                <MenuItem.Icon>
+                    <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Переместить вниз"
+                      Click="MoveItemDown">
                 <MenuItem.Icon>
                     <Image Source="../Resources/contextMenuDeleteItem.png"></Image>
                 </MenuItem.Icon>
@@ -294,7 +318,7 @@
             <Setter Property="ContextMenu" Value="{StaticResource treeViewContextMenu}"/>
         </Style>
 
-                <Style x:Key="treeViewItemsItemStyle" TargetType="TreeViewItem">
+        <Style x:Key="treeViewItemsItemStyle" TargetType="TreeViewItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="HorizontalContentAlignment"
                 Value="{Binding Path=HorizontalContentAlignment,
@@ -587,7 +611,7 @@
                            MouseLeave="IconMouseLeave"
                            MouseDown="CreateNewDocument"/>
                 </Grid>
-                
+
                 <Grid x:Name="leftDocumentsGridContent"
                           VerticalAlignment="Top"
                           HorizontalAlignment="Stretch"
@@ -600,6 +624,7 @@
                                    Text="Назавние проекта:"/>
                         <TextBox x:Name="documentationNameTextBox"
                                  Margin="10, 0, 15, 0"
+                                 IsEnabled="False"
                                  Style="{StaticResource documentationNameGridStyle}"
                                  Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -608,6 +633,7 @@
                                    Text="Team Lead:"/>
                         <TextBox x:Name="documentationCodeTextBox"
                                  Margin="10, 0, 15, 0"
+                                 IsEnabled="False"
                                  Style="{StaticResource documentationNameGridStyle}"
                                  Text="{Binding TeamLeadName, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -616,6 +642,7 @@
                                    Text="Имя менеджера:"/>
                         <TextBox x:Name="documentationTeamLeadTextBox"
                                  Margin="10, 0, 15, 0"
+                                 IsEnabled="False"
                                  Style="{StaticResource documentationNameGridStyle}"
                                  Text="{Binding ManagerName, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -624,6 +651,7 @@
                                    Text="Код проекта:"/>
                         <TextBox x:Name="documentationProjectCodeTextBox"
                                  Margin="10, 0, 15, 0"
+                                 IsEnabled="False"
                                  Style="{StaticResource documentationNameGridStyle}"
                                  Text="{Binding ProjectCode, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -632,6 +660,7 @@
                                    Text="Имя разработчика:"/>
                         <TextBox x:Name="documentationSoftwareEngineerNameTextBox"
                                  Margin="10, 0, 15, 0"
+                                 IsEnabled="False"
                                  Style="{StaticResource documentationNameGridStyle}"
                                  Text="{Binding SoftwareEngineerName, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -762,7 +791,7 @@
                                     HorizontalAlignment="Left"
                                     Orientation="Vertical"/>
                 </ScrollViewer>
-                
+
                 <TreeView x:Name="documentTreeView"
                           Margin="0, 110, 0, 60"
                           VerticalAlignment="Stretch"
@@ -885,15 +914,15 @@
                           Margin="25, 55, 25, 0"/>
 
                 <ScrollViewer Style="{StaticResource listScrollViewerStyle}"
-                                  Margin="40, 60, 40, 0"
-                                  VerticalAlignment="Top"
-                                  HorizontalAlignment="Stretch"
-                             VerticalScrollBarVisibility="Visible">
+                              Margin="40, 60, 40, 0"
+                              VerticalAlignment="Top"
+                              HorizontalAlignment="Stretch"
+                              VerticalScrollBarVisibility="Visible">
                     <StackPanel x:Name="paragraphsListPanel"
-                                    Orientation="Vertical"
-                                    CanVerticallyScroll="True"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"/>
+                                Orientation="Vertical"
+                                CanVerticallyScroll="True"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"/>
                 </ScrollViewer>
             </Grid>
         </Grid>

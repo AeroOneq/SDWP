@@ -319,23 +319,24 @@ namespace SDWP
                     await WordDocumentRenderer.Render();
                 }
 
-                SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно экспортирована в Word", MessageBoxButton.OK);
+                PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех", 
+                    "Документация успешно экспортирована в Word", MessageBoxButton.OK);
             }
             catch (ArgumentException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 

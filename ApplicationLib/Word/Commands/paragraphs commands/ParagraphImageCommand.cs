@@ -136,24 +136,45 @@ namespace ApplicationLib.Word.Commands
             };
             paragraph.Append(pp);
 
-            var run = new Run();
+            var runNumber = new Run();
             var runProperties = new RunProperties(new RunFonts
             {
-                HighAnsi = new StringValue("Times New Roman"),
-                Ascii = "Times New Roman"
+                HighAnsi = RenderData.Obj.RenderSettings.FontFamily,
+                Ascii = RenderData.Obj.RenderSettings.FontFamily
             })
             {
                 Color = new Color() { Val = RenderData.Obj.RenderSettings.DefaultColor },
                 FontSize = new FontSize() { Val = (int.Parse(RenderData.Obj.
-                    RenderSettings.DefaultTextSize)-2).ToString() },
-
+                    RenderSettings.DefaultTextSize) - 2).ToString() },
+                Italic = new Italic()
             };
-            run.PrependChild(runProperties);
+            runNumber.PrependChild(runProperties);
 
-            var text = new Text("Рисунок (номер) - " + ParagraphImage.Title);
+            var text = new Text("Рисунок (номер). ");
 
-            run.Append(text);
-            paragraph.Append(run);
+            runNumber.Append(text);
+
+            var runName = new Run();
+            var runNameProperties = new RunProperties(new RunFonts()
+            {
+                HighAnsi = RenderData.Obj.RenderSettings.FontFamily,
+                Ascii = RenderData.Obj.RenderSettings.FontFamily
+            })
+            {
+                Color = new Color() { Val = RenderData.Obj.RenderSettings.DefaultColor },
+                FontSize = new FontSize()
+                {
+                    Val = (int.Parse(RenderData.Obj.
+                    RenderSettings.DefaultTextSize) - 2).ToString()
+                },
+            };
+
+            var textName = new Text(ParagraphImage.Title);
+            runName.Append(runNameProperties);
+            runName.Append(textName);
+
+            paragraph.Append(runNumber);
+            paragraph.Append(runName);
 
             return paragraph;
         }

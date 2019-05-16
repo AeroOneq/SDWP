@@ -20,13 +20,14 @@ namespace ApplicationLib.Views
     public partial class NumberedListEditView : UserControl, IParagraphEditView
     {
         private NumberedList NumberedList { get; }
-        private Paragraph Paragraph { get; }
+#warning change this in the table
+        public Paragraph Paragraph { get; }
         private HintControl HintControl { get; }
         private ParagraphElementSettings ParagraphSettings { get; set; }
-        private ListBox NumberedListListBox { get; }
 
         #region IParagraphEditView properties
         public Action RefreshParagraphsUI { get; set; }
+        public Action RefreshParagraphsUIAfterSwap { get; set; }
         #endregion
 
         #region Constructors
@@ -39,7 +40,6 @@ namespace ApplicationLib.Views
 
             HintControl = hintControl;
             ParagraphSettings = paragraphsSettings;
-            NumberedListListBox = numberedListListBox;
 
             DataContext = NumberedList;
             SetParagraphSettingsEvents();
@@ -52,7 +52,8 @@ namespace ApplicationLib.Views
 
             pSettings.OnParagraphDelete += DeleteParagraph;
             pSettings.OnParagraphShowOrHideHint += ShowOrHideHint;
-            pSettings.OnParagraphReplace += ReplaceParagraph;
+            pSettings.MoveParagraphDown = MoveParagraphDown;
+            pSettings.MoveParagraphUp = MoveParagraphUp;
         }
         #region IParagraphEditView
         public void DeleteParagraph()
@@ -60,12 +61,6 @@ namespace ApplicationLib.Views
             (Paragraph as IParentableParagraph).RemoveParagraphFromParentList();
             RefreshParagraphsUI();
         }
-
-        public void ReplaceParagraph()
-        {
-
-        }
-
         public void ShowOrHideHint()
         {
             if (HintControl.Visibility == Visibility.Collapsed)
@@ -135,6 +130,51 @@ namespace ApplicationLib.Views
         {
             DataContext = null;
             DataContext = NumberedList;
+        }
+
+#warning delete ReplaceParagraph from the tables
+
+#warning add this to the table
+        public void MoveParagraphUp()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)
+            {
+                Paragraph.ParentList.Remove(Paragraph);
+                Paragraph.ParentList.Add(Paragraph);
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex - 1];
+                Paragraph.ParentList[itemIndex - 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
+        }
+
+        public void MoveParagraphDown()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == Paragraph.ParentList.Count - 1)
+            {
+                for (int i = Paragraph.ParentList.Count - 1; i > 0; i--)
+                {
+                    Paragraph.ParentList[i] = Paragraph.ParentList[i - 1];
+                }
+
+                Paragraph.ParentList[0] = Paragraph;
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex + 1];
+                Paragraph.ParentList[itemIndex + 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
         }
     }
 }

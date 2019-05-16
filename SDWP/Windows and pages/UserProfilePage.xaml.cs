@@ -71,9 +71,34 @@ namespace SDWP
             birthDateTextBox.Text = UserInfo.CurrentUser.BirthDate.
                 ToShortDateString();
             emailTextBox.Text = UserInfo.CurrentUser.Email;
+
             if (UserInfo.CurrentUser.UserPhoto != null && UserInfo.CurrentUser.UserPhoto.Length > 1)
                 SetUserPhotoImageImageBrush(UserInfo.CurrentUser.UserPhoto);
+            else
+            {
+                SetUserPhotoImageImageBrush(GetResourceImageBytes(
+                    "pack://application:,,,/Resources/emptyUserPhotoImage.png"));
+            }
         }
+
+#warning add to tables
+        private byte[] GetResourceImageBytes(string imagePath)
+        {
+            byte[] imageBytes;
+            Uri imageUri = new Uri(imagePath);
+            BitmapImage bitmapImage = new BitmapImage(imageUri);
+
+            using (var ms = new MemoryStream())
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+                encoder.Save(ms);
+                imageBytes = ms.ToArray();
+            }
+
+            return imageBytes;
+        }
+
         private void SetUserPhotoImageImageBrush(byte[] imageByteArray)
         {
             try
@@ -114,7 +139,7 @@ namespace SDWP
             {
                 enterCodeGrid.Margin = new Thickness(0, 140, 0, 0);
             };
-            enterCodeGrid.BeginAnimation(FrameworkElement.MarginProperty, lowerTheGrid);
+            enterCodeGrid.BeginAnimation(MarginProperty, lowerTheGrid);
         }
 
         private void HideEnterCodeGrid()
@@ -134,11 +159,12 @@ namespace SDWP
                 enterCodeGrid.Margin = new Thickness(250, -500, 0, 0);
                 enterCodeGrid.Visibility = Visibility.Collapsed;
             };
-            enterCodeGrid.BeginAnimation(FrameworkElement.MarginProperty, lowerTheGrid);
+            enterCodeGrid.BeginAnimation(MarginProperty, lowerTheGrid);
         }
         #endregion
 
         #region Edit profile methods
+
         private void EditProfileData(object sender, RoutedEventArgs e)
         {
             if (!IsProfileDataEdititing)
@@ -205,6 +231,8 @@ namespace SDWP
                 await EmailService.SendChangePassLink(UserInfo.CurrentUser);
 
                 PageHeader.SwitchOffTheLoader();
+                SDWPMessageBox.ShowSDWPMessageBox("Успех",
+                    "Письмо со ссылкой для смены пароля выслано Вам на почту", MessageBoxButton.OK);
             }
             catch (Exception ex)
             {
@@ -301,6 +329,7 @@ namespace SDWP
             }
             catch (Exception ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
         }

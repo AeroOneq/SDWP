@@ -153,10 +153,6 @@ namespace SDWP
             {
                 HandleAccCreationException(ex);
             }
-            catch (SmtpException ex)
-            {
-                HandleAccCreationException(ex);
-            }
             catch (Exception ex)
             {
                 HandleAccCreationException(ex);
@@ -178,6 +174,7 @@ namespace SDWP
         {
             try
             {
+                (sender as Button).IsEnabled = false;
                 string code = codeTextBox.Text;
 
                 await CheckCodeAndCreateAccAsync(code);
@@ -194,6 +191,10 @@ namespace SDWP
             {
                 HandleAccCreationException(ex);
             }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
+            }
         }
 
         private async Task CheckCodeAndCreateAccAsync(string code)
@@ -207,15 +208,16 @@ namespace SDWP
 
                 SwitchOffTheLoader(rightCreateAccLoaderGrid);
 
-                SDWPMessageBox.ShowSDWPMessageBox("Статус создание аккаунта", "Аккаунт был успешно создан",
-                    MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Статус создание аккаунта",
+                    "Аккаунт был успешно создан", MessageBoxButton.OK);
 
-                WelcomePageRightGridAnimations.HideTheGrid(registrationElementsGrid);
+                enterTheEmailCodeGrid.Visibility = Visibility.Collapsed;
+                WelcomePageRightGridAnimations.HideTheGrid(createAnAccountGrid);
             }
             else
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы ввели неверный код", MessageBoxButton.OK);
                 SwitchOffTheLoader(rightCreateAccLoaderGrid);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы ввели неверный код", MessageBoxButton.OK);
             }
         }
 
@@ -252,6 +254,14 @@ namespace SDWP
                 int year = int.Parse(regYearOfBirthTextBox.Text);
                 int month = int.Parse(regMonthOfBirthTextBox.Text);
                 int day = int.Parse(regDayOfBirthTextBox.Text);
+
+                if (year >= DateTime.Now.Year || year <= 1900)
+                    throw new NotAppropriateUserParam("Неверно введен год рождения. ");
+                if (month <= 0 || month > 12)
+                    throw new NotAppropriateUserParam("Неверно введен месяц рождения");
+                if (day <= 0 || day > DateTime.DaysInMonth(year, month))
+                    throw new NotAppropriateParamException("Неверно введен день рождения");
+
                 return new DateTime(year, month, day);
             }
             catch
@@ -280,12 +290,21 @@ namespace SDWP
         /// </summary>
         private void LoginBtnMouseClick(object sender, EventArgs eArgs)
         {
-            LoginData loginData = new LoginData
+            try
             {
-                Login = loginTextBox.Text,
-                Password = passwordTextBox.Password
-            };
-            TryToLoginAsync(loginData);
+                (sender as Button).IsEnabled = false;
+                LoginData loginData = new LoginData
+                {
+                    Login = loginTextBox.Text,
+                    Password = passwordTextBox.Password
+                };
+
+                TryToLoginAsync(loginData);
+            }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
+            }
         }
 
         /// <summary>
@@ -359,10 +378,12 @@ namespace SDWP
             inputDataNameTextBlock.Text = GetInputDataName(pressedImage.Name);
             inputDataDescriptionTextBlock.Text = GetInputDataDescription(pressedImage.Name);
         }
+
         private void CloseTheHintGrid(object sender, EventArgs eArgs)
         {
             WelcomePageBottomGridAnimation.CloseTheHintGrid(registrationHintGrid);
         }
+
         private string GetInputDataName(string imageName)
         {
             if (imageName.IndexOf("login") > -1)
@@ -379,6 +400,7 @@ namespace SDWP
                 return "E-mail";
             return string.Empty;
         }
+
         private string GetInputDataDescription(string imageName)
         {
             if (imageName.IndexOf("login") > -1)
@@ -502,6 +524,7 @@ namespace SDWP
                 HandleRemindPassExceptions(ex);
             }
         }
+
         /// <summary>
         /// Initializes the process of pass restoration
         /// </summary>

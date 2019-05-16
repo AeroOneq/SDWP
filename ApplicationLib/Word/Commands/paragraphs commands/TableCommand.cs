@@ -32,26 +32,27 @@ namespace ApplicationLib.Word.Commands
 
         public void Render()
         {
-            WordDocument.MainDocumentPart.Document.Body.Append(GetTableTitleParagraph());
+            WordDocument.MainDocumentPart.Document.Body.Append(GetTableNumberParagraph());
+            WordDocument.MainDocumentPart.Document.Body.Append(GetTableNameParagraph());
 
             WordTable wordTable = RenderTable();
             WordDocument.MainDocumentPart.Document.Body.Append(wordTable);
         }
 
-        private WordParagraph GetTableTitleParagraph()
+#warning correct classes tables
+        private WordParagraph GetTableNumberParagraph()
         {
             var paragraph = new WordParagraph();
             var pp = new ParagraphProperties()
             {
-                Justification = new Justification() { Val = JustificationValues.Left },
+                Justification = new Justification() { Val = JustificationValues.Right },
                 SpacingBetweenLines = new SpacingBetweenLines()
                 {
                     Before = "100",
                     After = "100",
                     Line = "300",
                     LineRule = LineSpacingRuleValues.Exact
-                },
-                Indentation = new Indentation() { Left = (500 * Depth).ToString() }
+                }
             };
             paragraph.Append(pp);
 
@@ -71,7 +72,49 @@ namespace ApplicationLib.Word.Commands
             };
             run.PrependChild(runProperties);
 
-            var text = new Text("Таблица (номер) - " + Table.Title);
+            var text = new Text("Таблица (номер)");
+
+            run.Append(text);
+            paragraph.Append(run);
+
+            return paragraph;
+        }
+
+
+
+        private WordParagraph GetTableNameParagraph()
+        {
+            var paragraph = new WordParagraph();
+            var pp = new ParagraphProperties()
+            {
+                Justification = new Justification() { Val = JustificationValues.Center },
+                SpacingBetweenLines = new SpacingBetweenLines()
+                {
+                    Before = "100",
+                    After = "100",
+                    Line = "300",
+                    LineRule = LineSpacingRuleValues.Exact
+                }
+            };
+            paragraph.Append(pp);
+
+            var run = new Run();
+            var runProperties = new RunProperties(new RunFonts
+            {
+                HighAnsi = new StringValue(RenderData.Obj.RenderSettings.FontFamily),
+                Ascii = RenderData.Obj.RenderSettings.FontFamily
+            })
+            {
+                Color = new Color() { Val = RenderData.Obj.RenderSettings.DefaultColor },
+                FontSize = new FontSize()
+                {
+                    Val = RenderData.Obj.RenderSettings.DefaultTextSize
+                },
+
+            };
+            run.PrependChild(runProperties);
+
+            var text = new Text(Table.Title);
 
             run.Append(text);
             paragraph.Append(run);

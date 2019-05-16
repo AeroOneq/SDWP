@@ -43,28 +43,77 @@
         </Grid>
 
         <Grid x:Name="reorderGrid"
-              Width="20"
               Height="20"
               Margin="5, 0, 0, 0"
               VerticalAlignment="Center">
-            <Image x:Name="reorderImageStatic"
-                   Style="{StaticResource paragraphElementSettingImageStyle}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   Width="20"
-                   Height="20"
-                   MouseEnter="IconMouseEnter"
-                   Source="Resources/reorderParagraphElementStatic.png"/>
-            <Image x:Name="reorderImageActive"
-                   Visibility="Collapsed"
-                   Style="{StaticResource paragraphElementSettingImageStyle}"
-                   Width="20"
-                   Height="20"
-                   MouseLeave="IconMouseLeave"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Right"
-                   Source="Resources/reorderParagraphElementActive.png"
-                   MouseDown="ReplaceParagraph"/>
+
+            <Grid x:Name="reorderEntryGrid"
+                  Visibility="Visible">
+                <Image x:Name="reorderImageStatic"
+                       Style="{StaticResource paragraphElementSettingImageStyle}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       Width="20"
+                       Height="20"
+                       MouseEnter="IconMouseEnter"
+                       Source="Resources/reorderParagraphElementStatic.png"/>
+                <Image x:Name="reorderImageActive"
+                       Visibility="Collapsed"
+                       Style="{StaticResource paragraphElementSettingImageStyle}"
+                       Width="20"
+                       Height="20"
+                       MouseLeave="IconMouseLeave"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
+                       Source="Resources/reorderParagraphElementActive.png"
+                       MouseDown="ReplaceParagraph"/>
+            </Grid>
+
+            <StackPanel x:Name="reorderIconsPanel"
+                        Visibility="Collapsed"
+                        Orientation="Horizontal"
+                        MouseLeave="ReorderIconsGridMouseLeave">
+                <Grid>
+                    <Image x:Name="moveParagraphUpImageStatic"
+                           Style="{StaticResource paragraphElementSettingImageStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Width="20"
+                           Height="20"
+                           MouseEnter="IconMouseEnter"
+                           Source="Resources/replaceItemUpperStatic.png"/>
+                    <Image x:Name="moveParagraphUpImageActive"
+                           Style="{StaticResource paragraphElementSettingImageStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Width="20"
+                           Height="20"
+                           MouseLeave="IconMouseLeave"
+                           MouseDown="MoveParagraphUpClick"
+                           Source="Resources/replaceItemUpperActive.png"/>
+                </Grid>
+
+                <Grid>
+                    <Image x:Name="moveParagraphDownImageStatic"
+                           Style="{StaticResource paragraphElementSettingImageStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Width="20"
+                           Height="20"
+                           MouseEnter="IconMouseEnter"
+                           Source="Resources/replaceItemLowerStatic.png"/>
+                    <Image x:Name="moveParagraphDownImageActive"
+                           Style="{StaticResource paragraphElementSettingImageStyle}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Width="20"
+                           Height="20"
+                           MouseLeave="IconMouseLeave"
+                           MouseDown="MoveParagraphDownClick"
+                           Source="Resources/replaceItemLowerActive.png"/>
+                </Grid>
+
+            </StackPanel>
         </Grid>
 
         <Grid x:Name="deletePargraphGrid"

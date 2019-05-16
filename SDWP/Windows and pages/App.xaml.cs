@@ -9,6 +9,9 @@ using System.Windows;
 using SDWP.Factories;
 using SDWP.Exceptions;
 using SDWP.Interfaces;
+using System.Threading;
+using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace SDWP
 {
@@ -28,9 +31,29 @@ namespace SDWP
         [STAThread]
         static void Main()
         {
-            App app = new App();
-            MainWindow mainWindow = new MainWindow();
-            app.Run(mainWindow);
+            string guid = Marshal.GetTypeLibGuidForAssembly(Assembly.GetExecutingAssembly()).ToString();
+            using (var mutex = new Mutex(true, guid))
+            {
+                try
+                {
+                    if (!mutex.WaitOne(TimeSpan.FromMilliseconds(5), false))
+                    {
+                        SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Приложение уже запущено",
+                            MessageBoxButton.OK);
+
+                        return;
+                    }
+
+                    App app = new App();
+                    MainWindow mainWindow = new MainWindow();
+
+                    app.Run(mainWindow);
+                }
+                finally
+                {
+                    mutex.ReleaseMutex();
+                }
+            }
         }
     }
 }

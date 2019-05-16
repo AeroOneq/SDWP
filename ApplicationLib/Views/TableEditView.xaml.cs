@@ -12,7 +12,8 @@ namespace ApplicationLib.Views
     public partial class TableEditView : UserControl, IParagraphEditView
     {
         private Table CurrentTable { get; }
-        private Paragraph Paragraph { get; }
+#warning change this in the tables
+        public Paragraph Paragraph { get; }
 
         private DataGrid TableDataGrid { get; }
         private HintControl HintControl { get; }
@@ -20,6 +21,7 @@ namespace ApplicationLib.Views
 
         #region IParagraphEditView
         public Action RefreshParagraphsUI { get; set; }
+        public Action RefreshParagraphsUIAfterSwap { get; set; }
         #endregion
 
         public TableEditView(Paragraph paragraph)
@@ -42,7 +44,8 @@ namespace ApplicationLib.Views
         {
             IParagraphSettings pSettings = ParagraphSettings as IParagraphSettings;
 
-            pSettings.OnParagraphReplace = ReplaceParagraph;
+            pSettings.MoveParagraphDown = MoveParagraphDown;
+            pSettings.MoveParagraphUp = MoveParagraphUp;
             pSettings.OnParagraphShowOrHideHint = ShowOrHideHint;
             pSettings.OnParagraphDelete = DeleteParagraph;
         }
@@ -153,6 +156,51 @@ namespace ApplicationLib.Views
                     return i;
 
             return 0;
+        }
+
+#warning delete ReplaceParagraph from the tables
+
+#warning add this to the table
+        public void MoveParagraphUp()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)
+            {
+                Paragraph.ParentList.Remove(Paragraph);
+                Paragraph.ParentList.Add(Paragraph);
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex - 1];
+                Paragraph.ParentList[itemIndex - 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
+        }
+
+        public void MoveParagraphDown()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == Paragraph.ParentList.Count - 1)
+            {
+                for (int i = Paragraph.ParentList.Count - 1; i > 0; i--)
+                {
+                    Paragraph.ParentList[i] = Paragraph.ParentList[i - 1];
+                }
+
+                Paragraph.ParentList[0] = Paragraph;
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex + 1];
+                Paragraph.ParentList[itemIndex + 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
         }
     }
 }

@@ -24,7 +24,8 @@ namespace ApplicationLib.Views
     {
         #region Properties
         private ParagraphImage ParagraphImage { get; }
-        private Paragraph Paragraph { get; }
+#warning change this in the tables
+        public Paragraph Paragraph { get; }
         private Image MainImage { get; set; }
         private ImageParagraphSettings ImageParagraphSettings { get; }
         private HintControl HintControl { get; set; }
@@ -32,6 +33,7 @@ namespace ApplicationLib.Views
 
         #region IParagraphEditView properties
         public Action RefreshParagraphsUI { get; set; }
+        public Action RefreshParagraphsUIAfterSwap { get; set; }
         #endregion
 
         public ImageEditView(Paragraph paragraph)
@@ -72,8 +74,9 @@ namespace ApplicationLib.Views
         {
             IImageSettings imgSettings = ImageParagraphSettings as IImageSettings;
 
+            imgSettings.MoveParagraphUp += MoveParagraphUp;
+            imgSettings.MoveParagraphDown += MoveParagraphDown;
             imgSettings.OnParagraphDelete += DeleteParagraph;
-            imgSettings.OnParagraphReplace += ReplaceParagraph;
             imgSettings.OnParagraphShowOrHideHint += ShowOrHideHint;
             imgSettings.OnUploadNewImage += SelectAndUploadNewImage;
         }
@@ -128,6 +131,51 @@ namespace ApplicationLib.Views
                 ParagraphImage.ImageSource = imageByteArr;
                 SetImageSource(imageByteArr);
             }
+        }
+
+#warning delete ReplaceParagraph from the tables
+
+#warning add this to the table
+        public void MoveParagraphUp()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)
+            {
+                Paragraph.ParentList.Remove(Paragraph);
+                Paragraph.ParentList.Add(Paragraph);
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex - 1];
+                Paragraph.ParentList[itemIndex - 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
+        }
+
+        public void MoveParagraphDown()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == Paragraph.ParentList.Count - 1)
+            {
+                for (int i = Paragraph.ParentList.Count - 1; i > 0; i--)
+                {
+                    Paragraph.ParentList[i] = Paragraph.ParentList[i - 1];
+                }
+
+                Paragraph.ParentList[0] = Paragraph;
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex + 1];
+                Paragraph.ParentList[itemIndex + 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
         }
         #endregion
     }

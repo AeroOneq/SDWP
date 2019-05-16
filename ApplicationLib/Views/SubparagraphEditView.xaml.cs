@@ -21,7 +21,8 @@ namespace ApplicationLib.Views
     public partial class SubparagraphEditView : UserControl, IParagraphEditView
     {
         private Subparagraph Subparagraph { get; }
-        private Paragraph Paragraph { get; }
+#warning change this in the tables
+        public Paragraph Paragraph { get; }
 
         private readonly int maxLineSymbolsCount = 20;
         private bool DoTextChangedActions { get; set; } = true;
@@ -30,7 +31,9 @@ namespace ApplicationLib.Views
         private HintControl HintControl { get; set; }
 
         #region IParagraphEditView properties
+#warning add this to the table
         public Action RefreshParagraphsUI { get; set; }
+        public Action RefreshParagraphsUIAfterSwap { get; set; }
         #endregion
 
         #region Constructors
@@ -60,7 +63,8 @@ namespace ApplicationLib.Views
 
             pSettings.OnParagraphDelete += DeleteParagraph;
             pSettings.OnParagraphShowOrHideHint += ShowOrHideHint;
-            pSettings.OnParagraphReplace += ReplaceParagraph;
+            pSettings.MoveParagraphDown = MoveParagraphDown;
+            pSettings.MoveParagraphUp = MoveParagraphUp;
         }
 
         private void SubparagraphTextChanged(object sender, TextChangedEventArgs e)
@@ -147,10 +151,6 @@ namespace ApplicationLib.Views
             RefreshParagraphsUI();
         }
 
-        public void ReplaceParagraph()
-        {
-        }
-
         public void ShowOrHideHint()
         {
             if (HintControl.Visibility == Visibility.Collapsed)
@@ -161,6 +161,51 @@ namespace ApplicationLib.Views
             {
                 HintControl.Visibility = Visibility.Collapsed;
             }
+        }
+
+#warning delete ReplaceParagraph from the tables
+
+#warning add this to the table
+        public void MoveParagraphUp()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)
+            {
+                Paragraph.ParentList.Remove(Paragraph);
+                Paragraph.ParentList.Add(Paragraph);
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex - 1];
+                Paragraph.ParentList[itemIndex - 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
+        }
+
+        public void MoveParagraphDown()
+        {
+            if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == Paragraph.ParentList.Count - 1)
+            {
+                for (int i = Paragraph.ParentList.Count - 1; i > 0; i--)
+                {
+                    Paragraph.ParentList[i] = Paragraph.ParentList[i - 1];
+                }
+
+                Paragraph.ParentList[0] = Paragraph;
+            }
+            else
+            {
+                int itemIndex = Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph));
+
+                Paragraph temp = Paragraph.ParentList[itemIndex + 1];
+                Paragraph.ParentList[itemIndex + 1] = Paragraph;
+                Paragraph.ParentList[itemIndex] = temp;
+            }
+
+            RefreshParagraphsUIAfterSwap();
         }
         #endregion
     }

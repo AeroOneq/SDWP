@@ -130,7 +130,7 @@ namespace SDWP
                 Filter = "(*dll)|*dll|(*exe)|*exe",
                 CheckFileExists = true,
                 CheckPathExists = true,
-                Title = "Выберете DLL файл для сканирования",
+                Title = "Выберете DLL или EXE файл для сканирования",
                 Multiselect = false,
             };
 

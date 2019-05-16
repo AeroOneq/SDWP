@@ -80,6 +80,49 @@ namespace ApplicationLib.Views
             UpdateList();
         }
 
+#warning add this to the table
+        private void MoveItemUp(object sender, RoutedEventArgs e)
+        {
+            if (Item.ParentList.FindIndex(i => i.Equals(Item)) == 0)
+            {
+                Item.ParentList.Remove(Item);
+                Item.ParentList.Add(Item);
+            }
+            else
+            {
+                int itemIndex = Item.ParentList.FindIndex(i => i.Equals(Item));
+
+                Item temp = Item.ParentList[itemIndex - 1];
+                Item.ParentList[itemIndex - 1] = Item;
+                Item.ParentList[itemIndex] = temp;
+            }
+
+            UpdateList();
+        }
+#warning Add this to the tables
+        private void MoveItemDown(object sender, RoutedEventArgs e)
+        {
+            if (Item.ParentList.FindIndex(i => i.Equals(Item)) == Item.ParentList.Count - 1)
+            {
+                for (int i = Item.ParentList.Count - 1; i > 0; i--)
+                {
+                    Item.ParentList[i] = Item.ParentList[i - 1];
+                }
+
+                Item.ParentList[0] = Item;
+            }
+            else
+            {
+                int itemIndex = Item.ParentList.FindIndex(i => i.Equals(Item));
+
+                Item temp = Item.ParentList[itemIndex + 1];
+                Item.ParentList[itemIndex + 1] = Item;
+                Item.ParentList[itemIndex] = temp;
+            }
+
+            UpdateList();
+        }
+
         private void OnItemBtnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)

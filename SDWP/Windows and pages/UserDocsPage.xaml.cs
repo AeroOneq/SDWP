@@ -66,7 +66,7 @@ namespace SDWP
             InitializeProperties();
 
             MainPage = mainPage;
-
+            GoToLocalDocumentationPanel(null, null);
             PageHeader = pageHeader;
         }
 
@@ -122,18 +122,18 @@ namespace SDWP
                 CloudDocumentation = (await CloudDocumentationService.GetUserDocumentations(UserInfo.CurrentUser.ID))
                     .ToList();
                 CloudDocumentationListBox.ItemsSource = CloudDocumentation;
+
+                PageHeader.SwitchOffTheLoader();
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
         #endregion
@@ -194,6 +194,7 @@ namespace SDWP
             CloudDocumentationPropertiesStackPanel.Visibility = Visibility.Collapsed;
             LocalDocumentationPropertiesStackPanel.Visibility = Visibility.Visible;
 
+            //if the user selected the folder with templates then we have to upload local docs
             if (LocalDocumentationService.StoragePath != null)
                 await UploadDocumentationsFromLocalSotrage();
         }
@@ -220,6 +221,10 @@ namespace SDWP
         private async void DeleteCloudDocumentation(object sender, RoutedEventArgs e)
         {
             PageHeader.SwitchOnTopLoader();
+
+            if (SDWPMessageBox.ConfirmAction() == MessageBoxResult.Cancel)
+                return;
+
             try
             {
                 if (CloudDocumentationListBox.SelectedItem is Documentation selectedDocumentation)
@@ -228,26 +233,27 @@ namespace SDWP
                     await DeleteAllDocumentationDocuments(selectedDocumentation.ID);
 
                     await UploadDocumentationsFromCloudSotrage();
+
+                    PageHeader.SwitchOffTheLoader();
                     SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация и все документы связанные с ней успешно удалены",
                         MessageBoxButton.OK);
                 }
                 else
                 {
+                    PageHeader.SwitchOffTheLoader();
                     SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете документацию",
                         MessageBoxButton.OK);
                 }
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -274,18 +280,18 @@ namespace SDWP
                 {
                     await UploadDocumentationsFromCloudSotrage();
                 }
+
+                PageHeader.SwitchOffTheLoader();
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -302,24 +308,24 @@ namespace SDWP
 
                     MainPage.UploadCloudDocumentation(selectedDocumentation, documents);
                     CloseAccGrid();
+                    PageHeader.SwitchOffTheLoader();
                 }
                 else
                 {
+                    PageHeader.SwitchOffTheLoader();
                     SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете докуемнтацию для открытия",
                         MessageBoxButton.OK);
                 }
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -348,34 +354,36 @@ namespace SDWP
                         };
 
                         await LocalDocumentationService.CreateLocalDocumentationFile(localDocumentation);
+                        PageHeader.SwitchOffTheLoader();
                     }
                     else
                     {
+                        PageHeader.SwitchOffTheLoader();
                         SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Вы не выбрали путь для сохранения",
                             MessageBoxButton.OK);
                     }
                 }
                 else
                 {
+                    PageHeader.SwitchOffTheLoader();
                     SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете документацию из облака",
                         MessageBoxButton.OK);
                 }
             }
             catch (SqlException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (IOException ex)
             {
+                PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
             catch (Exception ex)
             {
-                ExceptionHandler.HandleWithMessageBox(ex);
-            }
-            finally
-            {
                 PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -451,28 +459,30 @@ namespace SDWP
                     PageHeader.SwitchOnTopLoader();
                     SetDocumentationPropertiesForPublishing(selectedDocumentation);
 
-                    List<Document> documents = LocalDocumentations.Find(ld => ld.Documentation == selectedDocumentation).Documents;
+                    List<Document> documents = LocalDocumentations.Find(ld => ld.Documentation
+                        == selectedDocumentation).Documents;
 
                     await CloudDocumentationService.InsertDocumentation(selectedDocumentation);
                     await PublishDocuments(await GetLastDocumentationID(), documents);
 
-                    SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно опубликована", MessageBoxButton.OK);
+                    PageHeader.SwitchOffTheLoader();
+                    SDWPMessageBox.ShowSDWPMessageBox("Успех", "Документация успешно опубликована",
+                        MessageBoxButton.OK);
                 }
                 catch (SqlException ex)
                 {
+                    PageHeader.SwitchOffTheLoader();
                     ExceptionHandler.HandleWithMessageBox(ex);
                 }
                 catch (Exception ex)
                 {
-                    ExceptionHandler.HandleWithMessageBox(ex);
-                }
-                finally
-                {
                     PageHeader.SwitchOffTheLoader();
+                    ExceptionHandler.HandleWithMessageBox(ex);
                 }
             }
             else
             {
+                PageHeader.SwitchOffTheLoader();
                 SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете докуемнтацию для публикации",
                     MessageBoxButton.OK);
             }
@@ -512,7 +522,7 @@ namespace SDWP
             List<Documentation> documentations = (await CloudDocumentationService.GetUserDocumentations(
                 UserInfo.CurrentUser.ID)).ToList();
 
-            return documentations[ documentations.Count - 1].ID;
+            return documentations[documentations.Count - 1].ID;
         }
 
         private void UploadLocalDocumentationToMainPage(object sender, RoutedEventArgs e)
@@ -547,6 +557,9 @@ namespace SDWP
 
         private async void DeleteLocalDocumentation(object sender, RoutedEventArgs e)
         {
+            if (SDWPMessageBox.ConfirmAction() == MessageBoxResult.Cancel)
+                return;
+
             try
             {
                 if (!(LocalDocumentationListBox.SelectedItem is Documentation selectedDocumentation))

@@ -28,7 +28,6 @@
                            Margin="20, 10, 0, 0"/>
             <TextBox x:Name="imageTitleTextBox"
                          Style="{DynamicResource createNewObjectWindowsPropertyValueStyle}"
-                         Text="Aasdasdasdasd"
                          GotFocus="ImageTitleTextBoxGotFocus"
                          LostFocus="ImageTitleTextBoxLostFocus"
                          Margin="20, 10, 0, 0"/>

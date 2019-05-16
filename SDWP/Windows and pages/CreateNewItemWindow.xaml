@@ -28,7 +28,6 @@
                            Margin="20, 10, 0, 0"/>
                 <TextBox x:Name="itemNameTextBox"
                          Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
-                         Text="Aasdasdasdasd"
                          Margin="20, 10, 0, 0"/>
                 <TextBlock Style="{StaticResource createNewObjectWindowsPropertyHeadStyle}"
                            Text="Выберете режим создания: "
@@ -36,6 +35,7 @@
                 <RadioButton x:Name="contentCreationModeRadioBtn"
                              Style="{StaticResource createNewObjectWindowsRadioBtnStyle}"
                              Content="Создать пункт с контентом"
+                             IsChecked="True"
                              Margin="20, 10, 0, 0"/>
                 <RadioButton x:Name="itemsCreationModeRadioBtn"
                              Style="{StaticResource createNewObjectWindowsRadioBtnStyle}"

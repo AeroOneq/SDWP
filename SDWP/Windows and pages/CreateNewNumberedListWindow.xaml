@@ -26,7 +26,6 @@
                            Margin="20, 10, 0, 0"/>
                 <TextBox x:Name="numberedListTitleTextBox"
                          Style="{StaticResource createNewObjectWindowsPropertyValueStyle}"
-                         Text="Название списка..."
                          Width="200"
                          Margin="20, 10, 0, 0"
                          GotFocus="NumberedListTitleTextBoxGotFocus"
