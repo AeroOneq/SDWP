@@ -121,6 +121,13 @@ namespace SDWP
             {
                 string filePath = ImagePathTextBox.Text;
                 string imageTitle = ImageTitleTextBox.Text;
+
+                if (string.IsNullOrEmpty(imageTitle) || string.IsNullOrWhiteSpace(imageTitle))
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Введите имя рисунка", MessageBoxButton.OK);
+                    return;
+                }
+
                 byte[] imageByteArr = GetByteRepresentationOfImage(filePath);
 
                 ParagraphImage paragraphImage = new ParagraphImage(imageByteArr)

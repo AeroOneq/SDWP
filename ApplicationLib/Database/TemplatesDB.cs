@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 
-using AeroORMFramework;
 using System.Net;
 using ApplicationLib.Exceptions;
 using Newtonsoft.Json;

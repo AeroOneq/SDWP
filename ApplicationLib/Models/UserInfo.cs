@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using AeroORMFramework;
 using ApplicationLib.Exceptions;
 
 namespace ApplicationLib.Models
@@ -20,24 +19,13 @@ namespace ApplicationLib.Models
         public static UserInfo CurrentUser { get; set; }
 
         #region Public database properties
-        [CanBeNull(false)]
-        [PrimaryKey]
-        [AutoincrementID]
         public int ID { get; set; }
-        [CanBeNull(false)]
         public string Login { get; set; }
-        [CanBeNull(false)]
         public string Password { get; set; }
-        [CanBeNull(false)]
         public string Name { get; set; }
-        [CanBeNull(false)]
         public string Surname { get; set; }
-        [CanBeNull(false)]
         public DateTime BirthDate { get; set; }
-        [CanBeNull(false)]
         public string Email { get; set; }
-        [CanBeNull(true)]
-        [Json]
         public byte[] UserPhoto { get; set; }
         #endregion
 

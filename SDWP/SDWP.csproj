@@ -55,9 +55,6 @@
     <ApplicationIcon>icons8-document-32.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AeroORMFramework">
-      <HintPath>..\..\..\..\..\source\repos\AeroORMFramework\AeroORMFramework\bin\Debug\AeroORMFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\source\repos\AeroORMFramework\AeroORMFramework\bin\Debug\Newtonsoft.Json.dll</HintPath>

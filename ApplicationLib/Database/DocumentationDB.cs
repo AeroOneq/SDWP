@@ -12,7 +12,6 @@ using ApplicationLib.Interfaces;
 using ApplicationLib.Models;
 using ApplicationLib.Exceptions;
 
-using AeroORMFramework;
 using System.Runtime.InteropServices;
 
 namespace ApplicationLib.Database

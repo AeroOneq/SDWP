@@ -16,7 +16,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 
@@ -25,6 +24,7 @@ using ApplicationLib.Models;
 using Newtonsoft.Json;
 
 using SDWP.Models;
+using System.Threading;
 
 namespace SDWP
 {
@@ -493,5 +493,14 @@ namespace SDWP
                 (new MainWindow()).Show();
             }
         }
+
+
+        #region Close window methods
+        #warning add this ti the table
+        private void SdwpMainWindowClosed(object sender, EventArgs e)
+        {
+            App.Current.Shutdown();
+        }
+        #endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using AeroORMFramework;
-using ApplicationLib.Exceptions;
+﻿using ApplicationLib.Exceptions;
 using ApplicationLib.Models;
 using ApplicationLib.Services;
 using System;
@@ -74,7 +73,7 @@ namespace ApplicationLib.Database
                 }
                 else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
                 {
-                    throw new NotAppropriateParamException("Логин уже занят");
+                    throw new NotAppropriateUserParam("Логин уже занят");
                 }
             });
         }
@@ -92,7 +91,7 @@ namespace ApplicationLib.Database
                 }
                 else if (httpWebResponse.StatusCode == HttpStatusCode.NoContent)
                 {
-                    throw new NotAppropriateParamException("E-mail уже занят");
+                    throw new NotAppropriateUserParam("E-mail уже занят");
                 }
             });
         }

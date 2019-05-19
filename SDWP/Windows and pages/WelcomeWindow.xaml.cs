@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Media.Animation;
-using AeroORMFramework;
 using System.Data.SqlTypes;
 using System.Net.Mail;
 
@@ -87,10 +86,6 @@ namespace SDWP
 
                 if (checkingResult)
                     SendEmailAndGoToCodeGridAsync(newUser);
-            }
-            catch (NotAppropriateParamException ex)
-            {
-                HandleAccCreationException(ex);
             }
             catch (InvalidCastException ex)
             {
@@ -204,7 +199,6 @@ namespace SDWP
             if (await EmailService.CheckCode(CodeID, code))
             {
                 await UserService.CreateNewAccountAsync(NewUser);
-                await DeleteCode();
 
                 SwitchOffTheLoader(rightCreateAccLoaderGrid);
 
@@ -260,7 +254,7 @@ namespace SDWP
                 if (month <= 0 || month > 12)
                     throw new NotAppropriateUserParam("Неверно введен месяц рождения");
                 if (day <= 0 || day > DateTime.DaysInMonth(year, month))
-                    throw new NotAppropriateParamException("Неверно введен день рождения");
+                    throw new NotAppropriateUserParam("Неверно введен день рождения");
 
                 return new DateTime(year, month, day);
             }

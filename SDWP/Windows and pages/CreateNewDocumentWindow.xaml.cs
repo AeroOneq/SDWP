@@ -38,7 +38,7 @@ namespace SDWP
         private List<LocalTemplate> LocalTemplates { get; set; }
         private List<Template> CloudTemplates { get; set; }
 
-        private string DefaultStoragePath { get; } = @"C:\Users\Aero\Desktop\Templates";
+        private string DefaultStoragePath { get; }
 
         private TextBlock LocalTemplatesTextBlock { get; set; }
         private TextBlock CloudTemplatesTextBlock { get; set; }
@@ -56,12 +56,14 @@ namespace SDWP
         private IExceptionHandler ExceptionHandler { get; set; }
         #endregion
 
+        #region Constrcutors and initialize methods
         public CreateNewDocumentWindow(List<Document> documents, Documentation documentation)
         {
             InitializeComponent();
             InitializeServices();
             InitializeProperties();
 
+            DefaultStoragePath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Templates");
             Documentation = documentation;
             Documents = documents;
         }
@@ -84,6 +86,7 @@ namespace SDWP
             LocalTemplateService = ServiceAbstractFactory.GetLocalTemplateService();
             ExceptionHandler = SdwpAbstractFactory.GetExceptionHandler(Dispatcher);
         }
+        #endregion
 
         #region Event handlers
         private void CancelCreation(object sender, RoutedEventArgs e)
@@ -97,7 +100,8 @@ namespace SDWP
         /// </summary>
         private void CreateNewDocument(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(DocumentNameTextBox.Text) || string.IsNullOrWhiteSpace(DocumentNameTextBox.Text))
+            if (string.IsNullOrEmpty(DocumentNameTextBox.Text) ||
+                string.IsNullOrWhiteSpace(DocumentNameTextBox.Text))
             {
                 SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Введите имя документа", MessageBoxButton.OK);
                 return;

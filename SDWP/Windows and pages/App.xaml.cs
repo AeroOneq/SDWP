@@ -49,6 +49,15 @@ namespace SDWP
 
                     app.Run(mainWindow);
                 }
+                catch (Exception ex)
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Фатальная ошибка", "Произошла фатальная ошибка," +
+                        "приложение будет закрыто, попробуйте перезапустить или перустановить его. " +
+                        "Сейчас будет показано сообщение об ошибке.",
+                        MessageBoxButton.OK);
+
+                    ExceptionHandler.HandleWithMessageBox(ex);
+                }
                 finally
                 {
                     mutex.ReleaseMutex();

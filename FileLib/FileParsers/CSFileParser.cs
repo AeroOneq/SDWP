@@ -92,7 +92,8 @@ namespace FileLib.FileParsers
                 for (int i = 0; i < fields.Length; i++)
                 {
                     tableCells[i + 2] = new string[TypePropertiesColCount]
-                        {fields[i].Name, GetFieldModificators(fields[i]), fields[i].FieldType.Name, string.Empty, string.Empty};
+                        {fields[i].Name, GetFieldModificators(fields[i]),
+                            fields[i].FieldType.Name, string.Empty, string.Empty};
                     currIndex++;
                 }
             }
@@ -105,16 +106,36 @@ namespace FileLib.FileParsers
                 tableCells[currIndex++] = new string[TypePropertiesColCount]
                     { "Свойства", string.Empty, string.Empty, string.Empty, string.Empty };
                 tableCells[currIndex++] = new string[TypePropertiesColCount]
-                    { "Имя", "Модификатор досутпа", "Тип", "Назначение", string.Empty };
+                    { "Имя", "Модификатор доступа", "Тип", "Назначение", string.Empty };
 
                 for (int i = 0; i < properties.Length; i++)
                 {
                     tableCells[currIndex] = new string[TypePropertiesColCount]
                         {properties[i].Name, GetPropertiesModificators(properties[i], methods),
-                    properties[i].PropertyType.Name, string.Empty, string.Empty};
+                    GetPropertyType(properties[i]), string.Empty, string.Empty};
                     currIndex++;
                 }
             }
+        }
+
+        private string GetPropertyType(PropertyInfo propertyInfo)
+        {
+            string propertyType = propertyInfo.PropertyType.Name;
+            Type[] genericTypeArguments = propertyInfo.PropertyType.GetGenericArguments();
+
+            if (genericTypeArguments.Length > 0)
+            {
+                propertyType = propertyType.Remove(propertyType.Length - 2);
+                propertyType += "<";
+                for (int i = 0; i < genericTypeArguments.Length - 1; i++)
+                {
+                    propertyType += genericTypeArguments[i].Name + ",";
+                }
+
+                propertyType += genericTypeArguments.Last().Name + ">";
+            }
+
+            return propertyType;
         }
 
         private void FillTheMethodsCells(string[][] tableCells)
@@ -124,7 +145,7 @@ namespace FileLib.FileParsers
                 tableCells[currIndex++] = new string[TypePropertiesColCount]
                     { "Методы", string.Empty, string.Empty, string.Empty, string.Empty };
                 tableCells[currIndex++] = new string[TypePropertiesColCount]
-                    { "Имя", "Модификатор досутпа", "Тип", "Аргументы", "Назначение" };
+                    { "Имя", "Модификатор доступа", "Тип", "Аргументы", "Назначение" };
 
                 for (int i = 0; i < methods.Length; i++)
                 {
@@ -132,12 +153,49 @@ namespace FileLib.FileParsers
                         lowerCaseEnglishLetters.IndexOf(methods[i].Name[0]) == -1)
                     {
                         tableCells[currIndex] = new string[TypePropertiesColCount]
-                            { methods[i].Name, GetMethodModificators(methods[i]), methods[i].ReturnType.Name,
-                            GetMethodArguments(methods[i]), "" };
+                            { GetMethodName(methods[i]), GetMethodModificators(methods[i]),
+                                GetMethodReturnType(methods[i]), GetMethodArguments(methods[i]), "" };
                         currIndex++;
                     }
                 }
             }
+        }
+
+        private string GetMethodName(MethodInfo method)
+        {
+            string methodName = method.Name;
+            
+            if (method.GetGenericArguments().Length > 0)
+            {
+                methodName += "<";
+                for (int i = 0; i < method.GetGenericArguments().Length - 1; i++)
+                {
+                    methodName += method.GetGenericArguments()[i] + ",";
+                }
+                methodName += method.GetGenericArguments().Last() + ">";
+            }
+
+            return methodName;
+        }
+
+        private string GetMethodReturnType(MethodInfo methodInfo)
+        {
+            string methodReturnType = methodInfo.ReturnType.Name;
+            Type[] genericReturnParams = methodInfo.ReturnType.GetGenericArguments();
+
+            if (genericReturnParams.Length > 0)
+            {
+                methodReturnType = methodReturnType.Remove(methodReturnType.Length - 2);
+                methodReturnType += "<";
+                for (int i = 0; i < genericReturnParams.Length - 1; i++)
+                {
+                    methodReturnType += genericReturnParams[i].Name + ",";
+                }
+
+                methodReturnType += genericReturnParams.Last().Name + ">";
+            }
+
+            return methodReturnType;
         }
 
         private string GetMethodArguments(MethodInfo method)
@@ -147,7 +205,20 @@ namespace FileLib.FileParsers
             string paramsString = string.Empty;
             foreach (ParameterInfo p in parameters)
             {
-                paramsString += p.ParameterType.Name + " " + p.Name + ", ";
+                string paramType = p.ParameterType.Name;
+                if (p.ParameterType.GetGenericArguments().Length > 0)
+                {
+                    paramType = paramType.Remove(paramType.Length - 2);
+                    paramType += "<";
+                    for (int i = 0; i < p.ParameterType.GetGenericArguments().Length - 1; i++)
+                    {
+                        paramType += p.ParameterType.GetGenericArguments()[i].Name + ",";
+                    }
+
+                    paramType += p.ParameterType.GetGenericArguments().Last().Name + ">";
+                }
+
+                paramsString += paramType + " " + p.Name + ", ";
             }
 
             if (parameters.Length > 0)

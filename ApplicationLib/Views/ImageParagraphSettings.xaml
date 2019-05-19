@@ -69,7 +69,6 @@
         </Grid>
 
         <Grid x:Name="reorderGrid"
-              Width="20"
               Height="20"
               Margin="5, 0, 0, 0"
               VerticalAlignment="Center">
