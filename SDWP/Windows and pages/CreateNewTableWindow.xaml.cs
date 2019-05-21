@@ -14,16 +14,14 @@ using System.IO;
 
 using Microsoft.Win32;
 
-using FileLib.Interfaces;
-using FileLib.FileParsers;
-
 using SDWP.Factories;
 using SDWP.Exceptions;
 using SDWP.Interfaces;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
-using Newtonsoft.Json;
+using ApplicationLib.FileParsers.Parsers;
+using ApplicationLib.FileParsers.Interfaces;
 
 namespace SDWP
 {
@@ -127,7 +125,7 @@ namespace SDWP
         {
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
-                Filter = "(*dll)|*dll|(*exe)|*exe",
+                Filter = "Files (*.dll, *.exe)|*.dll;*.exe",
                 CheckFileExists = true,
                 CheckPathExists = true,
                 Title = "Выберете DLL или EXE файл для сканирования",

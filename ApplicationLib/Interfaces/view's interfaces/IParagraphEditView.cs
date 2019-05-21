@@ -9,10 +9,8 @@ namespace ApplicationLib.Interfaces
 {
     public interface IParagraphEditView
     {
-#warning add this to the table
         Paragraph Paragraph { get; }
         Action RefreshParagraphsUI { get; set; }
-#warning add this to the table
         Action RefreshParagraphsUIAfterSwap { get; set; }
 
         void DeleteParagraph();

@@ -34,7 +34,6 @@ namespace SDWP
 
         private StackPanel DocumentsListStackPanel { get; set; }
         private StackPanel ParagraphsListPanel { get; set; }
-#warning add this to the tables
         private StackPanel ParagraphsSearchResultPanel { get; set; }
         private StackPanel ItemsListStackPanel { get; set; }
         private Grid ParagraphElementsGrid { get; set; }
@@ -45,21 +44,17 @@ namespace SDWP
         private TreeView DocumentTreeView { get; set; }
         private ScrollViewer ListModeScroll { get; set; }
         private TextBox ParagraphSearchTextBox { get; set; }
-#warning add this property to tables
         private StackPanel DocumentationPropertiesStackPannel { get; set; }
-#warning add this property to tables
         private CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
-#warning add this property to tables    
         private CancellationToken Token { get; set; }
-#warning add this property to tables    
         private bool DoWeHaveToCancelParagraphUploading { get; set; }
-#warning add this to the tables
         private int NumOfParagraphsPerPanel { get; } = 3;
 
         private string ParagraphSearchTextBoxDefaultText { get; } = "Введите запрос...";
 
         private ISdwpAbstractFactory AbstractFactory { get; set; }
         public IDocController DocController { get; set; }
+        private IExceptionHandler ExceptionHandler { get; set; }
 
         public LocalDocumentation LocalDocumentation { get; set; }
         #endregion
@@ -75,7 +70,9 @@ namespace SDWP
         private void InitializeServices()
         {
             AbstractFactory = new SdwpAbstractFactory();
+
             DocController = AbstractFactory.GetDocController();
+            ExceptionHandler = AbstractFactory.GetExceptionHandler(Dispatcher);
         }
 
         private void InitializeProperties()
@@ -146,12 +143,23 @@ namespace SDWP
         /// </summary>
         private void UploadDocumentation()
         {
-            Array.ForEach(DocumentationPropertiesStackPannel.Children.
-                OfType<TextBox>().Where(t => t.Name != "documentationCreationDateTextBlock")
-                .ToArray(), tx => tx.IsEnabled = true);
+            try
+            {
+                Array.ForEach(DocumentationPropertiesStackPannel.Children.
+                    OfType<TextBox>().Where(t => t.Name != "documentationCreationDateTextBlock")
+                    .ToArray(), tx => tx.IsEnabled = true);
 
-            UploadDocumentationDataToUI(DocController.Documentation);
-            UploadDocumentsDataToUI(DocController.Documents);
+                UploadDocumentationDataToUI(DocController.Documentation);
+                UploadDocumentsDataToUI(DocController.Documents);
+            }
+            catch (NullReferenceException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         private void UploadDocumentationDataToUI(Documentation documentation)
@@ -267,6 +275,11 @@ namespace SDWP
             DocTreeViewItem docTreeViewItem = DocumentTreeView.SelectedItem as DocTreeViewItem;
             Item selectedItem = docTreeViewItem.Item;
 
+            if (DocController.CurrentContentItem.Equals(selectedItem))
+            {
+                ParagraphsListPanel.Children.Clear();
+            }
+
             selectedItem.ParentList.Remove(selectedItem);
             RefreshItemsUI();
         }
@@ -328,7 +341,6 @@ namespace SDWP
             }
         }
 
-#warning add this to the tables
         private void MoveItemUp(object sender, RoutedEventArgs e)
         {
             if (DocumentTreeView.SelectedItem is DocTreeViewItem treeViewItem)
@@ -353,7 +365,6 @@ namespace SDWP
             }
         }
 
-#warning add this to the tables
         private void MoveItemDown(object sender, RoutedEventArgs e)
         {
             if (DocumentTreeView.SelectedItem is DocTreeViewItem treeViewItem)
@@ -384,7 +395,6 @@ namespace SDWP
         #endregion
 
         #region Refresh UI methods
-#warning add this to the table
         /// <summary>
         /// Refreshes the paragraph UI after a pargraph was moved up or down.
         /// IN this method we asume that the total number
@@ -392,82 +402,93 @@ namespace SDWP
         /// </summary>
         private void RefreshParagraphsUIAfterSwap()
         {
-            List<Paragraph> paragraphs = DocController.CurrentParagraphsList;
-            List<IParagraphEditView> paragraphEditViews = new List<IParagraphEditView>();
-            List<FrameworkElement> paragraphViews = new List<FrameworkElement>();
-
-            foreach (FrameworkElement fe in ParagraphsListPanel.Children)
+            try
             {
-                StackPanel stackPanel = fe as StackPanel;
+                List<Paragraph> paragraphs = DocController.CurrentParagraphsList;
+                List<IParagraphEditView> paragraphEditViews = new List<IParagraphEditView>();
+                List<FrameworkElement> paragraphViews = new List<FrameworkElement>();
 
-                foreach (FrameworkElement stackPanelChild in stackPanel.Children)
+                foreach (FrameworkElement fe in ParagraphsListPanel.Children)
                 {
-                    paragraphEditViews.Add(stackPanelChild as IParagraphEditView);
-                    paragraphViews.Add(stackPanelChild);
-                }
-            }
+                    StackPanel stackPanel = fe as StackPanel;
 
-            if (paragraphEditViews.Count > 1)
-            {
-                //if we added the last paragraph to the top
-                if (paragraphs[1].Equals(paragraphEditViews[0].Paragraph) &&
-                    paragraphs[0].Equals(paragraphEditViews[paragraphEditViews.Count - 1].Paragraph))
-                {
-                    StackPanel firstPanel = ParagraphsListPanel.Children[0] as StackPanel;
-                    if (firstPanel.Children.Count == NumOfParagraphsPerPanel)
+                    foreach (FrameworkElement stackPanelChild in stackPanel.Children)
                     {
-                        ParagraphsListPanel.Children.Insert(0, new StackPanel());
-                        firstPanel = ParagraphsListPanel.Children[0] as StackPanel;
+                        paragraphEditViews.Add(stackPanelChild as IParagraphEditView);
+                        paragraphViews.Add(stackPanelChild);
                     }
-
-                    //delete the last paragraph
-                    (ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1] as StackPanel)
-                        .Children.Remove(paragraphViews.Last());
-                    (ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1] as StackPanel).UpdateLayout();
-                    //add the last paragraph to the top
-                    firstPanel.Children.Insert(0, paragraphViews.Last());
-                    firstPanel.UpdateLayout();
                 }
-                else if (paragraphs.Last().Equals(paragraphEditViews[0].Paragraph) &&
-                         paragraphs[0].Equals(paragraphEditViews[1].Paragraph))
-                {
-                    StackPanel lastPanel = ParagraphsListPanel.Children[
-                        ParagraphsListPanel.Children.Count - 1] as StackPanel;
-                    if (lastPanel.Children.Count == NumOfParagraphsPerPanel)
-                    {
-                        lastPanel = new StackPanel();
-                        ParagraphsListPanel.Children.Add(lastPanel);
-                    }
 
-                    (ParagraphsListPanel.Children[0] as StackPanel).Children.Remove(paragraphViews[0]);
-                    (ParagraphsListPanel.Children[0] as StackPanel).UpdateLayout();
-                    lastPanel.Children.Add(paragraphViews[0]);
-                    lastPanel.UpdateLayout();
-                }
-                else
+                if (paragraphEditViews.Count > 1)
                 {
-                    for (int i = 0; i < paragraphs.Count; i++)
+                    //if we added the last paragraph to the top
+                    if (paragraphs[1].Equals(paragraphEditViews[0].Paragraph) &&
+                        paragraphs[0].Equals(paragraphEditViews[paragraphEditViews.Count - 1].Paragraph))
                     {
-                        if (!paragraphs[i].Equals(paragraphEditViews[i].Paragraph))
+                        StackPanel firstPanel = ParagraphsListPanel.Children[0] as StackPanel;
+                        if (firstPanel.Children.Count == NumOfParagraphsPerPanel)
                         {
-                            int firstIndex = (paragraphViews[i].Parent as StackPanel).Children.
-                                OfType<IParagraphEditView>().ToList().FindIndex(p => p.Equals(paragraphViews[i]));
-                            int secondIndex = (paragraphViews[i + 1].Parent as StackPanel).Children.
-                                OfType<IParagraphEditView>().ToList().FindIndex(p => p.Equals(paragraphViews[i + 1]));
+                            ParagraphsListPanel.Children.Insert(0, new StackPanel());
+                            firstPanel = ParagraphsListPanel.Children[0] as StackPanel;
+                        }
 
-                            StackPanel firstPanel = (paragraphViews[i] as UserControl).Parent as StackPanel;
-                            StackPanel secondPanel = (paragraphViews[i + 1] as UserControl).Parent as StackPanel;
+                        //delete the last paragraph
+                        (ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1] as StackPanel)
+                            .Children.Remove(paragraphViews.Last());
+                        (ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1] as StackPanel).UpdateLayout();
+                        //add the last paragraph to the top
+                        firstPanel.Children.Insert(0, paragraphViews.Last());
+                        firstPanel.UpdateLayout();
+                    }
+                    else if (paragraphs.Last().Equals(paragraphEditViews[0].Paragraph) &&
+                             paragraphs[0].Equals(paragraphEditViews[1].Paragraph))
+                    {
+                        StackPanel lastPanel = ParagraphsListPanel.Children[
+                            ParagraphsListPanel.Children.Count - 1] as StackPanel;
+                        if (lastPanel.Children.Count == NumOfParagraphsPerPanel)
+                        {
+                            lastPanel = new StackPanel();
+                            ParagraphsListPanel.Children.Add(lastPanel);
+                        }
 
-                            firstPanel.Children.Remove(paragraphViews[i]);
-                            secondPanel.Children.Remove(paragraphViews[i + 1]);
+                        (ParagraphsListPanel.Children[0] as StackPanel).Children.Remove(paragraphViews[0]);
+                        (ParagraphsListPanel.Children[0] as StackPanel).UpdateLayout();
+                        lastPanel.Children.Add(paragraphViews[0]);
+                        lastPanel.UpdateLayout();
+                    }
+                    else
+                    {
+                        for (int i = 0; i < paragraphs.Count; i++)
+                        {
+                            if (!paragraphs[i].Equals(paragraphEditViews[i].Paragraph))
+                            {
+                                int firstIndex = (paragraphViews[i].Parent as StackPanel).Children.
+                                    OfType<IParagraphEditView>().ToList().FindIndex(p => p.Equals(paragraphViews[i]));
+                                int secondIndex = (paragraphViews[i + 1].Parent as StackPanel).Children.
+                                    OfType<IParagraphEditView>().ToList().FindIndex(p => p.Equals(paragraphViews[i + 1]));
 
-                            firstPanel.Children.Insert(firstIndex, paragraphViews[i + 1]);
-                            secondPanel.Children.Insert(secondIndex, paragraphViews[i]);
+                                StackPanel firstPanel = (paragraphViews[i] as UserControl).Parent as StackPanel;
+                                StackPanel secondPanel = (paragraphViews[i + 1] as UserControl).Parent as StackPanel;
 
-                            break;
+                                firstPanel.Children.Remove(paragraphViews[i]);
+                                secondPanel.Children.Remove(paragraphViews[i + 1]);
+
+                                firstPanel.Children.Insert(firstIndex, paragraphViews[i + 1]);
+                                secondPanel.Children.Insert(secondIndex, paragraphViews[i]);
+
+                                break;
+                            }
                         }
                     }
                 }
+            }
+            catch (NullReferenceException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -479,6 +500,11 @@ namespace SDWP
         {
             if (DocumentTreeView.Visibility == Visibility.Collapsed)
             {
+                if (DocController.CurrentItemsList.IndexOf(DocController.CurrentContentItem) == -1)
+                {
+                    ParagraphsListPanel.Children.Clear();
+                }
+
                 if (DocController.CurrentItemsList != null)
                     UploadItemsToPanel(DocController.CurrentItem, DocController.CurrentItemsList);
             }
@@ -490,69 +516,75 @@ namespace SDWP
 
         private async void RefreshParagraphsUI()
         {
-            List<Paragraph> paragraphs = DocController.CurrentParagraphsList;
-
-            //try to delete the pragraphEditView if the action was to delete. Only one paragraph can be deleted
-            //so when wwe found the deleted paragraph, we can execute the return statement
-            if (paragraphs != null)
+            try
             {
-                CancelParagraphsUploading();
+                List<Paragraph> paragraphs = DocController.CurrentParagraphsList;
 
-                foreach (FrameworkElement fe in ParagraphsListPanel.Children)
+                //try to delete the pragraphEditView if the action was to delete. Only one paragraph can be deleted
+                //so when wwe found the deleted paragraph, we can execute the return statement
+                if (paragraphs != null)
                 {
-                    StackPanel stackPanel = fe as StackPanel;
-                    for (int i = 0; i < stackPanel.Children.Count; i++)
+                    CancelParagraphsUploading();
+
+                    foreach (FrameworkElement fe in ParagraphsListPanel.Children)
                     {
-                        IParagraphEditView paragraphEditView = stackPanel.Children[i] as
-                            IParagraphEditView;
-
-                        SetParagraphEditViewEvents(paragraphEditView);
-
-                        if (paragraphs.FindIndex(p => p.Equals(paragraphEditView.Paragraph)) == -1)
+                        StackPanel stackPanel = fe as StackPanel;
+                        for (int i = 0; i < stackPanel.Children.Count; i++)
                         {
-                            stackPanel.Children.Remove(stackPanel.Children[i]);
-                            stackPanel.UpdateLayout();
-                            return;
+                            IParagraphEditView paragraphEditView = stackPanel.Children[i] as
+                                IParagraphEditView;
+
+                            SetParagraphEditViewEvents(paragraphEditView);
+
+                            if (paragraphs.FindIndex(p => p.Equals(paragraphEditView.Paragraph)) == -1)
+                            {
+                                stackPanel.Children.Remove(stackPanel.Children[i]);
+                                stackPanel.UpdateLayout();
+                                return;
+                            }
                         }
                     }
                 }
-            }
 
-            //try to add an pragraphEditView if the action was to add. If we reached that part of code
-            //that means that the new paragraph was added, but the adding of the paragraph always adds the paragraph
-            //to the end of the list, so we must just add a new paragraph view to the end of our main stack panel
-            if (ParagraphsListPanel.Children.Count == 0)
-                ParagraphsListPanel.Children.Add(new StackPanel());
+                //try to add an pragraphEditView if the action was to add. If we reached that part of code
+                //that means that the new paragraph was added, but the adding of the paragraph always adds the paragraph
+                //to the end of the list, so we must just add a new paragraph view to the end of our main stack panel
+                if (ParagraphsListPanel.Children.Count == 0)
+                    ParagraphsListPanel.Children.Add(new StackPanel());
 
-            List<IParagraphEditView> paragraphEditViews = new List<IParagraphEditView>();
-            foreach (FrameworkElement fe in ParagraphsListPanel.Children)
-            {
-                StackPanel stackPanel = fe as StackPanel;
-
-                foreach (FrameworkElement frameworkElement in stackPanel.Children)
+                List<IParagraphEditView> paragraphEditViews = new List<IParagraphEditView>();
+                foreach (FrameworkElement fe in ParagraphsListPanel.Children)
                 {
-                    paragraphEditViews.Add(frameworkElement as IParagraphEditView);
-                }
-            }
+                    StackPanel stackPanel = fe as StackPanel;
 
-            for (int i = paragraphEditViews.Count; i < paragraphs.Count; i++)
-            {
-                StackPanel stackPanel = ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1]
-                    as StackPanel;
-
-                if (stackPanel.Children.Count == NumOfParagraphsPerPanel)
-                {
-                    stackPanel = new StackPanel();
-                    ParagraphsListPanel.Children.Add(stackPanel);
+                    foreach (FrameworkElement frameworkElement in stackPanel.Children)
+                    {
+                        paragraphEditViews.Add(frameworkElement as IParagraphEditView);
+                    }
                 }
 
-                (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
-                    DocController.CurrentContentItem.Paragraphs);
-                await UploadSingleParagraphToPanel(stackPanel, paragraphs[i]);
+                for (int i = paragraphEditViews.Count; i < paragraphs.Count; i++)
+                {
+                    StackPanel stackPanel = ParagraphsListPanel.Children[ParagraphsListPanel.Children.Count - 1]
+                        as StackPanel;
+
+                    if (stackPanel.Children.Count == NumOfParagraphsPerPanel)
+                    {
+                        stackPanel = new StackPanel();
+                        ParagraphsListPanel.Children.Add(stackPanel);
+                    }
+
+                    (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
+                        DocController.CurrentContentItem.Paragraphs);
+                    await UploadSingleParagraphToPanel(stackPanel, paragraphs[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
-#warning add this to the table
         private async Task UploadSingleParagraphToPanel(StackPanel stackPanel, Paragraph paragraph)
         {
             UserControl paragraphView = null;
@@ -568,7 +600,6 @@ namespace SDWP
             await Task.Delay(TimeSpan.FromMilliseconds(1));
         }
 
-#warning add this to the table
         private void SetParagraphEditViewEvents(IParagraphEditView paragraphEditView)
         {
             Dispatcher.BeginInvoke(new Action(() => (paragraphEditView).
@@ -711,36 +742,43 @@ namespace SDWP
         private async void UploadParagraphsToParagraphsListPanel(List<Paragraph> paragraphs,
             StackPanel stackPanel)
         {
-            DoWeHaveToCancelParagraphUploading = true;
-
-            await Dispatcher.BeginInvoke(new Action(() => stackPanel.Children.Clear()));
-
-            StackPanel currentPanel = new StackPanel();
-            for (int i = 0; i < paragraphs.Count; i++)
+            try
             {
-                if (i % NumOfParagraphsPerPanel == 0)
+                DoWeHaveToCancelParagraphUploading = true;
+
+                await Dispatcher.BeginInvoke(new Action(() => stackPanel.Children.Clear()));
+
+                StackPanel currentPanel = new StackPanel();
+                for (int i = 0; i < paragraphs.Count; i++)
                 {
-                    currentPanel = new StackPanel();
-                    stackPanel.Children.Add(currentPanel);
+                    if (i % NumOfParagraphsPerPanel == 0)
+                    {
+                        currentPanel = new StackPanel();
+                        stackPanel.Children.Add(currentPanel);
+                    }
+
+                    if (Token.IsCancellationRequested)
+                    {
+                        DoWeHaveToCancelParagraphUploading = false;
+
+                        TokenSource = new CancellationTokenSource();
+                        Token = TokenSource.Token;
+
+                        return;
+                    }
+
+                    (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
+                        DocController.CurrentContentItem.Paragraphs);
+
+                    await UploadSingleParagraphToPanel(currentPanel, paragraphs[i]);
                 }
 
-                if (Token.IsCancellationRequested)
-                {
-                    DoWeHaveToCancelParagraphUploading = false;
-
-                    TokenSource = new CancellationTokenSource();
-                    Token = TokenSource.Token;
-
-                    return;
-                }
-
-                (paragraphs[i] as IParentableParagraph).SetParents(DocController.CurrentContentItem,
-                    DocController.CurrentContentItem.Paragraphs);
-
-                await UploadSingleParagraphToPanel(currentPanel, paragraphs[i]);
+                DoWeHaveToCancelParagraphUploading = false;
             }
-
-            DoWeHaveToCancelParagraphUploading = false;
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         /// <summary>
@@ -906,38 +944,45 @@ namespace SDWP
         /// </summary>
         private void ParagraphSearchTextBoxKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            try
             {
-                if (ParagraphSearchTextBox == null || DocController.CurrentParagraphsList == null)
-                    return;
-
-                string searchText = ParagraphSearchTextBox.Text;
-
-                if (string.IsNullOrEmpty(searchText) || searchText == ParagraphSearchTextBoxDefaultText)
+                if (e.Key == Key.Enter)
                 {
+                    if (ParagraphSearchTextBox == null || DocController.CurrentParagraphsList == null)
+                        return;
+
+                    string searchText = ParagraphSearchTextBox.Text;
+
+                    if (string.IsNullOrEmpty(searchText) || searchText == ParagraphSearchTextBoxDefaultText)
+                    {
+                        CancelParagraphsUploading();
+                        ParagraphsSearchResultPanel.Visibility = Visibility.Collapsed;
+                        ParagraphsListPanel.Visibility = Visibility.Visible;
+
+                        return;
+                    }
+
+                    List<Paragraph> suitableParagraphs = new List<Paragraph>();
+                    List<Paragraph> currentParagraphs = DocController.CurrentParagraphsList;
+
+                    foreach (Paragraph paragraph in currentParagraphs)
+                    {
+                        if (paragraph.ParagraphElement.Title.IndexOf(searchText) > -1)
+                            suitableParagraphs.Add(paragraph);
+                    }
+
                     CancelParagraphsUploading();
-                    ParagraphsSearchResultPanel.Visibility = Visibility.Collapsed;
-                    ParagraphsListPanel.Visibility = Visibility.Visible;
 
-                    return;
+                    ParagraphsSearchResultPanel.Visibility = Visibility.Visible;
+                    ParagraphsListPanel.Visibility = Visibility.Collapsed;
+
+                    UploadParagraphsToParagraphsListPanel(suitableParagraphs,
+                        ParagraphsSearchResultPanel);
                 }
-
-                List<Paragraph> suitableParagraphs = new List<Paragraph>();
-                List<Paragraph> currentParagraphs = DocController.CurrentParagraphsList;
-
-                foreach (Paragraph paragraph in currentParagraphs)
-                {
-                    if (paragraph.ParagraphElement.Title.IndexOf(searchText) > -1)
-                        suitableParagraphs.Add(paragraph);
-                }
-
-                CancelParagraphsUploading();
-
-                ParagraphsSearchResultPanel.Visibility = Visibility.Visible;
-                ParagraphsListPanel.Visibility = Visibility.Collapsed;
-
-                UploadParagraphsToParagraphsListPanel(suitableParagraphs,
-                    ParagraphsSearchResultPanel);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -1033,7 +1078,7 @@ namespace SDWP
 
             if (currentDocumentList == null || documentation == null)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройти документацию", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте документацию", MessageBoxButton.OK);
                 return;
             }
 

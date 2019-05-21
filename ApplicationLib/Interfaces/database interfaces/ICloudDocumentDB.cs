@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Interfaces
 {
-    interface ICloudDocumentDB<DocumentType>
+    public interface ICloudDocumentDB<DocumentType>
     {
         Task<IEnumerable<DocumentType>> GetAllDocuments();
         Task<IEnumerable<DocumentType>> GetDocumentationDocuments(int documentationID);

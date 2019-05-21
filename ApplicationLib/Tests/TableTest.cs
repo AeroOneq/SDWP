@@ -12,7 +12,7 @@ using ApplicationLib.Models;
 namespace ApplicationLib.Tests
 {
     [TestFixture]
-    class TableTest
+    public class TableTest
     {
         Table table;
 

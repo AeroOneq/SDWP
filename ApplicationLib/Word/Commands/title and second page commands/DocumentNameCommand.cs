@@ -16,7 +16,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class DocumentNameCommand : IWordCommand
+    public class DocumentNameCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

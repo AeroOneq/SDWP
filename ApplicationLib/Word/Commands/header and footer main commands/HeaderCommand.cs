@@ -12,7 +12,7 @@ using ApplicationLib.Word.Interfaces;
 
 namespace ApplicationLib.Word.Commands
 {
-    class HeaderCommand : IWordCommand
+    public class HeaderCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         public ICommandsContainer CommandsContainer { get; }

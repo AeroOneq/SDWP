@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Interfaces
 {
-    interface IEmailDatabase<UserType>
+    public interface IEmailDatabase<UserType>
     { 
         Task<int> SendCodeEmail(UserType user);
         Task<bool> CheckCode(int codeID, string code);

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Services
 {
-    class LocalDocumentationService : ILocalDocumentationService
+    public class LocalDocumentationService : ILocalDocumentationService
     {
         public string StoragePath { get; set; }
         public int ErrorsCount { get; private set; }

@@ -80,7 +80,6 @@ namespace ApplicationLib.Views
             UpdateList();
         }
 
-#warning add this to the table
         private void MoveItemUp(object sender, RoutedEventArgs e)
         {
             if (Item.ParentList.FindIndex(i => i.Equals(Item)) == 0)
@@ -99,7 +98,7 @@ namespace ApplicationLib.Views
 
             UpdateList();
         }
-#warning Add this to the tables
+
         private void MoveItemDown(object sender, RoutedEventArgs e)
         {
             if (Item.ParentList.FindIndex(i => i.Equals(Item)) == Item.ParentList.Count - 1)

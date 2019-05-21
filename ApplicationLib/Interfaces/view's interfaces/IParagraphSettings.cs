@@ -10,10 +10,7 @@ namespace ApplicationLib.Interfaces
     {
         Action OnParagraphDelete { get; set; }
         Action OnParagraphShowOrHideHint { get; set; }
-#warning remove OnParagraphReplave delegate
-#warning add this to the table
         Action MoveParagraphUp { get; set; }
-#warning add this to the table
         Action MoveParagraphDown { get; set; }
     }
 }

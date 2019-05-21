@@ -12,7 +12,7 @@ using DocumentFormat.OpenXml;
 
 namespace ApplicationLib.Word.Commands
 {
-    class EmptyParagraphCommand : IWordSecondaryCommand
+    public class EmptyParagraphCommand : IWordSecondaryCommand
     {
         public OpenXmlCompositeElement GetElement()
         {

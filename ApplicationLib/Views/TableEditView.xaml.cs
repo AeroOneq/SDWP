@@ -12,7 +12,6 @@ namespace ApplicationLib.Views
     public partial class TableEditView : UserControl, IParagraphEditView
     {
         private Table CurrentTable { get; }
-#warning change this in the tables
         public Paragraph Paragraph { get; }
 
         private DataGrid TableDataGrid { get; }
@@ -158,9 +157,6 @@ namespace ApplicationLib.Views
             return 0;
         }
 
-#warning delete ReplaceParagraph from the tables
-
-#warning add this to the table
         public void MoveParagraphUp()
         {
             if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)

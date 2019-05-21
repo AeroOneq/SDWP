@@ -15,11 +15,10 @@ using ApplicationLib.Word.Containers;
 
 namespace ApplicationLib.Word.Commands
 {
-    class TableOfContentsPageCommand : IWordCommand
+    public class TableOfContentsPageCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         public ICommandsContainer CommandsContainer { get; private set; }
-
 
         public TableOfContentsPageCommand(WordprocessingDocument document)
         {

@@ -8,7 +8,7 @@ using ApplicationLib.Models;
 
 namespace ApplicationLib.Interfaces
 {
-     public interface IParentableItem
+    public interface IParentableItem
     {
         Item ParentItem { get; }
         List<Item> ParentList { get; }

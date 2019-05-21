@@ -17,6 +17,7 @@ using ApplicationLib.Interfaces;
 using ApplicationLib.Factories;
 using SDWP.Factories;
 using SDWP.Interfaces;
+using System.Net;
 
 namespace SDWP
 {
@@ -81,7 +82,6 @@ namespace SDWP
             }
         }
 
-#warning add to tables
         private byte[] GetResourceImageBytes(string imagePath)
         {
             byte[] imageBytes;
@@ -226,6 +226,7 @@ namespace SDWP
         {
             try
             {
+                (sender as Button).IsEnabled = false;
                 PageHeader.SwitchOnTopLoader();
 
                 await EmailService.SendChangePassLink(UserInfo.CurrentUser);
@@ -239,20 +240,25 @@ namespace SDWP
                 PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
             }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
+            }
         }
         private async void StartUpdatingProcessAsync(object sender, EventArgs e)
         {
-            PageHeader.SwitchOnTopLoader();
+            try
+            {
+                (sender as Button).IsEnabled = false;
+                PageHeader.SwitchOnTopLoader();
 
-            if (CheckIfDataChanged())
-            {
-                PageHeader.SwitchOffTheLoader();
-                SDWPMessageBox.ShowSDWPMessageBox("Статус обновления профиля",
-                    "Данные не были изменены", MessageBoxButton.OK);
-            }
-            else
-            {
-                try
+                if (CheckIfDataChanged())
+                {
+                    PageHeader.SwitchOffTheLoader();
+                    SDWPMessageBox.ShowSDWPMessageBox("Статус обновления профиля",
+                        "Данные не были изменены", MessageBoxButton.OK);
+                }
+                else
                 {
                     UserInfo newUserInfo = CreateNewUserObject();
                     UserInfo.CheckUserProperties(newUserInfo);
@@ -269,27 +275,31 @@ namespace SDWP
                         StartCodeTimer();
                     }
                     else
-                    { 
+                    {
                         await UserService.UpdateRecord(newUserInfo);
 
                         OnSuccesfullUpdate();
                     }
                 }
-                catch (NotAppropriateUserParam ex)
-                {
-                    PageHeader.SwitchOffTheLoader();
-                    ExceptionHandler.HandleWithMessageBox(ex);
-                }
-                catch (Exception ex)
-                {
-                    PageHeader.SwitchOffTheLoader();
-                    ExceptionHandler.HandleWithMessageBox(ex);
-                }
-            }
 
-            PageHeader.SwitchOffTheLoader();
+                PageHeader.SwitchOffTheLoader();
+            }
+            catch (NotAppropriateUserParam ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                PageHeader.SwitchOffTheLoader();
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
+            }
         }
-            
+
         private void OnSuccesfullUpdate()
         {
             UpdateCommonUserAndRefreshUI();
@@ -303,8 +313,19 @@ namespace SDWP
 
         private async void UpdateCommonUserAndRefreshUI()
         {
-            UserInfo.CurrentUser = await UserService.GetUserByID(UserInfo.CurrentUser.ID);
-            Dispatcher.Invoke(() => UploadUserDataToUI());
+            try
+            {
+                UserInfo.CurrentUser = await UserService.GetUserByID(UserInfo.CurrentUser.ID);
+                Dispatcher.Invoke(() => UploadUserDataToUI());
+            }
+            catch (WebException ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         private async void UpdateRecordAfterEmailConfirmationAsync(object sender,
@@ -312,6 +333,7 @@ namespace SDWP
         {
             try
             {
+                (sender as Button).IsEnabled = false;
                 PageHeader.SwitchOnTopLoader();
 
                 UserInfo newUserInfo = CreateNewUserObject();
@@ -331,6 +353,10 @@ namespace SDWP
             {
                 PageHeader.SwitchOffTheLoader();
                 ExceptionHandler.HandleWithMessageBox(ex);
+            }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
             }
         }
 
@@ -357,6 +383,7 @@ namespace SDWP
 
             timer.Start();
         }
+
         private async Task DeleteCode()
         {
             try

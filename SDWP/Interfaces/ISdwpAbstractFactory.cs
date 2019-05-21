@@ -7,9 +7,8 @@ using System.Windows.Threading;
 
 using ApplicationLib.Models;
 using ApplicationLib.Interfaces;
-
-using FileLib.Interfaces;
-using FileLib.FileParsers;
+using ApplicationLib.FileParsers.Parsers;
+using ApplicationLib.FileParsers.Interfaces;
 
 using SDWP.Exceptions;
 using SDWP.Interfaces;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using ApplicationLib.Models;
 
-namespace FileLib.Interfaces
+namespace ApplicationLib.FileParsers.Interfaces
 {
     public interface IFileParser
     {

@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class PagesCountCommand : IWordCommand
+    public class PagesCountCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

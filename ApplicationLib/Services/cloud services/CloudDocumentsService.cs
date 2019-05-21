@@ -10,7 +10,7 @@ using ApplicationLib.Database;
 
 namespace ApplicationLib.Services
 {
-    class CloudDocumentsService : ICloudDocumentsService
+    public class CloudDocumentsService : ICloudDocumentsService
     {
         public ICloudDocumentDB<Document> Database { get; }
 

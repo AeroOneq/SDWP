@@ -14,7 +14,7 @@ using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 
 namespace ApplicationLib.Word.Commands
 {
-    class ParagraphHeaderCommand : IWordCommand
+    public class ParagraphHeaderCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         public string Name { get;  }

@@ -20,7 +20,6 @@ namespace ApplicationLib.Views
     public partial class NumberedListEditView : UserControl, IParagraphEditView
     {
         private NumberedList NumberedList { get; }
-#warning change this in the table
         public Paragraph Paragraph { get; }
         private HintControl HintControl { get; }
         private ParagraphElementSettings ParagraphSettings { get; set; }
@@ -132,9 +131,6 @@ namespace ApplicationLib.Views
             DataContext = NumberedList;
         }
 
-#warning delete ReplaceParagraph from the tables
-
-#warning add this to the table
         public void MoveParagraphUp()
         {
             if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)

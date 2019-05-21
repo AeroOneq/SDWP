@@ -78,6 +78,8 @@
     <Compile Include="Database\TemplatesDB.cs" />
     <Compile Include="Database\UsersDB.cs" />
     <Compile Include="Factories\RenderersAbstractFactory.cs" />
+    <Compile Include="FileParsers\Interfaces\IFileParser.cs" />
+    <Compile Include="FileParsers\Parsers\CSFileParser.cs" />
     <Compile Include="Interfaces\factories%27  interfaces\IRenderAbstractFactory.cs" />
     <Compile Include="Word\Commands\item command\ParagraphHeaderCommand.cs" />
     <Compile Include="Word\Commands\item command\ItemHeaderCommand.cs" />

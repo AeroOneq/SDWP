@@ -21,7 +21,6 @@ namespace ApplicationLib.Views
     public partial class SubparagraphEditView : UserControl, IParagraphEditView
     {
         private Subparagraph Subparagraph { get; }
-#warning change this in the tables
         public Paragraph Paragraph { get; }
 
         private readonly int maxLineSymbolsCount = 20;
@@ -31,7 +30,6 @@ namespace ApplicationLib.Views
         private HintControl HintControl { get; set; }
 
         #region IParagraphEditView properties
-#warning add this to the table
         public Action RefreshParagraphsUI { get; set; }
         public Action RefreshParagraphsUIAfterSwap { get; set; }
         #endregion
@@ -163,9 +161,6 @@ namespace ApplicationLib.Views
             }
         }
 
-#warning delete ReplaceParagraph from the tables
-
-#warning add this to the table
         public void MoveParagraphUp()
         {
             if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)

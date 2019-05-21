@@ -187,6 +187,7 @@
                   HorizontalAlignment="Left"
                   MouseEnter="OptionGridMouseEnter"
                   MouseLeave="OptionGridMouseLeave"
+                  MouseDown="SaveDocumentation"
                   Margin="202, 33, 0, 0">
                 <Image x:Name="accessControlIconStatic"
                        VerticalAlignment="Center"
@@ -194,7 +195,7 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="../Resources/accessControlIconStatic.png"/>
+                       Source="../Resources/exportToWordIcon.png"/>
                 <Image x:Name="accessControlIconActive"
                        Visibility="Collapsed"
                        VerticalAlignment="Center"
@@ -202,9 +203,9 @@
                        Height="25"
                        Width="25"
                        Margin="5, 0, 0, 0"
-                       Source="../Resources/accessControlIconActive.png"/>
+                       Source="../Resources/exportToWordIcon.png"/>
                 <TextBlock Style="{StaticResource topOptionsGridTextBlock}"
-                           Text="Настройки доступа"
+                           Text="Экспорт"
                            Margin="35, 0, 0, 0"
                            Width="125"
                            VerticalAlignment="Center"
@@ -224,6 +225,7 @@
                   VerticalAlignment="Top"
                   MouseEnter="OptionGridMouseEnter"
                   MouseLeave="OptionGridMouseLeave"
+                  MouseDown="GoToDocumentationPage"
                   HorizontalAlignment="Left"
                   Margin="202, 66, 0, 0">
                 <Image x:Name="publishIconStatic"

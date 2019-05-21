@@ -472,6 +472,13 @@ namespace SDWP
             SwitchTheMainGrid("3");
         }
 
+        private void GoToDocumentationPage(object sender, MouseButtonEventArgs e)
+        {
+            ShowTheUserMainGrid(null, null);
+            //1 = user's documentations page
+            SwitchTheMainGrid("1");
+        }
+
         /// <summary>
         /// Opens the user doc page in the user main grid when the "delete documentation" option is pressed
         /// </summary>
@@ -496,7 +503,6 @@ namespace SDWP
 
 
         #region Close window methods
-        #warning add this ti the table
         private void SdwpMainWindowClosed(object sender, EventArgs e)
         {
             App.Current.Shutdown();

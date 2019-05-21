@@ -129,20 +129,17 @@ namespace ApplicationLib.Views
             OnParagraphDelete();
         }
 
-
-#warning add this to the list
         private void ReorderIconsGridMouseLeave(object sender, MouseEventArgs e)
         {
             reorderIconsPanel.Visibility = Visibility.Collapsed;
             reorderEntryGrid.Visibility = Visibility.Visible;
         }
 
-#warning add this to the list
         private void MoveParagraphDownClick(object sender, MouseButtonEventArgs e)
         {
             MoveParagraphDown();
         }
-#warning add this to the list
+
         private void MoveParagraphUpClick(object sender, MouseButtonEventArgs e)
         {
             MoveParagraphUp();

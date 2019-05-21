@@ -14,7 +14,7 @@ using ApplicationLib.Word.Interfaces;
 
 namespace ApplicationLib.Word.Commands
 {
-    class FooterCommand : IWordCommand
+    public class FooterCommand : IWordCommand
     {
         #region Properties
         public WordprocessingDocument WordDocument { get; }

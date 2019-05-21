@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class EndOfPageCommand : IWordCommand
+    public class EndOfPageCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

@@ -122,7 +122,7 @@
 
             <Border CornerRadius="0, 5, 5, 0"
                     Margin="5, 0, 0, 0"
-                    BorderBrush="{StaticResource mainThemeBrush}"
+                    BorderBrush="OrangeRed"
                     BorderThickness="1"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Stretch"
@@ -184,7 +184,7 @@
                                     <Trigger Property="IsSelected"
                                              Value="True">
                                         <Setter Property="BorderBrush"
-                                                Value="{StaticResource mainThemeBrush}"/>
+                                                Value="OrangeRed"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>

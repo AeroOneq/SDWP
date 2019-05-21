@@ -39,7 +39,6 @@ namespace ApplicationLib.Word.Commands
             WordDocument.MainDocumentPart.Document.Body.Append(wordTable);
         }
 
-#warning correct classes tables
         private WordParagraph GetTableNumberParagraph()
         {
             var paragraph = new WordParagraph();
@@ -79,8 +78,6 @@ namespace ApplicationLib.Word.Commands
 
             return paragraph;
         }
-
-
 
         private WordParagraph GetTableNameParagraph()
         {

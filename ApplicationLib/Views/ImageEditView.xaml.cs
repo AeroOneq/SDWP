@@ -24,7 +24,6 @@ namespace ApplicationLib.Views
     {
         #region Properties
         private ParagraphImage ParagraphImage { get; }
-#warning change this in the tables
         public Paragraph Paragraph { get; }
         private Image MainImage { get; set; }
         private ImageParagraphSettings ImageParagraphSettings { get; }
@@ -132,10 +131,6 @@ namespace ApplicationLib.Views
                 SetImageSource(imageByteArr);
             }
         }
-
-#warning delete ReplaceParagraph from the tables
-
-#warning add this to the table
         public void MoveParagraphUp()
         {
             if (Paragraph.ParentList.FindIndex(i => i.Equals(Paragraph)) == 0)

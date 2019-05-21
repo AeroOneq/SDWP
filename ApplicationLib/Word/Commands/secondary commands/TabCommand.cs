@@ -12,7 +12,7 @@ using ApplicationLib.Word.Interfaces;
 
 namespace ApplicationLib.Word.Commands
 {
-    class TabCommand : IWordSecondaryCommand
+    public class TabCommand : IWordSecondaryCommand
     {
         public OpenXmlCompositeElement GetElement()
         {

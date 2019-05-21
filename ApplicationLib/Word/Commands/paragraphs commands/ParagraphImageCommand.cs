@@ -19,7 +19,7 @@ using ApplicationLib.Word.Interfaces;
 
 namespace ApplicationLib.Word.Commands
 {
-    class ParagraphImageCommand : IWordCommand
+    public class ParagraphImageCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         public ParagraphImage ParagraphImage { get;  }

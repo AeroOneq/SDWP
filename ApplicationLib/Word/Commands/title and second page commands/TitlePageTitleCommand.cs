@@ -11,8 +11,8 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 
 namespace ApplicationLib.Word.Commands
-{
-    class TitlePageTitleCommand : IWordCommand
+{ 
+    public class TitlePageTitleCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

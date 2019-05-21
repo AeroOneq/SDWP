@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class SectionPtrCommand : IWordCommand
+    public class SectionPtrCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

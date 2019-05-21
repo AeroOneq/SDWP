@@ -8,8 +8,8 @@ using ApplicationLib.Word.Interfaces;
 using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Containers
-{
-    class CommandsContainer : ICommandsContainer
+{ 
+    public class CommandsContainer : ICommandsContainer
     {
         public IList<IWordCommand> Commands { get; set; } = new List<IWordCommand>();
 

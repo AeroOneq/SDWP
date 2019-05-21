@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace ApplicationLib.Services
 {
-    internal class LocalTemplatesSevice : ILocalTemplateService
+    public class LocalTemplatesService : ILocalTemplateService
     {
         public string StoragePath { get; set; }
         public int ErrorsCount { get; private set; }
@@ -22,8 +22,16 @@ namespace ApplicationLib.Services
         {
             byte[] templateBytes = GetStringBytes(localTemplate.GetJsonString());
             string templatePath = StoragePath + "\\" + localTemplate.FileName;
+           
+            if (localTemplate.FileName != localTemplate.Template.TemplateName)
+            {
+                if (File.Exists(templatePath))
+                    File.Delete(templatePath);
 
-            using (var fs = new FileStream(templatePath, FileMode.Truncate, FileAccess.Write))
+                templatePath = GetTemplatePath(localTemplate);
+            }
+
+            using (var fs = new FileStream(templatePath, FileMode.Create, FileAccess.Write))
             {
                 fs.Seek(0, SeekOrigin.Begin);
                 await fs.WriteAsync(templateBytes, 0, templateBytes.Length);

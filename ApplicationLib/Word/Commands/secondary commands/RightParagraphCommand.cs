@@ -12,7 +12,7 @@ using ApplicationLib.Word.Interfaces;
 
 namespace ApplicationLib.Word.Commands
 {
-    class RightParagraphCommand : IWordSecondaryCommand
+    public class RightParagraphCommand : IWordSecondaryCommand
     {
         public string Text { get; }
 

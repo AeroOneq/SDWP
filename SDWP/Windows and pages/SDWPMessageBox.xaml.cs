@@ -24,7 +24,6 @@ namespace SDWP
             InitializeComponent();
         }
 
-#warning add this method to the table
         public static MessageBoxResult ConfirmAction()
         {
             SDWPMessageBox messageBox = new SDWPMessageBox { Title = "Подтверждение действия" };

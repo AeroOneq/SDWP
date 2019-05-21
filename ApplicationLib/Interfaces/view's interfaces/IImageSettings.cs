@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ApplicationLib.Interfaces
 {
-#warning add thos to the table
     public interface IImageSettings : IParagraphSettings
     {
         Action OnUploadNewImage { get; set; }

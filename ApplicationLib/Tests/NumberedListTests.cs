@@ -11,7 +11,7 @@ using ApplicationLib.Models;
 namespace ApplicationLib.Tests
 {
     [TestFixture]
-    class NumberedListTests
+    public class NumberedListTests
     {
         private NumberedListElement fixedElement;
         private NumberedList numberedList;

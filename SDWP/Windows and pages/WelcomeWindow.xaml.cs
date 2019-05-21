@@ -79,6 +79,7 @@ namespace SDWP
         {
             try
             {
+                (sender as Button).IsEnabled = false;
                 SwitchOnTheLoader(rightCreateAccLoaderGrid);
 
                 UserInfo newUser = CreateNewUser();
@@ -94,6 +95,10 @@ namespace SDWP
             catch (Exception ex)
             {
                 HandleAccCreationException(ex);
+            }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
             }
         }
 
@@ -215,12 +220,6 @@ namespace SDWP
             }
         }
 
-        private async Task DeleteCode()
-        {
-            await EmailService.DeleteCode(CodeID);
-            CodeID = -1;
-        }
-
         /// <summary>
         /// Tries to create a new UserInfo object based on the data given by user
         /// </summary>
@@ -282,7 +281,7 @@ namespace SDWP
         /// Creates the LoginData object basing on the input data and
         /// initializes the process of authorization
         /// </summary>
-        private void LoginBtnMouseClick(object sender, EventArgs eArgs)
+        private async void LoginBtnMouseClick(object sender, EventArgs eArgs)
         {
             try
             {
@@ -293,7 +292,7 @@ namespace SDWP
                     Password = passwordTextBox.Password
                 };
 
-                TryToLoginAsync(loginData);
+                await TryToLoginAsync(loginData);
             }
             finally
             {
@@ -344,7 +343,7 @@ namespace SDWP
         /// <summary>
         /// Tries to login into the system with the given input login data
         /// </summary>
-        private async void TryToLoginAsync(LoginData loginData)
+        private async Task TryToLoginAsync(LoginData loginData)
         {
             SwitchOnTheLoader(leftLoaderGrid);
             UserInfo user = await LoginAndReturnUserObj(loginData);
@@ -494,6 +493,7 @@ namespace SDWP
         {
             try
             {
+                (sender as Button).IsEnabled = false;
                 SwitchOnTheLoader(rightRemindPassLoaderGrid);
 
                 string login = remindPassEnterLoginTextBox.Text;
@@ -516,6 +516,10 @@ namespace SDWP
             catch (Exception ex)
             {
                 HandleRemindPassExceptions(ex);
+            }
+            finally
+            {
+                (sender as Button).IsEnabled = true;
             }
         }
 

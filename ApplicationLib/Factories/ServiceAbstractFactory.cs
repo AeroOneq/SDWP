@@ -29,7 +29,7 @@ namespace ApplicationLib.Factories
 
         public ILocalTemplateService GetLocalTemplateService()
         {
-            return new LocalTemplatesSevice();
+            return new LocalTemplatesService();
         }
 
         public ICloudDocumentationService GetCloudDocumentationService()

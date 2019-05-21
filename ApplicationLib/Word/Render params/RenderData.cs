@@ -12,7 +12,6 @@ namespace ApplicationLib.Word
         public RenderSettings RenderSettings { get; private set; }
         public Document Document { get; private set; }
         public Documentation Documentation { get; private set; }
-#warning add to tables
         //id for numbered lists in the document
         public int CurrentNumID { get; set; } = 0;
 

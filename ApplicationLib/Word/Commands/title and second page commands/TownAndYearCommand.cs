@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class TownAndYearCommand : IWordCommand
+    public class TownAndYearCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

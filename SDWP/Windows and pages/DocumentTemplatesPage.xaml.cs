@@ -41,7 +41,6 @@ namespace SDWP
         #endregion
 
         #region Propeties
-#warning delete from the table CurrentUser property
         private string DefaultStoragePath { get; }
         //status: either local templates or cloud templates
         private bool LocalTemplatesMode { get; set; }
@@ -67,7 +66,8 @@ namespace SDWP
             InitializeProperties();
             InitializeServices();
 
-            DefaultStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Templates");
+            LocalTemplateService.StoragePath = DefaultStoragePath = 
+                Path.Combine(Directory.GetCurrentDirectory(), "Templates");
             GoToLocalTemplatesMode(null, null);
         }
 
@@ -121,7 +121,7 @@ namespace SDWP
             }
         }
 
-        private async Task UploadTemplatesFromColoudStorage()
+        private async Task UploadTemplatesFromCloudStorage()
         {
             try
             {
@@ -221,25 +221,32 @@ namespace SDWP
         /// <param name="localTemplate"></param>
         private void CreateTemplateTreeView(Template template)
         {
-            TemplateTreeView.Items.Clear();
-            SetTemplateItemsParents(template);
-
-            foreach (Item item in template.Items)
+            try
             {
-                TemplateTreeViewItem treeViewItem = CreateTemplateTreeViewItem(item);
+                TemplateTreeView.Items.Clear();
+                SetTemplateItemsParents(template);
 
-                UploadItemsToTreeView(item, treeViewItem);
-
-                if (item.Paragraphs != null)
+                foreach (Item item in template.Items)
                 {
-                    foreach (Paragraph paragraph in item.Paragraphs)
-                    {
-                        TemplateTreeViewItem treeItem = CreateTemplateTreeViewItem(paragraph);
-                        treeViewItem.Items.Add(treeItem);
-                    }
-                }
+                    TemplateTreeViewItem treeViewItem = CreateTemplateTreeViewItem(item);
 
-                TemplateTreeView.Items.Add(treeViewItem);
+                    UploadItemsToTreeView(item, treeViewItem);
+
+                    if (item.Paragraphs != null)
+                    {
+                        foreach (Paragraph paragraph in item.Paragraphs)
+                        {
+                            TemplateTreeViewItem treeItem = CreateTemplateTreeViewItem(paragraph);
+                            treeViewItem.Items.Add(treeItem);
+                        }
+                    }
+
+                    TemplateTreeView.Items.Add(treeViewItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -308,7 +315,8 @@ namespace SDWP
 
             if (selectedItem is TemplateTreeViewParagraphItem)
             {
-                HintTextBox.Text = (selectedItem as TemplateTreeViewParagraphItem).Paragraph.ParagraphElement.Hint;
+                HintTextBox.Text = (selectedItem as TemplateTreeViewParagraphItem).
+                    Paragraph.ParagraphElement.Hint;
             }
             else
             {
@@ -326,21 +334,28 @@ namespace SDWP
 
         private void AddNewItem(object sender, RoutedEventArgs e)
         {
-            if (TemplateTreeView.SelectedItem is TemplateTreeViewItem templateTreeViewItem)
+            try
             {
-                Item selectedItem = (templateTreeViewItem as TemplateTreeViewItemItem).Item;
-
-                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedItem.Items, selectedItem);
-
-                if (createNewItemWindow.ShowDialog() == true)
+                if (TemplateTreeView.SelectedItem is TemplateTreeViewItem templateTreeViewItem)
                 {
-                    RefreshTemplateTreeView();
+                    Item selectedItem = (templateTreeViewItem as TemplateTreeViewItemItem).Item;
+
+                    CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedItem.Items, selectedItem);
+
+                    if (createNewItemWindow.ShowDialog() == true)
+                    {
+                        RefreshTemplateTreeView();
+                    }
+                }
+                else
+                {
+                    SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон",
+                        MessageBoxButton.OK);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон",
-                    MessageBoxButton.OK);
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -354,12 +369,20 @@ namespace SDWP
 
         private void AddNewParagraph(object sender, RoutedEventArgs e)
         {
-            Item selectedItem = (TemplateTreeView.SelectedItem as TemplateTreeViewItemItem).Item;
-            CreateTemplateTreeViewParagraphWindow createWindow = new CreateTemplateTreeViewParagraphWindow(selectedItem);
-
-            if (createWindow.ShowDialog() == true)
+            try
             {
-                RefreshTemplateTreeView();
+                Item selectedItem = (TemplateTreeView.SelectedItem as TemplateTreeViewItemItem).Item;
+                CreateTemplateTreeViewParagraphWindow createWindow =
+                    new CreateTemplateTreeViewParagraphWindow(selectedItem);
+
+                if (createWindow.ShowDialog() == true)
+                {
+                    RefreshTemplateTreeView();
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 
@@ -370,19 +393,26 @@ namespace SDWP
 
         private void OnTreeViewDeleteItem(object sender, RoutedEventArgs e)
         {
-            TemplateTreeViewItem selectedItem = TemplateTreeView.SelectedItem as TemplateTreeViewItem;
-            if (selectedItem is TemplateTreeViewItemItem)
+            try
             {
-                Item item = (selectedItem as TemplateTreeViewItemItem).Item;
-                item.ParentList.Remove(item);
-            }
-            else
-            {
-                Paragraph paragraph = (selectedItem as TemplateTreeViewParagraphItem).Paragraph;
-                paragraph.ParentList.Remove(paragraph);
-            }
+                TemplateTreeViewItem selectedItem = TemplateTreeView.SelectedItem as TemplateTreeViewItem;
+                if (selectedItem is TemplateTreeViewItemItem)
+                {
+                    Item item = (selectedItem as TemplateTreeViewItemItem).Item;
+                    item.ParentList.Remove(item);
+                }
+                else
+                {
+                    Paragraph paragraph = (selectedItem as TemplateTreeViewParagraphItem).Paragraph;
+                    paragraph.ParentList.Remove(paragraph);
+                }
 
-            RefreshTemplateTreeView();
+                RefreshTemplateTreeView();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
+            }
         }
 
         private void AddNewItemToRoot(object sender, RoutedEventArgs e)
@@ -425,6 +455,9 @@ namespace SDWP
                     {
                         foreach (LocalTemplate template in templates)
                             await LocalTemplateService.RewriteTemplateFile(template);
+
+                        LocalTemplatesListBox.ItemsSource = null;
+                        await UploadTemplatesFromLocalStorage();
                     }
                     else
                     {
@@ -440,8 +473,13 @@ namespace SDWP
                     IEnumerable<Template> templates = CloudTemplatesListBox.ItemsSource as IEnumerable<Template>;
 
                     if (CloudTemplatesListBox.ItemsSource is IEnumerable<Template>)
+                    {
                         foreach (Template template in templates)
                             await CloudTemplateService.UpdateTemplate(template);
+
+                        CloudTemplatesListBox.ItemsSource = null;
+                        await UploadTemplatesFromCloudStorage();
+                    }
                     else
                     {
                         PageHeader.SwitchOffTheLoader();
@@ -480,7 +518,12 @@ namespace SDWP
                 if (LocalTemplatesMode)
                 {
                     if (LocalTemplatesListBox.SelectedItem is LocalTemplate localTemplate)
+                    {
                         await LocalTemplateService.RewriteTemplateFile(localTemplate);
+
+                        LocalTemplatesListBox.ItemsSource = null;
+                        await UploadTemplatesFromLocalStorage();
+                    }
                     else
                     {
                         SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Выберете шаблон для сохранения",
@@ -491,7 +534,12 @@ namespace SDWP
                 else
                 {
                     if (CloudTemplatesListBox.SelectedItem is Template template)
+                    {
                         await CloudTemplateService.UpdateTemplate(template);
+
+                        CloudTemplatesListBox.ItemsSource = null;
+                        await UploadTemplatesFromCloudStorage();
+                    }
                     else
                     {
                         SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Выберете шаблон для сохранения",
@@ -523,7 +571,7 @@ namespace SDWP
         /// Deletes the template from the list box, deletes the template file from
         /// the template directory and also clears the tree view 
         /// </summary>
-        private void DeleteTemplate(object sender, RoutedEventArgs e)
+        private async void DeleteTemplate(object sender, RoutedEventArgs e)
         {
             if (SDWPMessageBox.ConfirmAction() == MessageBoxResult.Cancel)
                 return;
@@ -536,10 +584,8 @@ namespace SDWP
                     {
                         LocalTemplateService.DeleteTemplateFile(selectedTemplate);
 
-                        List<LocalTemplate> listBoxItemsSource = LocalTemplatesListBox.ItemsSource as List<LocalTemplate>;
-                        listBoxItemsSource.Remove(selectedTemplate);
+                        await UploadTemplatesFromLocalStorage();
                         LocalTemplatesListBox.ItemsSource = null;
-                        LocalTemplatesListBox.ItemsSource = listBoxItemsSource;
                     }
                     else
                     {
@@ -552,12 +598,10 @@ namespace SDWP
                 {
                     if (CloudTemplatesListBox.SelectedItem is Template selectedTemplate)
                     {
-                        CloudTemplateService.DeleteTemplate(selectedTemplate);
+                        await CloudTemplateService.DeleteTemplate(selectedTemplate);
 
-                        List<Template> templates = CloudTemplatesListBox.ItemsSource as List<Template>;
-                        templates.Remove(selectedTemplate);
                         CloudTemplatesListBox.ItemsSource = null;
-                        CloudTemplatesListBox.ItemsSource = templates;
+                        await UploadTemplatesFromCloudStorage();
                     }
                     else
                     {
@@ -597,22 +641,15 @@ namespace SDWP
 
                     await LocalTemplateService.CreateTemplateFile(localTemplate);
 
-                    List<LocalTemplate> templates = (LocalTemplatesListBox.ItemsSource as
-                        IEnumerable<LocalTemplate>).ToList();
-                    templates.Add(localTemplate);
-
                     LocalTemplatesListBox.ItemsSource = null;
-                    LocalTemplatesListBox.ItemsSource = templates;
+                    await UploadTemplatesFromLocalStorage();
                 }
                 else
                 {
                     await CloudTemplateService.InsertTemplate(template);
 
-                    List<Template> templates = CloudTemplatesListBox.ItemsSource as List<Template>;
-                    templates.Add(template);
-
                     CloudTemplatesListBox.ItemsSource = null;
-                    CloudTemplatesListBox.ItemsSource = templates;
+                    await UploadTemplatesFromCloudStorage();
                 }
 
                 PageHeader.SwitchOffTheLoader();
@@ -630,7 +667,6 @@ namespace SDWP
             }
         }
 
-#warning insert this into tables
         private Template CreateNewTemplate()
         {
             return new Template()
@@ -687,7 +723,7 @@ namespace SDWP
                 LocalTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.Black);
                 CloudTemplatesTextBlock.Foreground = new SolidColorBrush(Colors.OrangeRed);
 
-                await UploadTemplatesFromColoudStorage();
+                await UploadTemplatesFromCloudStorage();
                 LocalTemplatesMode = false;
 
                 PageHeader.SwitchOffTheLoader();

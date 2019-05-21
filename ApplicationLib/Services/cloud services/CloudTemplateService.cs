@@ -10,7 +10,7 @@ using ApplicationLib.Database;
 
 namespace ApplicationLib.Services
 {
-    class CloudTemplateService : ICloudTemplateService
+    public class CloudTemplateService : ICloudTemplateService
     {
         public ICloudTemplatesDB<Template> Database { get; }
 

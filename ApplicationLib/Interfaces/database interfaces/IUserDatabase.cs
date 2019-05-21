@@ -9,7 +9,7 @@ using ApplicationLib.Models;
 
 namespace ApplicationLib.Interfaces
 {
-    interface IUserDatabase<UserType>
+    public interface IUserDatabase<UserType>
     {
         Task<UserType> TryToLoginAsync(LoginData loginData);
         Task CreateNewAccountAsync(UserType newUser);
@@ -17,6 +17,6 @@ namespace ApplicationLib.Interfaces
         Task CheckEmail(string email);
         Task RemindPassAsync(string login, string email);
         Task UpdateUserRecord(UserType user);
-        Task<UserInfo> GetUserByID(int id);
+        Task<UserType> GetUserByID(int id);
     }
 }

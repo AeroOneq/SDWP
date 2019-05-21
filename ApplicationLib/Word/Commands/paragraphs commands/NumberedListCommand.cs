@@ -13,7 +13,7 @@ using DocumentFormat.OpenXml.Packaging;
 
 namespace ApplicationLib.Word.Commands
 {
-    class NumberedListCommand : IWordCommand
+    public class NumberedListCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
         private int Depth { get; }

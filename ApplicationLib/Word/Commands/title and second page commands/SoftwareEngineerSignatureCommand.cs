@@ -10,8 +10,8 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using WordParagraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
 
 namespace ApplicationLib.Word.Commands
-{
-    class SoftwareEngineerSignatureCommand : IWordCommand
+{ 
+    public class SoftwareEngineerSignatureCommand : IWordCommand
     {
         public WordprocessingDocument WordDocument { get; }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.IO;
 using ApplicationLib.Models;
-using FileLib.Interfaces;
+using ApplicationLib.FileParsers.Interfaces;
 
-namespace FileLib.FileParsers
+namespace ApplicationLib.FileParsers.Parsers
 {
     public class CSFileParser : IFileParser
     {
@@ -21,7 +21,6 @@ namespace FileLib.FileParsers
 
         private string lowerCaseEnglishLetters = "qwertyuiopasdfghjklzxcvbnm";
         private int currIndex = 0;
-        private List<string> copiedFiles = new List<string>();
         #endregion
 
         public Table[] GetAssemblyTables(string filePath)
@@ -74,7 +73,7 @@ namespace FileLib.FileParsers
 
             return new Table(tableCells)
             {
-                Title = type.Name
+                Title = "Описание полей методов и свойств " + type.Name
             };
         }
 
@@ -93,7 +92,7 @@ namespace FileLib.FileParsers
                 {
                     tableCells[i + 2] = new string[TypePropertiesColCount]
                         {fields[i].Name, GetFieldModificators(fields[i]),
-                            fields[i].FieldType.Name, string.Empty, string.Empty};
+                            GetTypeName(fields[i].FieldType), string.Empty, string.Empty};
                     currIndex++;
                 }
             }
@@ -112,30 +111,29 @@ namespace FileLib.FileParsers
                 {
                     tableCells[currIndex] = new string[TypePropertiesColCount]
                         {properties[i].Name, GetPropertiesModificators(properties[i], methods),
-                    GetPropertyType(properties[i]), string.Empty, string.Empty};
+                    GetTypeName(properties[i].PropertyType), string.Empty, string.Empty};
                     currIndex++;
                 }
             }
         }
 
-        private string GetPropertyType(PropertyInfo propertyInfo)
+        private string GetTypeName(Type type)
         {
-            string propertyType = propertyInfo.PropertyType.Name;
-            Type[] genericTypeArguments = propertyInfo.PropertyType.GetGenericArguments();
+            string typeName = type.Name;
 
-            if (genericTypeArguments.Length > 0)
+            Type[] genericTypesArguments = type.GetGenericArguments();
+            if (genericTypesArguments.Length > 0)
             {
-                propertyType = propertyType.Remove(propertyType.Length - 2);
-                propertyType += "<";
-                for (int i = 0; i < genericTypeArguments.Length - 1; i++)
-                {
-                    propertyType += genericTypeArguments[i].Name + ",";
-                }
+                if (typeName.Length > 2)
+                    typeName = typeName.Remove(typeName.Length - 2);
 
-                propertyType += genericTypeArguments.Last().Name + ">";
+                typeName += "<";
+                for (int i = 0; i < genericTypesArguments.Length - 1; i++)
+                    typeName += GetTypeName(genericTypesArguments[i]) + ",";
+                typeName += GetTypeName(genericTypesArguments.Last()) + ">";
             }
 
-            return propertyType;
+            return typeName;
         }
 
         private void FillTheMethodsCells(string[][] tableCells)
@@ -154,7 +152,7 @@ namespace FileLib.FileParsers
                     {
                         tableCells[currIndex] = new string[TypePropertiesColCount]
                             { GetMethodName(methods[i]), GetMethodModificators(methods[i]),
-                                GetMethodReturnType(methods[i]), GetMethodArguments(methods[i]), "" };
+                                GetTypeName(methods[i].ReturnType), GetMethodArguments(methods[i]), "" };
                         currIndex++;
                     }
                 }
@@ -164,7 +162,7 @@ namespace FileLib.FileParsers
         private string GetMethodName(MethodInfo method)
         {
             string methodName = method.Name;
-            
+
             if (method.GetGenericArguments().Length > 0)
             {
                 methodName += "<";
@@ -178,26 +176,6 @@ namespace FileLib.FileParsers
             return methodName;
         }
 
-        private string GetMethodReturnType(MethodInfo methodInfo)
-        {
-            string methodReturnType = methodInfo.ReturnType.Name;
-            Type[] genericReturnParams = methodInfo.ReturnType.GetGenericArguments();
-
-            if (genericReturnParams.Length > 0)
-            {
-                methodReturnType = methodReturnType.Remove(methodReturnType.Length - 2);
-                methodReturnType += "<";
-                for (int i = 0; i < genericReturnParams.Length - 1; i++)
-                {
-                    methodReturnType += genericReturnParams[i].Name + ",";
-                }
-
-                methodReturnType += genericReturnParams.Last().Name + ">";
-            }
-
-            return methodReturnType;
-        }
-
         private string GetMethodArguments(MethodInfo method)
         {
             ParameterInfo[] parameters = method.GetParameters();
@@ -205,20 +183,7 @@ namespace FileLib.FileParsers
             string paramsString = string.Empty;
             foreach (ParameterInfo p in parameters)
             {
-                string paramType = p.ParameterType.Name;
-                if (p.ParameterType.GetGenericArguments().Length > 0)
-                {
-                    paramType = paramType.Remove(paramType.Length - 2);
-                    paramType += "<";
-                    for (int i = 0; i < p.ParameterType.GetGenericArguments().Length - 1; i++)
-                    {
-                        paramType += p.ParameterType.GetGenericArguments()[i].Name + ",";
-                    }
-
-                    paramType += p.ParameterType.GetGenericArguments().Last().Name + ">";
-                }
-
-                paramsString += paramType + " " + p.Name + ", ";
+                paramsString += GetTypeName(p.ParameterType) + " " + p.Name + ", ";
             }
 
             if (parameters.Length > 0)
@@ -329,14 +294,6 @@ namespace FileLib.FileParsers
             };
         }
 
-        private Type[] GetAssemblyTypes(string filePath)
-        {
-            Assembly assembly = Assembly.LoadFrom(filePath);
-            Type[] types = assembly.GetExportedTypes();
-
-            return types;
-        }
-
         private string[][] GetClassesTableCells(Type[] types)
         {
             string[][] classesTableCells = new string[types.Length + 1][];
@@ -346,7 +303,7 @@ namespace FileLib.FileParsers
             {
                 classesTableCells[i] = new string[2];
 
-                classesTableCells[i][0] = types[i - 1].Name;
+                classesTableCells[i][0] = GetTypeName(types[i - 1]);
                 classesTableCells[i][1] = string.Empty;
             }
 
