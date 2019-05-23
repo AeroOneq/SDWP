@@ -50,11 +50,6 @@ namespace ApplicationLib.Word.Commands
             };
             paragraph.Append(pp);
 
-            for (int i = 0; i < Depth; i++)
-            {
-                paragraph.Append(new TabCommand().GetElement());
-            }
-
             var run = new Run();
             var runProperties = new RunProperties(new RunFonts
             {

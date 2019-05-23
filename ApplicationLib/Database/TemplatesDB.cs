@@ -22,7 +22,8 @@ namespace ApplicationLib.Database
         {
             await Task.Run(() =>
             {
-                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + $"?templateID={template.ID}", "DELETE");
+                HttpWebRequest httpWebRequest = HTTP.GetRequest(ApiURL + 
+                    $"?templateID={template.ID}", "DELETE");
 
                 HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 if (httpWebResponse.StatusCode == HttpStatusCode.InternalServerError ||

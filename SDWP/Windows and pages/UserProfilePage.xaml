@@ -207,6 +207,7 @@
                     <local:PageHeader x:Name="pageHeader"
                                       VerticalAlignment="Top"
                                       Header="Мой профиль"
+                                      IsRefreshEnabled="False"
                                       Width="{Binding ElementName=userProfileGrid, Path=ActualWidth}"/>
                     <!-- Photo and name grid -->
                     <Border x:Name="userPhotoBorder"

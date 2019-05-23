@@ -166,8 +166,6 @@
                     <Border x:Name="textBlockBorder"
                             Style="{StaticResource textBlockBorderStyle}">
                         <TextBox x:Name="subparagraphTextBlock"
-                                 TextChanged="SubparagraphTextChanged"
-                                 PreviewKeyDown="SubparagraphKeyDown"
                                  Style="{StaticResource subparagraphTextBoxStyle}"
                                  Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
                     </Border>

@@ -72,13 +72,13 @@
             <MenuItem Header="Переместить вверх"
                       Click="MoveItemUp">
                 <MenuItem.Icon>
-                    <Image Source="Resources/contextMenuDeleteItem.png"></Image>
+                    <Image Source="Resources/replaceItemUpperStatic.png"></Image>
                 </MenuItem.Icon>
             </MenuItem>
             <MenuItem Header="Переместить вниз"
                       Click="MoveItemDown">
                 <MenuItem.Icon>
-                    <Image Source="Resources/contextMenuDeleteItem.png"></Image>
+                    <Image Source="Resources/replaceItemLowerStatic.png"></Image>
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>

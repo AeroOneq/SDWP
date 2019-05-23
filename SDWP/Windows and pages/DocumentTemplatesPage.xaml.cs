@@ -128,7 +128,9 @@ namespace SDWP
                 PageHeader.SwitchOnTopLoader();
 
                 List<Template> templates = (await CloudTemplateService.GetUserTemplates(UserInfo.CurrentUser.ID)).ToList();
-                cloudTemplatesListBox.ItemsSource = templates;
+                CloudTemplatesListBox.ItemsSource = templates;
+
+                PageHeader.SwitchOffTheLoader();
             }
             catch (SqlException ex)
             {
@@ -417,12 +419,24 @@ namespace SDWP
 
         private void AddNewItemToRoot(object sender, RoutedEventArgs e)
         {
-            Template selectedTemplate = GetSelectedTemplate();
-            CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedTemplate.Items, null);
-
-            if (createNewItemWindow.ShowDialog() == true)
+            try
             {
-                RefreshTemplateTreeView();
+                Template selectedTemplate = GetSelectedTemplate();
+                CreateNewItemWindow createNewItemWindow = new CreateNewItemWindow(selectedTemplate.Items, null);
+
+                if (createNewItemWindow.ShowDialog() == true)
+                {
+                    RefreshTemplateTreeView();
+                }
+            }
+            catch (NullReferenceException)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала выберете шаблон",
+                    MessageBoxButton.OK);
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.HandleWithMessageBox(ex);
             }
         }
 

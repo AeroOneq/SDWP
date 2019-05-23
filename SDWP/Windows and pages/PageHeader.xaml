@@ -117,6 +117,7 @@
                        Height="35"
                        Width="35"
                        MouseDown="Refresh"
+                       Visibility="Collapsed"
                        Margin="0, 20, 20, 0"/>
                 <Image x:Name="refreshIconStatic"
                        IsEnabled="{Binding IsRefreshEnabled}"
@@ -125,6 +126,7 @@
                        HorizontalAlignment="Right"
                        MouseEnter="RefreshIconMouseEnter"
                        MouseDown="Refresh"
+                       Visibility="Collapsed"
                        Height="35"
                        Width="35"
                        Margin="0, 20, 20, 0"/>

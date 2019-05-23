@@ -397,6 +397,7 @@
                                       HorizontalAlignment="Left"
                                       Width="{Binding ElementName=userDocsPage, Path=ActualWidth}"
                                       Height="86"
+                                      IsRefreshEnabled="False"
                                       Header="Документация"/>
 
                     <StackPanel VerticalAlignment="Top"

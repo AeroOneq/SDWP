@@ -429,5 +429,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\replaceItemUpperStatic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\replaceItemLowerStatic.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

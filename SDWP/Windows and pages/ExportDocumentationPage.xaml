@@ -203,6 +203,7 @@
                                       HorizontalAlignment="Left"
                                       Width="{Binding ElementName=exportDocumentationPage, Path=ActualWidth}"
                                       Height="86"
+                                      IsRefreshEnabled="False"
                                       Header="Экспорт"/>
 
                     <TextBlock Text="Сохранить"

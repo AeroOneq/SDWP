@@ -38,7 +38,8 @@ namespace SDWP
         {
             if (string.IsNullOrEmpty(paragraphNameTextBox.Text))
             {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Введите имя нового параграфа", MessageBoxButton.OK);
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Введите имя нового параграфа",
+                    MessageBoxButton.OK);
                 return;
             }
 
@@ -69,6 +70,12 @@ namespace SDWP
                     {
                         Title = paragraphNameTextBox.Text,
                         ListElements = new List<NumberedListElement>()
+                        {
+                            new NumberedListElement()
+                            {
+                                Index = "0",
+                            }
+                        }
                     },
                     Type = "NumberedList"
                 };

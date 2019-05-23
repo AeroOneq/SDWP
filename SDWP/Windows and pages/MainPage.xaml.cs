@@ -799,6 +799,26 @@ namespace SDWP
         #endregion
 
         #region Event handlers
+        private void CreateNewDocument(object sender, MouseButtonEventArgs e)
+        {
+            List<Document> currentDocumentList = DocController.Documents;
+            Documentation documentation = DocController.Documentation;
+
+            if (currentDocumentList == null || documentation == null)
+            {
+                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте документацию", MessageBoxButton.OK);
+                return;
+            }
+
+            CreateNewDocumentWindow createNewDocumentWindow = new CreateNewDocumentWindow(currentDocumentList,
+                documentation);
+
+            if (createNewDocumentWindow.ShowDialog() == true)
+            {
+                RefreshDocumentUI();
+            }
+        }
+
         private void ParagraphElementsGridMouseLeave(object sender, MouseEventArgs e)
         {
             MainPageAnimations.AnimateWidth(ParagraphElementsGrid, 0,
@@ -1071,24 +1091,6 @@ namespace SDWP
         }
         #endregion
 
-        private void CreateNewDocument(object sender, MouseButtonEventArgs e)
-        {
-            List<Document> currentDocumentList = DocController.Documents;
-            Documentation documentation = DocController.Documentation;
 
-            if (currentDocumentList == null || documentation == null)
-            {
-                SDWPMessageBox.ShowSDWPMessageBox("Ошибка", "Сначала откройте документацию", MessageBoxButton.OK);
-                return;
-            }
-
-            CreateNewDocumentWindow createNewDocumentWindow = new CreateNewDocumentWindow(currentDocumentList,
-                documentation);
-
-            if (createNewDocumentWindow.ShowDialog() == true)
-            {
-                RefreshDocumentUI();
-            }
-        }
     }
 }
