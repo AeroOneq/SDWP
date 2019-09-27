@@ -1,6 +1,12 @@
-h1 SDWP - software developer workplace
+SDWP - software developer workplace
 =====================
 Данная программа была написана мной в рамках курсовой работы.
+
+Научный руководитель:
+ВАЛЕРИЙ ВЛАДИМИРОВИЧ ШИЛОВ,
+ПРОФЕССОР
+К.т.н., с.н.с.
+
 SDWP - это программа для создания документов в формате ГОСТ к ПО. В данной программе реализованы функции, которые упрощают написание документов:
 1. Шаблоны, возможность создания шаблонов
 2. Генерация таблиц для описания классов, их полей, свойств, методов (для языка С#, для публичных членов)
@@ -15,3 +21,9 @@ SDWP - is a program which can be used to create documentation for the software. 
 3. Local and cloud storage for the documents
 4. Userful tips on how to write documents
 You can find screenshots in the 'screenshots' folder
+***
+Some screenshots:
+
+![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/welcome_screen.png)
+![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/opened_document.png)
+![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/profile.png)
