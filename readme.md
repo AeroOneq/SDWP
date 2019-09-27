@@ -23,7 +23,9 @@ SDWP - is a program which can be used to create documentation for the software. 
 You can find screenshots in the 'screenshots' folder
 ***
 Some screenshots:
-
+***
 ![welcome_screen](screenshots/welcome_screen.png?raw=true)
+***
 ![opened_document](screenshots/opened_document.png?raw=true)
+***
 ![profile](screenshots/profile.png?raw=true)
