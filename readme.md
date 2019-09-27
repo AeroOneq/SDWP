@@ -24,6 +24,6 @@ You can find screenshots in the 'screenshots' folder
 ***
 Some screenshots:
 
-![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/welcome_screen.png)
-![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/opened_document.png)
-![alt text](https://github.com/AeroOneq/SDWP/tree/master/screenshots/profile.png)
+![welcome_screen](screenshots/welcome_screen.png?raw=true)
+![opened_document](screenshots/opened_document.png?raw=true)
+![profile](screenshots/profile.png?raw=true)
