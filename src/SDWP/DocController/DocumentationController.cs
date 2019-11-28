@@ -75,7 +75,7 @@ namespace SDWP
         }
 
         /// <summary>
-        /// Sets all references of properties ti null
+        /// Sets all references of properties to null
         /// </summary>
         public void Clear()
         {
